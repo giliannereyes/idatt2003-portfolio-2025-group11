@@ -1,6 +1,7 @@
 package edu.ntnu.idi.idatt;
 
 import edu.ntnu.idi.idatt.model.entities.Player;
+import edu.ntnu.idi.idatt.model.entities.Tile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -8,22 +9,29 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * JUnit 5 test class for {@link Player}.
- * Tests cover player initialisation, movement, and turn-skipping behavior.
+ * Tests cover player initialisation, and movement.
  *
  * @author Trang Duong
- * @version 0.1
+ * @version 0.2
  * @since 0.1
  */
 public class PlayerTest {
 
-    private Player player; //Declare player
+    private Player player;
+    private Tile startTile;
+    private Tile endTile;
 
     /**
      * Initialises a new Player instance before each test.
      */
     @BeforeEach
     void setUp() {
-        player = new Player("Ola", 0); // New player before each test
+        player = new Player("Ola");
+        startTile = new Tile(1);
+        endTile = new Tile(2);
+
+        startTile.setNextTile(endTile);
+        player.placeOnTile(startTile);
     }
 
     /**
@@ -32,34 +40,24 @@ public class PlayerTest {
     @Test
     void testPlayerInitialisation() {
         assertEquals("Ola", player.getName());
-        assertEquals(0, player.getPosition());
+        assertEquals(startTile, player.getCurrentTile());
     }
 
     /**
-     * Tests if the player moves correctly to a new position.
+     * Tests if the player moves correctly to a new position
+     * with the defaulted movement strategy.
      */
     @Test
-    void testMovePlayer() {
-        player.move(10);
-        assertEquals(10, player.getPosition());
+    void testMovePlayerWithDefaultStrategy() {
+        player.move(1);
+        assertEquals(endTile, player.getCurrentTile());
     }
 
-    /**
-     * Tests if the 'skip next turn' flag is correctly set when activated.
+    /** Tests if the player is placed on expected tile
      */
     @Test
-    void testSkipNextTurnEffect() {
-        player.setSkipNextTurn(true);
-        assertTrue(player.shouldSkipNextTurn());
-    }
-
-    /**
-     * Tests if the 'skip next turn' flag can be reset after a skipped turn.
-     */
-    @Test
-    void testResetSkipNextTurn() {
-        player.setSkipNextTurn(true);
-        player.setSkipNextTurn(false);
-        assertFalse(player.shouldSkipNextTurn(), "Player should be able to play again after skipping a turn");
+    void testPlaceOnTile() {
+        player.placeOnTile(endTile);
+        assertEquals(endTile, player.getCurrentTile());
     }
 }
