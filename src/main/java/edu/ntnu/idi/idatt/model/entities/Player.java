@@ -1,28 +1,33 @@
 package edu.ntnu.idi.idatt.model.entities;
 
+import edu.ntnu.idi.idatt.model.strategies.DefaultMovementStrategy;
+import edu.ntnu.idi.idatt.model.strategies.MovementStrategy;
+
 /**
  * Represents a player in the game.
- * Each player has a name, a position on the board, and a flag indicating whether they must skip their next turn.
+ * Each player has a name and a position on the board.
  *
  * @version 0.1
  * @since 0.1
  * @author Trang Duong
+ * @author Gilianne Reyes
  */
 public class Player {
-    private String name;
-    private int position;
-    private boolean skipNextTurn;
+    private final String name;
+    private Tile currentTile;
+    private MovementStrategy movementStrategy;
 
     /**
      * Constructs a new Player with a given name and starting position.
      *
-     * @param name      The name of the player.
-     * @param position  The starting position of the player (usually 0).
+     * @param name The name of the player.
      */
-    public Player(String name, int position) {
+    public Player(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Player name cannot be null or empty.");
+        }
         this.name = name;
-        this.position = 0;
-        this.skipNextTurn = false;
+        this.movementStrategy = new DefaultMovementStrategy();
     }
 
     /**
@@ -35,38 +40,40 @@ public class Player {
     }
 
     /**
-     * Gets the current position of the player on the board.
+     * Sets the movement strategy of the player, which determines how the player moves.
      *
-     * @return The player's current position.
+     * @param movementStrategy is the movement strategy to set.
      */
-    public int getPosition() {
-        return position;
+    public void setMovementStrategy(MovementStrategy movementStrategy) {
+        this.movementStrategy = movementStrategy;
     }
 
     /**
-     * Moves the player to a new position on the board.
+     * Places the player on a tile.
      *
-     * @param newPosition The new position the player moves to.
+     * @param tile is the tile to place the player on.
      */
-    public void move(int newPosition) {
-        this.position = newPosition;
+    public void placeOnTile(Tile tile) {
+        currentTile = tile;
     }
 
     /**
-     * Sets whether the player should skip their next turn.
+     * Moves the player a number of steps.
      *
-     * @param skip {@code true} if the player must skip their next turn, {@code false} otherwise.
+     * @param steps is the number of steps to move.
      */
-    public void setSkipNextTurn(boolean skip) {
-        this.skipNextTurn = skip;
+    public void move(int steps) {
+        Tile destination = movementStrategy.determineDestination(currentTile, steps);
+        placeOnTile(destination);
+        destination.landPlayer(this);
     }
 
     /**
-     * Checks if the player must skip their next turn.
+     * Checks if the player has a current tile.
      *
-     * @return {@code true} if the player should skip their next turn, {@code false} otherwise.
+     * @return the current tile of the player.
      */
-    public boolean shouldSkipNextTurn() {
-        return skipNextTurn;
+    public Tile getCurrentTile() {
+        return currentTile;
     }
 }
