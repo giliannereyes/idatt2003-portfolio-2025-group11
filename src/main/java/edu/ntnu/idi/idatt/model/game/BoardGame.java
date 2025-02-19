@@ -3,8 +3,13 @@ package edu.ntnu.idi.idatt.model.game;
 import edu.ntnu.idi.idatt.model.entities.Board;
 import edu.ntnu.idi.idatt.model.entities.Dice;
 import edu.ntnu.idi.idatt.model.entities.Player;
+import edu.ntnu.idi.idatt.model.events.GameEvent;
+import edu.ntnu.idi.idatt.model.events.GameEventListener;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Abstract class for board games. Contains a board, a list of players, a dice, and a winner.
@@ -20,6 +25,7 @@ public abstract class BoardGame {
     protected Dice dice;
     protected Player winner;
     protected int currentPlayerIndex = 0;
+    private final Map<Class<? extends GameEvent>, List<GameEventListener>> eventListeners;
 
     /**
      * Constructs a BoardGame instance.
@@ -32,6 +38,7 @@ public abstract class BoardGame {
         this.board = board;
         this.players = players;
         this.dice = dice;
+        eventListeners = new HashMap<>();
     }
 
     /**
@@ -53,6 +60,42 @@ public abstract class BoardGame {
                 if (isGameOver()) {
                     winner = player;
                 }
+            }
+        }
+    }
+
+    /**
+     * Registers a listener for a specific event type.
+     *
+     * @param eventType is the type of event to trigger.
+     * @param listener is the listener to register.
+     * @param <T> is the type of event.
+     */
+    public <T extends GameEvent> void addEventListener(Class<T> eventType, GameEventListener listener) {
+        eventListeners.computeIfAbsent(eventType, k -> new ArrayList<>()).add(listener);
+    }
+
+    /**
+     * Unregisters a listener for a specific event type.
+     *
+     * @param eventType is the type of event of the listener to unregister.
+     * @param listener is the listener to unregister.
+     * @param <T> is the type of event.
+     */
+    public <T extends GameEvent> void removeEventListener(Class<T> eventType, GameEventListener listener) {
+        eventListeners.get(eventType).remove(listener);
+    }
+
+    /**
+     * Notifies all listeners registered for a specific event type.
+     *
+     * @param event is the event to notify listeners of.
+     */
+    protected void notifyListeners(GameEvent event) {
+        List<GameEventListener> listeners = eventListeners.get(event.getClass());
+        if (listeners != null) {
+            for (GameEventListener listener : listeners) {
+                listener.handleGameEvent(event);
             }
         }
     }
