@@ -9,7 +9,7 @@ import edu.ntnu.idi.idatt.model.entities.Player;
  * @since 0.1
  * @author Gilianne Reyes
  */
-public class PlayerMovedEvent {
+public class PlayerMovedEvent implements GameEvent{
     private final Player player;
     private final int fromTileId;
     private final int toTileId;
