@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
  *  and that it performs the expected behavior when executed.
  *
  * @author Trang Duong
- * @version 0.1
+ * @version 0.2
  * @since 0.1
  */
 public class LadderActionFactoryTest {
