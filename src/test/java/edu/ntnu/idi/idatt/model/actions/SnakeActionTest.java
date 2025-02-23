@@ -49,7 +49,7 @@ public class SnakeActionTest {
      * Tests if there is no Player
      */
     @Test
-    public void testLadderActionWithNullPlayer() {
+    public void testSnakeActionWithNullPlayer() {
         assertThrows(NullPointerException.class, () -> {
             snakeAction.perform(null);
         }, "Performing ladder action on a null player should throw an exception");
@@ -59,7 +59,7 @@ public class SnakeActionTest {
      * Tests if Player is already on destination tile
      */
     @Test
-    public void testLadderActionWhenPlayerAlreadyOnDestination() {
+    public void testSnakeActionWhenPlayerAlreadyOnDestination() {
         player.placeOnTile(destinationTile);
         snakeAction.perform(player);
         assertEquals(destinationTile, player.getCurrentTile(), "Player should stay on the destination tile");
@@ -69,7 +69,7 @@ public class SnakeActionTest {
      * Tests if Player is not initially placed on any tile
      */
     @Test
-    public void testLadderActionWhenPlayerNotPlacedOnAnyTile() {
+    public void testSnakeActionWhenPlayerNotPlacedOnAnyTile() {
         Player newPlayer = new Player("UnplacedPlayer");
         snakeAction.perform(newPlayer);
         assertEquals(destinationTile, newPlayer.getCurrentTile(), "Player should be moved to the destination tile even if not initially placed");
