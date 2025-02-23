@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
  *  and that it performs the expected behavior when executed.
  *
  * @author Trang Duong
- * @version 0.1
+ * @version 0.2
  * @since 0.1
  */
 public class SnakeActionFactoryTest {
@@ -40,7 +40,7 @@ public class SnakeActionFactoryTest {
     public void testCreateSnakeTileAction() {
         TileAction action = snakeActionFactory.createTileAction(destinationTile);
 
-        assertNotNull(action, "Ladder action should not be null");
+        assertNotNull(action, "Snake action should not be null");
         assertInstanceOf(SnakeAction.class, action, "The factory should return an instance of SnakeAction");
 
         Player player = new Player("TestPlayer");
