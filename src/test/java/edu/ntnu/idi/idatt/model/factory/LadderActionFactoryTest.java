@@ -48,4 +48,27 @@ public class LadderActionFactoryTest {
 
         assertEquals(destinationTile, player.getCurrentTile(), "Player should have moved to the destination tile");
     }
+
+    /**
+     * Tests the instance when Player is null
+     */
+    @Test
+    public void testLadderActionPerformWithNullPlayer() {
+        TileAction action = ladderActionFactory.createTileAction(destinationTile);
+
+        assertThrows(NullPointerException.class, () -> {
+            action.perform(null);
+        }, "Calling perform() on a null player should throw a NullPointerException.");
+    }
+
+    /**
+     * Ensures that the instances are independent
+     */
+    @Test
+    public void testLadderActionFactoryCreatesNewInstances() {
+        TileAction action1 = ladderActionFactory.createTileAction(destinationTile);
+        TileAction action2 = ladderActionFactory.createTileAction(destinationTile);
+
+        assertNotSame(action1, action2, "Factory should return a new instance each time.");
+    }
 }

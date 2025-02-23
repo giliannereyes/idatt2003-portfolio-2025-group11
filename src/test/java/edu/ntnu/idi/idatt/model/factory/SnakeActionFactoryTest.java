@@ -37,7 +37,7 @@ public class SnakeActionFactoryTest {
      * the created action correctly moves the player to the destination tile.
      */
     @Test
-    public void testCreateLadderTileAction() {
+    public void testCreateSnakeTileAction() {
         TileAction action = snakeActionFactory.createTileAction(destinationTile);
 
         assertNotNull(action, "Ladder action should not be null");
@@ -47,5 +47,28 @@ public class SnakeActionFactoryTest {
         action.perform(player);
 
         assertEquals(destinationTile, player.getCurrentTile(), "Player should have moved to the destination tile");
+    }
+
+    /**
+     * Tests the instance when Player is null
+     */
+    @Test
+    public void testSnakeActionPerformWithNullPlayer() {
+        TileAction action = snakeActionFactory.createTileAction(destinationTile);
+
+        assertThrows(NullPointerException.class, () -> {
+            action.perform(null);
+        }, "Calling perform() on a null player should throw a NullPointerException.");
+    }
+
+    /**
+     * Ensures that the instances are independent
+     */
+    @Test
+    public void testSnakeActionFactoryCreatesNewInstances() {
+        TileAction action1 = snakeActionFactory.createTileAction(destinationTile);
+        TileAction action2 = snakeActionFactory.createTileAction(destinationTile);
+
+        assertNotSame(action1, action2, "Factory should return a new instance each time.");
     }
 }
