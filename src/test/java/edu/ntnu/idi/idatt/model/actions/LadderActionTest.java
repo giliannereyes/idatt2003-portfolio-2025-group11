@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Tests cover tile and player initialisation and ladder action.
  *
  * @author Trang Duong
- * @version 0.1
+ * @version 0.2
  * @since 0.1
  */
 public class LadderActionTest {
@@ -44,4 +44,35 @@ public class LadderActionTest {
         ladderAction.perform(player);
         assertEquals(destinationTile, player.getCurrentTile(), "Player should have moved to the destination tile");
     }
+
+    /**
+     * Tests if there is no Player
+     */
+    @Test
+    public void testLadderActionWithNullPlayer() {
+        assertThrows(NullPointerException.class, () -> {
+            ladderAction.perform(null);
+        }, "Performing ladder action on a null player should throw an exception");
+    }
+
+    /**
+     * Tests if Player is already on destination tile
+     */
+    @Test
+    public void testLadderActionWhenPlayerAlreadyOnDestination() {
+        player.placeOnTile(destinationTile);
+        ladderAction.perform(player);
+        assertEquals(destinationTile, player.getCurrentTile(), "Player should stay on the destination tile");
+    }
+
+    /**
+     * Tests if Player is not initially placed on any tile
+     */
+    @Test
+    public void testLadderActionWhenPlayerNotPlacedOnAnyTile() {
+        Player newPlayer = new Player("UnplacedPlayer");
+        ladderAction.perform(newPlayer);
+        assertEquals(destinationTile, newPlayer.getCurrentTile(), "Player should be moved to the destination tile even if not initially placed");
+    }
+
 }

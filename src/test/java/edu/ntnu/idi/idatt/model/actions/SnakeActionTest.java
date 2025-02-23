@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Tests cover tile and player initialisation and snake action.
  *
  * @author Trang Duong
- * @version 0.1
+ * @version 0.2
  * @since 0.1
  */
 public class SnakeActionTest {
@@ -43,6 +43,36 @@ public class SnakeActionTest {
         assertEquals(startTile, player.getCurrentTile());
         snakeAction.perform(player);
         assertEquals(destinationTile, player.getCurrentTile(), "Player should have moved to destination tile");
+    }
+
+    /**
+     * Tests if there is no Player
+     */
+    @Test
+    public void testLadderActionWithNullPlayer() {
+        assertThrows(NullPointerException.class, () -> {
+            snakeAction.perform(null);
+        }, "Performing ladder action on a null player should throw an exception");
+    }
+
+    /**
+     * Tests if Player is already on destination tile
+     */
+    @Test
+    public void testLadderActionWhenPlayerAlreadyOnDestination() {
+        player.placeOnTile(destinationTile);
+        snakeAction.perform(player);
+        assertEquals(destinationTile, player.getCurrentTile(), "Player should stay on the destination tile");
+    }
+
+    /**
+     * Tests if Player is not initially placed on any tile
+     */
+    @Test
+    public void testLadderActionWhenPlayerNotPlacedOnAnyTile() {
+        Player newPlayer = new Player("UnplacedPlayer");
+        snakeAction.perform(newPlayer);
+        assertEquals(destinationTile, newPlayer.getCurrentTile(), "Player should be moved to the destination tile even if not initially placed");
     }
 }
 
