@@ -1,6 +1,6 @@
 package edu.ntnu.idi.idatt.model.entities;
 
-import edu.ntnu.idi.idatt.model.actions.TileAction;
+import edu.ntnu.idi.idatt.model.actions.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +46,8 @@ public class Board {
     }
 
     /**
-     * Sets up the board with the given number of tiles.
+     * Sets up the board with the given number of tiles and special effects
+     * like ladder, snake, skip-turn and step-back.
      *
      * @param tileCount is the number of tiles to set up.
      */
@@ -58,6 +59,17 @@ public class Board {
             addTile(tile);
             previousTile = tile;
         }
+
+        addTileAction(10, new LadderAction(getTile(25)));
+        addTileAction(50, new LadderAction(getTile(65)));
+        addTileAction(20, new SnakeAction(getTile(5)));
+        addTileAction(70, new SnakeAction(getTile(45)));
+        addTileAction(30, new SkipTurnAction(getTile(30)));
+        addTileAction(48, new SkipTurnAction(getTile(48)));
+        addTileAction(82, new SkipTurnAction(getTile(82)));
+        addTileAction(40, new StepBackAction(getTile(39)));
+        addTileAction(83, new StepBackAction(getTile(82)));
+        addTileAction(67, new StepBackAction(getTile(66)));
     }
 
     /**
