@@ -2,12 +2,13 @@ package edu.ntnu.idi.idatt.model.entities;
 
 import edu.ntnu.idi.idatt.model.strategies.DefaultMovementStrategy;
 import edu.ntnu.idi.idatt.model.strategies.MovementStrategy;
+import edu.ntnu.idi.idatt.utils.Validation;
 
 /**
  * Represents a player in the game.
  * Each player has a name and a position on the board.
  *
- * @version 0.1
+ * @version 0.2
  * @since 0.1
  * @author Trang Duong
  * @author Gilianne Reyes
@@ -18,14 +19,15 @@ public class Player {
     private MovementStrategy movementStrategy;
 
     /**
-     * Constructs a new Player with a given name and starting position.
+     * Constructs a new Player with a given name. Sets the player's movement strategy
+     * to the default movement strategy.
      *
      * @param name The name of the player.
+     *
+     * @throws IllegalArgumentException if the name is empty.
      */
     public Player(String name) {
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("Player name cannot be null or empty.");
-        }
+        Validation.validateNonEmptyStr(name, "Name");
         this.name = name;
         this.movementStrategy = new DefaultMovementStrategy();
     }
@@ -43,8 +45,11 @@ public class Player {
      * Sets the movement strategy of the player, which determines how the player moves.
      *
      * @param movementStrategy is the movement strategy to set.
+     *
+     * @throws IllegalArgumentException if the movement strategy is null.
      */
     public void setMovementStrategy(MovementStrategy movementStrategy) {
+        Validation.validateNonNull(movementStrategy, "Movement strategy");
         this.movementStrategy = movementStrategy;
     }
 
@@ -52,8 +57,11 @@ public class Player {
      * Places the player on a tile.
      *
      * @param tile is the tile to place the player on.
+     *
+     * @throws IllegalArgumentException if the tile is null.
      */
     public void placeOnTile(Tile tile) {
+        Validation.validateNonNull(tile, "Tile");
         currentTile = tile;
     }
 
