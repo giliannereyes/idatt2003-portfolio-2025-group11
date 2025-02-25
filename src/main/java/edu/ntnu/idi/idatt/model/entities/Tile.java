@@ -5,7 +5,7 @@ import edu.ntnu.idi.idatt.model.actions.TileAction;
 /**
  * Class representing a tile on the board.
  *
- * @version 0.1
+ * @version 0.2
  * @since 0.1
  * @author Gilianne Reyes
  */
@@ -41,6 +41,15 @@ public class Tile {
    */
   public void setLandAction(TileAction landAction) {
     this.landAction = landAction;
+  }
+
+  /**
+   * Gets the action assigned to this tile.
+   *
+   * @return the tile action, or null if no action is assigned.
+   */
+  public TileAction getLandAction() {
+    return landAction;
   }
 
   /**
