@@ -1,12 +1,14 @@
 package edu.ntnu.idi.idatt.model.entities;
 
+import edu.ntnu.idi.idatt.utils.Validation;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Represents a collection of six-sided dice.
  *
- * @version 0.1
+ * @version 0.2
  * @since 0.1
  * @author Gilianne Reyes
  */
@@ -21,9 +23,7 @@ public class Dice {
    * @throws IllegalArgumentException if the number of dice is less than or equal to 0.
    */
   public Dice(int numberOfDice) {
-    if (numberOfDice <= 0) {
-      throw new IllegalArgumentException("Number of dice must be greater than 0.");
-    }
+    Validation.validatePositiveNum(numberOfDice, "Number of dice");
     dice = new ArrayList<>();
     for (int i = 0; i < numberOfDice; i++) {
       dice.add(new Die());
