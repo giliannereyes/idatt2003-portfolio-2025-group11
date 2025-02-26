@@ -5,44 +5,58 @@ import edu.ntnu.idi.idatt.model.entities.Tile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test class for the {@link SkipTurnAction} class.
+ *
+ * @version 0.2
+ * @since 0.1
+ * @author Trang Duong
+ * @author Gilianne Reyes
+ */
 public class SkipTurnActionTest {
-    private Tile tile;
+    private Tile tileWithSkipAction;
     private Player player;
     private SkipTurnAction skipTurnAction;
 
     /**
-     * Sets up a player, a destination tile, and a SkipTurnAction instance before each test.
+     * Sets up a player and a tile with SkipTurnAction before each test.
      */
     @BeforeEach
     void setUp() {
-        tile = new Tile(5);
         player = new Player("TestPlayer");
-        skipTurnAction = new SkipTurnAction(tile);
+        skipTurnAction = new SkipTurnAction();
+        tileWithSkipAction = new Tile(1);
+        tileWithSkipAction.setLandAction(skipTurnAction);
     }
 
+    // ------- Positive tests -------
+
     /**
-     * Ensures that if the player is already on destination tile, no unintended behavior occurs.
+     * Ensures that the player will skip their turn after the action is performed.
+     *
+     * <p>Expected: The player will skip their next turn.</p>
      */
     @Test
     void testSkipTurnAction() {
-        player.placeOnTile(tile);
-
-        skipTurnAction.perform(player);
-
-        assertEquals(tile, player.getCurrentTile(), "Player should remain on the same tile.");
+        tileWithSkipAction.landPlayer(player);
+        assertTrue(player.willSkipTurn());
     }
+
+    // ------- Negative tests -------
 
     /**
      * Ensures that calling action on a null player throws an exception.
+     *
+     * <p>Expected: IllegalArgumentException is thrown.</p>
      */
     @Test
     void testSkipTurnActionWithNullPlayer() {
-        assertThrows(NullPointerException.class, () -> {
-            skipTurnAction.perform(null);
-        }, "Calling action on a null player should throw a NullPointerException.");
+        assertThrows(IllegalArgumentException.class,
+                () -> skipTurnAction.perform(null),
+                "Calling action on a null player should throw a NullPointerException."
+        );
     }
 }
 
