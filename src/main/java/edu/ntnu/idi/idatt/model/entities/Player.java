@@ -8,7 +8,7 @@ import edu.ntnu.idi.idatt.utils.Validation;
  * Represents a player in the game.
  * Each player has a name and a position on the board.
  *
- * @version 0.2
+ * @version 0.3
  * @since 0.1
  * @author Trang Duong
  * @author Gilianne Reyes
@@ -16,7 +16,9 @@ import edu.ntnu.idi.idatt.utils.Validation;
 public class Player {
     private final String name;
     private Tile currentTile;
+    private Tile startTile;
     private MovementStrategy movementStrategy;
+    private boolean skipTurn;
 
     /**
      * Constructs a new Player with a given name. Sets the player's movement strategy
@@ -42,6 +44,24 @@ public class Player {
     }
 
     /**
+     * Checks if the player will skip their turn.
+     *
+     * @return true if the player will skip their turn, false otherwise.
+     */
+    public boolean willSkipTurn() {
+        return skipTurn;
+    }
+
+    /**
+     * Sets whether the player will skip their turn.
+     *
+     * @param skipTurn is true if the player will skip their turn, false otherwise.
+     */
+    public void setSkipTurn(boolean skipTurn) {
+        this.skipTurn = skipTurn;
+    }
+
+    /**
      * Sets the movement strategy of the player, which determines how the player moves.
      *
      * @param movementStrategy is the movement strategy to set.
@@ -62,7 +82,11 @@ public class Player {
      */
     public void placeOnTile(Tile tile) {
         Validation.validateNonNull(tile, "Tile");
+        if (currentTile == null) {
+            startTile = tile;
+        }
         currentTile = tile;
+        tile.landPlayer(this);
     }
 
     /**
@@ -73,15 +97,23 @@ public class Player {
     public void move(int steps) {
         Tile destination = movementStrategy.determineDestination(currentTile, steps);
         placeOnTile(destination);
-        destination.landPlayer(this);
     }
 
     /**
-     * Checks if the player has a current tile.
+     * Retrieves the current tile of the player.
      *
      * @return the current tile of the player.
      */
     public Tile getCurrentTile() {
         return currentTile;
+    }
+
+    /**
+     * Retrieves the start tile of the player.
+     *
+     * @return the start tile of the player.
+     */
+    public Tile getStartTile() {
+        return startTile;
     }
 }

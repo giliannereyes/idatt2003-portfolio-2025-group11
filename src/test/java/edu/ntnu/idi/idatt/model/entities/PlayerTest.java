@@ -10,7 +10,8 @@ import static org.junit.jupiter.api.Assertions.*;
  * Tests cover player initialisation, and movement.
  *
  * @author Trang Duong
- * @version 0.2
+ * @author Gilianne Reyes
+ * @version 0.3
  * @since 0.1
  */
 public class PlayerTest {
@@ -64,6 +65,25 @@ public class PlayerTest {
     void testPlaceOnTile() {
         player.placeOnTile(nextTile);
         assertEquals(nextTile, player.getCurrentTile());
+    }
+
+    /**
+     * Tests if the skip-turn flag is set to true.
+     *
+     * <p> Expected outcome: The skip-turn flag is set to true.</p>
+     */
+    @Test
+    void testSetSkipTurnToTrue() {
+        player.setSkipTurn(true);
+        assertTrue(player.willSkipTurn());
+    }
+
+    /**
+     * Tests if a player's first tile is registered as the start tile.
+     */
+    @Test
+    void testCorrectStartTile() {
+        assertEquals(startTile, player.getStartTile());
     }
 
     // -------- Negative tests --------
