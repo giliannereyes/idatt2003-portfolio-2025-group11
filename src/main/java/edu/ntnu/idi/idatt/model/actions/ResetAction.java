@@ -5,14 +5,14 @@ import edu.ntnu.idi.idatt.model.entities.Tile;
 import edu.ntnu.idi.idatt.utils.Validation;
 
 /**
- * ReturnToStartAction class is a class that represents the action of a tile with a return-to-start effect.
- * A player that lands on a tile with this action will be moved back to the start tile.
+ * ResetAction is a class that represents the action of moving the player to the start tile
+ * when the player lands on a reset tile.
  *
  * @version 0.1
  * @since 0.1
  * @author Gilianne Reyes
  */
-public class ReturnToStartAction implements TileAction {
+public class ResetAction implements TileAction {
     /**
      * Moves the player to the start tile.
      *

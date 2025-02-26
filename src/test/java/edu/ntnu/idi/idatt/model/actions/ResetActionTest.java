@@ -9,13 +9,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * Tests the ReturnToStartAction class.
+ * Tests the ResetAction class.
  *
  * @version 0.1
  * @since 0.1
  * @author Gilianne Reyes
  */
-public class ReturnToStartActionTest {
+public class ResetActionTest {
     Player player;
     Tile startTile;
     Tile tileWithAction;
@@ -23,14 +23,14 @@ public class ReturnToStartActionTest {
 
     /**
      * Sets up a player who is placed on a no-action tile and
-     * a tile with a return-to-start action.
+     * a tile with a reset action.
      */
     @BeforeEach
     public void setUp() {
         startTile = new Tile(1);
         normalTile = new Tile(2);
         tileWithAction = new Tile(5);
-        tileWithAction.setLandAction(new ReturnToStartAction());
+        tileWithAction.setLandAction(new ResetAction());
         player = new Player("Player");
         player.placeOnTile(startTile); // First tile is the start tile
         player.placeOnTile(normalTile);
@@ -53,13 +53,13 @@ public class ReturnToStartActionTest {
     // ------- Negative tests -------
 
     /**
-     * Tests performing the return-to-start action with a null player.
+     * Tests performing the reset action with a null player.
      *
      * <p>Expected outcome: An IllegalArgumentException is thrown.</p>
      */
     @Test
     public void testPerformWithNullPlayer() {
-        ReturnToStartAction action = new ReturnToStartAction();
+        ResetAction action = new ResetAction();
         assertThrows(IllegalArgumentException.class, () -> action.perform(null));
     }
 }
