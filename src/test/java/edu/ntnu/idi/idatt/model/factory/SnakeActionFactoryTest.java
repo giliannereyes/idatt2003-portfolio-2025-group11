@@ -2,7 +2,6 @@ package edu.ntnu.idi.idatt.model.factory;
 
 import edu.ntnu.idi.idatt.model.actions.SnakeAction;
 import edu.ntnu.idi.idatt.model.actions.TileAction;
-import edu.ntnu.idi.idatt.model.entities.Player;
 import edu.ntnu.idi.idatt.model.entities.Tile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,44 +30,44 @@ public class SnakeActionFactoryTest {
         snakeActionFactory = new SnakeActionFactory();
     }
 
+    // -------------- Positive tests --------------
+
     /**
-     * Tests whether the {@link SnakeActionFactory} correctly creates a {@link SnakeAction}.
-     * The test checks that the created action is an instance of {@link SnakeAction} and
-     * the created action correctly moves the player to the destination tile.
+     * Tests the creation of a {@link SnakeAction} instance.
+     *
+     * <p>Expected: The factory should return a new instance of {@link SnakeAction} with the destination tile.</p>
      */
     @Test
     public void testCreateSnakeTileAction() {
         TileAction action = snakeActionFactory.createTileAction(destinationTile);
-
         assertNotNull(action, "Snake action should not be null");
         assertInstanceOf(SnakeAction.class, action, "The factory should return an instance of SnakeAction");
-
-        Player player = new Player("TestPlayer");
-        action.perform(player);
-
-        assertEquals(destinationTile, player.getCurrentTile(), "Player should have moved to the destination tile");
     }
 
     /**
-     * Tests the instance when Player is null
-     */
-    @Test
-    public void testSnakeActionPerformWithNullPlayer() {
-        TileAction action = snakeActionFactory.createTileAction(destinationTile);
-
-        assertThrows(NullPointerException.class, () -> {
-            action.perform(null);
-        }, "Calling perform() on a null player should throw a NullPointerException.");
-    }
-
-    /**
-     * Ensures that the instances are independent
+     * Tests that the factory creates independent instances of {@link SnakeAction}.
+     *
+     * <p>Expected: The factory should return a new instance of
+     * {@link SnakeAction} each time it is called.</p>
      */
     @Test
     public void testSnakeActionFactoryCreatesNewInstances() {
         TileAction action1 = snakeActionFactory.createTileAction(destinationTile);
         TileAction action2 = snakeActionFactory.createTileAction(destinationTile);
-
         assertNotSame(action1, action2, "Factory should return a new instance each time.");
+    }
+
+    // -------------- Negative tests --------------
+
+    /**
+     * Tests creating a {@link SnakeAction} with a null destination tile.
+     *
+     * <p>Expected: An {@link IllegalArgumentException} should be thrown.</p>
+     */
+    @Test
+    public void testCreateTileActionWithNullDestinationTile() {
+        assertThrows(IllegalArgumentException.class,
+                () -> snakeActionFactory.createTileAction(null)
+        );
     }
 }

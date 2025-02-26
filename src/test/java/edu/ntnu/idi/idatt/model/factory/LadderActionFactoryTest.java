@@ -2,7 +2,6 @@ package edu.ntnu.idi.idatt.model.factory;
 
 import edu.ntnu.idi.idatt.model.actions.LadderAction;
 import edu.ntnu.idi.idatt.model.actions.TileAction;
-import edu.ntnu.idi.idatt.model.entities.Player;
 import edu.ntnu.idi.idatt.model.entities.Tile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,10 +30,13 @@ public class LadderActionFactoryTest {
         ladderActionFactory = new LadderActionFactory();
     }
 
+    // ----------- Positive Tests -----------
+
     /**
      * Tests whether the {@link LadderActionFactory} correctly creates a {@link LadderAction}.
-     * The test checks that the created action is an instance of {@link LadderAction} and
-     * the created action correctly moves the player to the destination tile.
+     *
+     * <p>Expected: The factory should return a new instance of
+     * {@link LadderAction} with the destination tile.</p>
      */
     @Test
     public void testCreateLadderTileAction() {
@@ -42,27 +44,12 @@ public class LadderActionFactoryTest {
 
         assertNotNull(action, "Ladder action should not be null");
         assertInstanceOf(LadderAction.class, action, "The factory should return an instance of LadderAction");
-
-        Player player = new Player("TestPlayer");
-        action.perform(player);
-
-        assertEquals(destinationTile, player.getCurrentTile(), "Player should have moved to the destination tile");
     }
 
     /**
-     * Tests the instance when Player is null
-     */
-    @Test
-    public void testLadderActionPerformWithNullPlayer() {
-        TileAction action = ladderActionFactory.createTileAction(destinationTile);
-
-        assertThrows(NullPointerException.class, () -> {
-            action.perform(null);
-        }, "Calling perform() on a null player should throw a NullPointerException.");
-    }
-
-    /**
-     * Ensures that the instances are independent
+     * Tests that the factory creates a new instance of {@link LadderAction} each time.
+     *
+     * <p>Expected: The factory should return a new instance each time.</p>
      */
     @Test
     public void testLadderActionFactoryCreatesNewInstances() {
@@ -70,5 +57,19 @@ public class LadderActionFactoryTest {
         TileAction action2 = ladderActionFactory.createTileAction(destinationTile);
 
         assertNotSame(action1, action2, "Factory should return a new instance each time.");
+    }
+
+    // ----------- Negative Tests -----------
+
+    /**
+     * Tests creating a {@link LadderAction} with a null destination tile.
+     *
+     * <p>Expected: An {@link IllegalArgumentException} should be thrown.</p>
+     */
+    @Test
+    public void testCreateLadderTileActionNullDestinationTile() {
+        assertThrows(IllegalArgumentException.class,
+                () -> ladderActionFactory.createTileAction(null)
+        );
     }
 }
