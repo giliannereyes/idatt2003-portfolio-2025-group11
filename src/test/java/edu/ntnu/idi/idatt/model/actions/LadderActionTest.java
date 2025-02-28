@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Tests cover tile and player initialisation and ladder action.
  *
  * @author Trang Duong
- * @version 0.1
+ * @version 0.2
  * @since 0.1
  */
 public class LadderActionTest {
@@ -35,13 +35,76 @@ public class LadderActionTest {
         player.placeOnTile(startTile);
     }
 
+    // ------ Positive tests ------
+
     /**
      * Tests if ladder action is executed properly and player lands on correct destination tile.
+     *
+     * <p>Expected: Player should be moved to the destination tile of the ladder.</p>
      */
     @Test
     public void testLadderAction() {
         assertEquals(startTile, player.getCurrentTile());
         ladderAction.perform(player);
-        assertEquals(destinationTile, player.getCurrentTile(), "Player should have moved to the destination tile");
+        assertEquals(destinationTile, player.getCurrentTile(),
+                "Player should have moved to the destination tile"
+        );
+    }
+
+    /**
+     * Tests if Player is already on destination tile.
+     *
+     * <p>Expected: Player should stay on the destination tile.</p>
+     */
+    @Test
+    public void testLadderActionWhenPlayerAlreadyOnDestination() {
+        player.placeOnTile(destinationTile);
+        ladderAction.perform(player);
+        assertEquals(destinationTile, player.getCurrentTile(), "Player should stay on the destination tile");
+    }
+
+    /**
+     * Tests LadderAction when player is not placed on any tile.
+     *
+     * <p>Expected: Player should be moved to the destination tile even if not initially placed.</p>
+     */
+    @Test
+    public void testLadderActionWhenPlayerNotPlacedOnAnyTile() {
+        Player newPlayer = new Player("UnplacedPlayer");
+        ladderAction.perform(newPlayer);
+        assertEquals(destinationTile, newPlayer.getCurrentTile(), "Player should be moved to the destination tile even if not initially placed");
+    }
+
+    // ------ Negative tests ------
+
+    /**
+     * Tests performing a ladder action with a null destination tile.
+     *
+     * <p>Expected: IllegalArgumentException should be thrown.</p>
+     */
+    @Test
+    public void testLadderActionWithNullDestinationTile() {
+        assertThrows(IllegalArgumentException.class, () -> new LadderAction(null));
+    }
+    /**
+     * Tests performing a ladder action with a null player.
+     *
+     * <p>Expected: IllegalArgumentException should be thrown.</p>
+     */
+    @Test
+    public void testLadderActionWithNullPlayer() {
+        assertThrows(IllegalArgumentException.class, () -> ladderAction.perform(null));
+    }
+
+    /**
+     * Tests performing a ladder action with a player trying to climb down.
+     *
+     * <p>Expected: IllegalStateException should be thrown.</p>
+     */
+    @Test
+    public void testLadderActionWithPlayerClimbingDown() {
+        Tile higherTile = new Tile(20);
+        player.placeOnTile(higherTile);
+        assertThrows(IllegalStateException.class, () -> ladderAction.perform(player));
     }
 }

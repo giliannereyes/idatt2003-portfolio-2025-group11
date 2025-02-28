@@ -1,6 +1,7 @@
 package edu.ntnu.idi.idatt.model.entities;
 
-import edu.ntnu.idi.idatt.model.actions.TileAction;
+import edu.ntnu.idi.idatt.model.actions.*;
+import edu.ntnu.idi.idatt.utils.Validation;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +13,7 @@ import java.util.Map;
  *
  * @version 0.1
  * @since 0.1
- * @author GIlianne Reyes
+ * @author Gilianne Reyes
  */
 public class Board {
     private final Map<Integer, Tile> tiles;
@@ -29,8 +30,11 @@ public class Board {
      * Adds a tile to the board.
      *
      * @param tile is the tile to add.
+     *
+     * @throws IllegalArgumentException if the tile is null.
      */
     public void addTile(Tile tile) {
+        Validation.validateNonNull(tile, "Tile");
         tiles.put(tile.getTileId(), tile);
     }
 
@@ -46,11 +50,15 @@ public class Board {
     }
 
     /**
-     * Sets up the board with the given number of tiles.
+     * Sets up the board with the given number of tiles and special effects
+     * like ladder, snake, skip-turn and step-back.
      *
      * @param tileCount is the number of tiles to set up.
+     *
+     * @throws IllegalArgumentException if the tile count is not positive.
      */
     public void initializeBoard(int tileCount) {
+        Validation.validatePositiveNum(tileCount, "Tile count");
         Tile previousTile = startTile; // Special entry point tile
         for (int i = 1; i <= tileCount; i++) {
             Tile tile = new Tile(i);
@@ -64,9 +72,21 @@ public class Board {
      * Places a player on the start tile of the board.
      *
      * @param player is the player to place on the start tile.
+     *
+     * @throws IllegalArgumentException if the player is null.
      */
     public void placePlayerOnStartTile(Player player) {
+        Validation.validateNonNull(player, "Player");
         player.placeOnTile(startTile);
+    }
+
+    /**
+     * Retrieves the start tile of the board.
+     *
+     * @return the start tile of the board.
+     */
+    public Tile getStartTile() {
+        return startTile;
     }
 
     /**
@@ -74,9 +94,13 @@ public class Board {
      *
      * @param tileId is the id of the tile to add an action to.
      * @param tileAction is the action to add to the tile.
+     *
+     * @throws IllegalArgumentException if the tile action or tile is null.
      */
     public void addTileAction(int tileId, TileAction tileAction) {
+        Validation.validateNonNull(tileAction, "Tile action");
         Tile tile = getTile(tileId);
+        Validation.validateNonNull(tile, "Tile");
         tile.setLandAction(tileAction);
     }
 }

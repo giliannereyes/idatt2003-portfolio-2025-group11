@@ -1,11 +1,14 @@
 package edu.ntnu.idi.idatt.model.entities;
 
 import edu.ntnu.idi.idatt.model.actions.TileAction;
+import edu.ntnu.idi.idatt.utils.Validation;
+
+import java.util.Optional;
 
 /**
  * Class representing a tile on the board.
  *
- * @version 0.1
+ * @version 0.2
  * @since 0.1
  * @author Gilianne Reyes
  */
@@ -18,8 +21,11 @@ public class Tile {
    * Constructs a Tile instance.
    *
    * @param tileId is the id of the tile.
+   *
+   * @throws IllegalArgumentException if the tile id is negative.
    */
   public Tile(int tileId) {
+    Validation.validateNonNegativeNum(tileId, "Tile id");
     this.tileId = tileId;
   }
 
@@ -27,8 +33,11 @@ public class Tile {
    * Places a player on this tile and performs the action of this tile.
    *
    * @param player is the player that lands on this tile.
+   *
+   * @throws IllegalArgumentException if the player is null.
    */
   public void landPlayer(Player player) {
+    Validation.validateNonNull(player, "Player");
     if (landAction != null) {
       landAction.perform(player);
     }
@@ -41,6 +50,15 @@ public class Tile {
    */
   public void setLandAction(TileAction landAction) {
     this.landAction = landAction;
+  }
+
+  /**
+   * Retrieves the action assigned to this tile.
+   *
+   * @return an {@link Optional} containing the action assigned to this tile.
+   */
+  public Optional<TileAction> getLandAction() {
+    return Optional.ofNullable(landAction);
   }
 
   /**
@@ -71,19 +89,11 @@ public class Tile {
   }
 
   /**
-   * Gets the next tile of this tile.
+   * Retrieves the next tile of this tile.
    *
-   * @return the next tile of this tile.
+   * @return an {@link Optional} containing the next tile.
    */
-  public Tile getNextTile() {
-    return nextTile;
-  }
-
-  /**
-   * Called when a player leaves this tile.
-   *
-   * @param player is the player that leaves this tile.
-   */
-  public void leavePlayer(Player player) {
+  public Optional<Tile> getNextTile() {
+    return Optional.ofNullable(nextTile);
   }
 }
