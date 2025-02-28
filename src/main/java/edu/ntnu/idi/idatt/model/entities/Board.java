@@ -81,6 +81,15 @@ public class Board {
     }
 
     /**
+     * Retrieves the start tile of the board.
+     *
+     * @return the start tile of the board.
+     */
+    public Tile getStartTile() {
+        return startTile;
+    }
+
+    /**
      * Adds an action to a specific tile.
      *
      * @param tileId is the id of the tile to add an action to.
