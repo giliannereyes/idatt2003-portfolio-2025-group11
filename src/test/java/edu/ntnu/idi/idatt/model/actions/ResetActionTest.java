@@ -47,6 +47,7 @@ public class ResetActionTest {
     public void testValidReturnToStart() {
         assertEquals(normalTile, player.getCurrentTile());
         player.placeOnTile(tileWithAction);
+        tileWithAction.landPlayer(player);
         assertEquals(startTile, player.getCurrentTile());
     }
 

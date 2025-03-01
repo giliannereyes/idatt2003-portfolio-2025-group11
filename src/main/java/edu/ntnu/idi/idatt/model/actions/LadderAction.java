@@ -43,7 +43,5 @@ public class LadderAction implements TileAction {
             throw new IllegalStateException("Player should not be able to climb down a ladder.");
         }
         player.placeOnTile(destinationTile);
-        // Testing purposes
-        System.out.println("Player" + player.getName() + " climbed to " + destinationTile);
     }
 }
