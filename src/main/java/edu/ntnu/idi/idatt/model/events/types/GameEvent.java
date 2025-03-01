@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt.model.events;
+package edu.ntnu.idi.idatt.model.events.types;
 
 /**
  * Interface for game events.

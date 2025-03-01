@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt.model.events;
+package edu.ntnu.idi.idatt.model.events.types;
 
 import edu.ntnu.idi.idatt.model.entities.Player;
 import edu.ntnu.idi.idatt.model.entities.Tile;
