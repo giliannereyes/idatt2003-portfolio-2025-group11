@@ -3,8 +3,7 @@ package edu.ntnu.idi.idatt.model.game;
 import edu.ntnu.idi.idatt.model.entities.Board;
 import edu.ntnu.idi.idatt.model.entities.Dice;
 import edu.ntnu.idi.idatt.model.entities.Player;
-import edu.ntnu.idi.idatt.model.events.GameEvent;
-import edu.ntnu.idi.idatt.model.events.GameEventListener;
+import edu.ntnu.idi.idatt.model.events.bus.EventBus;
 import edu.ntnu.idi.idatt.utils.Validation;
 
 import java.util.*;
@@ -23,7 +22,7 @@ public abstract class BoardGame {
     protected Dice dice;
     protected Player winner;
     protected int currentPlayerIndex = 0;
-    private final Map<Class<? extends GameEvent>, List<GameEventListener>> eventListeners;
+    protected EventBus eventBus;
 
     /**
      * Constructs a BoardGame instance.
@@ -31,17 +30,19 @@ public abstract class BoardGame {
      * @param board is the board of the game.
      * @param players is the list of players in the game.
      * @param dice is the dice used in the game.
+     * @param eventBus is the event bus used in the game.
      *
      * @throws IllegalArgumentException if any of the parameters is null.
      */
-    public BoardGame(Board board, List<Player> players, Dice dice) {
+    public BoardGame(Board board, List<Player> players, Dice dice, EventBus eventBus) {
         Validation.validateNonNull(board, "Board");
         Validation.validateNonNull(players, "Players");
         Validation.validateNonNull(dice, "Dice");
+        Validation.validateNonNull(eventBus, "Event bus");
         this.board = board;
         this.players = players;
         this.dice = dice;
-        eventListeners = new HashMap<>();
+        this.eventBus = eventBus;
     }
 
     /**
@@ -57,62 +58,19 @@ public abstract class BoardGame {
      * Implements the main game loop. Iterates turns until the game is over.
      */
     public void playGame() {
-        while (!isGameOver()) {
+        boolean gameRunning = true;
+        while (gameRunning) {
             for (Player player : players) {
-                playTurn(player);
-                if (isGameOver()) {
-                    winner = player;
+                if (gameRunning) {
+                    if (player.willSkipTurn()) {
+                        player.setSkipTurn(false);
+                    } else {
+                        playTurn(player);
+                    }
+                    if (isGameOver()) {
+                        gameRunning = false;
+                    }
                 }
-            }
-        }
-    }
-
-    /**
-     * Registers a listener for a specific event type.
-     *
-     * @param eventType is the type of event to trigger.
-     * @param listener is the listener to register.
-     * @param <T> is the type of event.
-     *
-     * @throws IllegalArgumentException if any of the parameters is null.
-     */
-    public <T extends GameEvent> void addEventListener(Class<T> eventType, GameEventListener listener) {
-        Validation.validateNonNull(eventType, "Event type");
-        Validation.validateNonNull(listener, "Listener");
-        eventListeners.computeIfAbsent(eventType, k -> new ArrayList<>()).add(listener);
-    }
-
-    /**
-     * Unregisters a listener for a specific event type.
-     *
-     * @param eventType is the type of event of the listener to unregister.
-     * @param listener is the listener to unregister.
-     * @param <T> is the type of event.
-     *
-     * @throws IllegalArgumentException if any of the parameters is null.
-     */
-    public <T extends GameEvent> void removeEventListener(Class<T> eventType, GameEventListener listener) {
-        Validation.validateNonNull(eventType, "Event type");
-        Validation.validateNonNull(listener, "Listener");
-        eventListeners.get(eventType).remove(listener);
-        if (eventListeners.get(eventType).isEmpty()) {
-            eventListeners.remove(eventType);
-        }
-    }
-
-    /**
-     * Notifies all listeners registered for a specific event type.
-     *
-     * @param event is the event to notify listeners of.
-     *
-     * @throws IllegalArgumentException if the event is null.
-     */
-    protected void notifyListeners(GameEvent event) {
-        Validation.validateNonNull(event, "Event");
-        List<GameEventListener> listeners = eventListeners.get(event.getClass());
-        if (listeners != null) {
-            for (GameEventListener listener : listeners) {
-                listener.handleGameEvent(event);
             }
         }
     }
@@ -141,17 +99,17 @@ public abstract class BoardGame {
      *
      * @return the winner of the game.
      */
-    protected Player getWinner() {
+    public Player getWinner() {
         return winner;
     }
 
     /**
-     * Retrieves the event listeners.
+     * Retrieves the event bus of the game.
      *
-     * @return the event listeners.
+     * @return the event bus of the game.
      */
-    protected Map<Class<? extends GameEvent>, List<GameEventListener>> getEventListeners() {
-        return Collections.unmodifiableMap(eventListeners);
+    protected EventBus getEventBus() {
+        return eventBus;
     }
 
     /**

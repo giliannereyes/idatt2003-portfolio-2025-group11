@@ -4,9 +4,10 @@ import edu.ntnu.idi.idatt.model.entities.Board;
 import edu.ntnu.idi.idatt.model.entities.Dice;
 import edu.ntnu.idi.idatt.model.entities.Player;
 import edu.ntnu.idi.idatt.model.entities.Tile;
-import edu.ntnu.idi.idatt.model.events.DiceRolledEvent;
-import edu.ntnu.idi.idatt.model.events.PlayerMovedEvent;
-import edu.ntnu.idi.idatt.model.events.TileActionEvent;
+import edu.ntnu.idi.idatt.model.events.types.DiceRolledEvent;
+import edu.ntnu.idi.idatt.model.events.bus.EventBus;
+import edu.ntnu.idi.idatt.model.events.types.PlayerMovedEvent;
+import edu.ntnu.idi.idatt.model.events.types.TileActionEvent;
 
 import java.util.List;
 
@@ -21,8 +22,8 @@ public class SnakesAndLadders extends BoardGame {
     /**
      * Constructs a SnakesAndLadders instance.
      */
-    public SnakesAndLadders(Board board, List<Player> players, Dice dice) {
-        super(board, players, dice);
+    public SnakesAndLadders(Board board, List<Player> players, Dice dice, EventBus eventBus) {
+        super(board, players, dice, eventBus);
     }
 
     /**
@@ -34,12 +35,15 @@ public class SnakesAndLadders extends BoardGame {
     @Override
     protected void playTurn(Player player) {
         int diceRoll = dice.roll();
-        notifyListeners(new DiceRolledEvent(player, diceRoll));
+        publishDiceRoll(player, diceRoll);
         Tile fromTile= player.getCurrentTile();
         player.move(diceRoll);
-        Tile destinationTile = player.getCurrentTile();
-        notifyListeners(new PlayerMovedEvent(player, fromTile.getTileId(), destinationTile.getTileId()));
-        notifyListeners(new TileActionEvent(player, destinationTile));
+        Tile firstDestinationTile = player.getCurrentTile();
+        publishPlayerMoved(player, fromTile.getTileId(), firstDestinationTile.getTileId());
+        firstDestinationTile.landPlayer(player);
+        publishTileAction(player, firstDestinationTile);
+        Tile postActionDestination = player.getCurrentTile();
+        publishPlayerMoved(player, firstDestinationTile.getTileId(), postActionDestination.getTileId());
     }
 
     /**
@@ -56,5 +60,40 @@ public class SnakesAndLadders extends BoardGame {
             }
         }
         return false;
+    }
+
+    /**
+     * Publishes a DiceRolledEvent to the event bus.
+     *
+     * @param player is the player that rolled the dice.
+     * @param diceRoll is the result of the dice roll.
+     */
+    private void publishDiceRoll(Player player, int diceRoll) {
+        eventBus.publish(new DiceRolledEvent(player, diceRoll));
+    }
+
+    /**
+     * Publishes a PlayerMovedEvent to the event bus.
+     *
+     * @param player is the player that moved.
+     * @param fromTileId is the id of the tile the player moved from.
+     * @param destinationTileId is the id of the tile the player moved to.
+     */
+    private void publishPlayerMoved(Player player, int fromTileId, int destinationTileId) {
+        if (fromTileId != destinationTileId) {
+            eventBus.publish(new PlayerMovedEvent(player, fromTileId, destinationTileId));
+        }
+    }
+
+    /**
+     * Publishes a TileActionEvent to the event bus.
+     *
+     * @param player is the player that landed on the tile.
+     * @param destinationTile is the tile the player landed on.
+     */
+    private void publishTileAction(Player player, Tile destinationTile) {
+        if (destinationTile.getLandAction().isPresent()) {
+            eventBus.publish(new TileActionEvent(player, destinationTile));
+        }
     }
 }

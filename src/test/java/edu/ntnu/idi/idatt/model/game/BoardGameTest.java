@@ -3,8 +3,8 @@ package edu.ntnu.idi.idatt.model.game;
 import edu.ntnu.idi.idatt.model.entities.Board;
 import edu.ntnu.idi.idatt.model.entities.Dice;
 import edu.ntnu.idi.idatt.model.entities.Player;
-import edu.ntnu.idi.idatt.model.events.GameEvent;
-import edu.ntnu.idi.idatt.model.events.GameEventListener;
+import edu.ntnu.idi.idatt.model.events.bus.DefaultEventBus;
+import edu.ntnu.idi.idatt.model.events.bus.EventBus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,7 +26,7 @@ public class BoardGameTest {
     private List<Player> players;
     private Dice dice;
     private BoardGame game;
-    private GameEventListener listener;
+    private EventBus eventBus;
 
     /**
      * Set up a new game with a board, players and dice before each test.
@@ -37,7 +37,8 @@ public class BoardGameTest {
         board.initializeBoard(90);
         dice = new Dice(2);
         players = Arrays.asList(new Player("A"), new Player("B"), new Player("C"));
-        game = new BoardGame(board, players, dice) {
+        eventBus = new DefaultEventBus();
+        game = new BoardGame(board, players, dice, eventBus) {
             @Override
             protected void playTurn(Player player) {
             }
@@ -47,7 +48,6 @@ public class BoardGameTest {
                 return false;
             }
         };
-        listener = event -> {};
     }
 
     // ---------- Positive tests ----------
@@ -96,44 +96,13 @@ public class BoardGameTest {
     }
 
     /**
-     * Test that the game adds an event listener correctly.
+     * Test that the game returns the event bus correctly.
      *
-     * <p>Expected outcome: The event listener is added to the game.</p>
+     * <p>Expected outcome: The event bus is the same as the one used in the constructor.</p>
      */
     @Test
-    public void testAddEventListener() {
-        game.addEventListener(GameEvent.class, listener);
-        assertTrue(game.getEventListeners().containsKey(GameEvent.class));
-    }
-
-    /**
-     * Test that the game removes an event listener correctly where there are multiple listeners.
-     *
-     * <p>Expected outcome: The event listener is removed from the game.</p>
-     */
-    @Test
-    public void testRemoveEventListener() {
-        GameEventListener listener2 = event -> {};
-        game.addEventListener(GameEvent.class, listener);
-        game.addEventListener(GameEvent.class, listener2);
-        assertEquals(2, game.getEventListeners().get(GameEvent.class).size());
-        game.removeEventListener(GameEvent.class, listener);
-        assertTrue(game.getEventListeners().containsKey(GameEvent.class));
-        assertEquals(1, game.getEventListeners().get(GameEvent.class).size());
-    }
-
-    /**
-     * Test that the game removes the last event listener for a specific event
-     * type correctly.
-     *
-     * <p>Expected outcome: The event listener is removed from the game
-     * and the event type is removed from the event listeners map.</p>
-     */
-    @Test
-    public void testRemoveLastEventListener() {
-        game.addEventListener(GameEvent.class, listener);
-        game.removeEventListener(GameEvent.class, listener);
-        assertFalse(game.getEventListeners().containsKey(GameEvent.class));
+    public void testGetEventBus() {
+        assertEquals(eventBus, game.getEventBus(), "Event bus should be the same as the one used to create the game.");
     }
 
     // ---------- Negative tests ----------
@@ -145,7 +114,7 @@ public class BoardGameTest {
      */
     @Test
     public void testConstructorWithNullBoard() {
-        assertThrows(IllegalArgumentException.class, () -> new BoardGame(null, players, dice) {
+        assertThrows(IllegalArgumentException.class, () -> new BoardGame(null, players, dice, eventBus) {
             @Override
             protected void playTurn(Player player) {
             }
@@ -164,7 +133,7 @@ public class BoardGameTest {
      */
     @Test
     public void testConstructorWithNullPlayers() {
-        assertThrows(IllegalArgumentException.class, () -> new BoardGame(board, null, dice) {
+        assertThrows(IllegalArgumentException.class, () -> new BoardGame(board, null, dice, eventBus) {
             @Override
             protected void playTurn(Player player) {
             }
@@ -183,7 +152,7 @@ public class BoardGameTest {
      */
     @Test
     public void testConstructorWithNullDice() {
-        assertThrows(IllegalArgumentException.class, () -> new BoardGame(board, players, null) {
+        assertThrows(IllegalArgumentException.class, () -> new BoardGame(board, players, null, eventBus) {
             @Override
             protected void playTurn(Player player) {
             }
@@ -196,32 +165,21 @@ public class BoardGameTest {
     }
 
     /**
-     * Tests adding a null event listener.
+     * Test that the constructor throws an IllegalArgumentException when the event bus is null.
      *
      * <p>Expected outcome: IllegalArgumentException is thrown.</p>
      */
     @Test
-    public void testAddNullEventListener() {
-        assertThrows(IllegalArgumentException.class, () -> game.addEventListener(null, listener));
-    }
+    public void testConstructorWithNullEventBus() {
+        assertThrows(IllegalArgumentException.class, () -> new BoardGame(board, players, dice, null) {
+            @Override
+            protected void playTurn(Player player) {
+            }
 
-    /**
-     * Tests removing a null event listener.
-     *
-     * <p>Expected outcome: IllegalArgumentException is thrown.</p>
-     */
-    @Test
-    public void testRemoveNullEventListener() {
-        assertThrows(IllegalArgumentException.class, () -> game.removeEventListener(null, listener));
-    }
-
-    /**
-     * Tests notifying listeners with a null event.
-     *
-     * <p>Expected outcome: IllegalArgumentException is thrown.</p>
-     */
-    @Test
-    public void testNotifyListenersWithNullEvent() {
-        assertThrows(IllegalArgumentException.class, () -> game.notifyListeners(null));
+            @Override
+            protected boolean isGameOver() {
+                return false;
+            }
+        });
     }
 }
