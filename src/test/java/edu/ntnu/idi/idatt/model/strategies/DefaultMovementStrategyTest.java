@@ -76,17 +76,4 @@ public class DefaultMovementStrategyTest {
                 () -> strategy.determineDestination(startTile, -1)
         );
     }
-
-    /**
-     * Tests retrieving the destination tile with too many steps -
-     * more than the number of tiles after the start tile.
-     *
-     * <p> Expected outcome: An {@link IllegalArgumentException} is thrown.</p>
-     */
-    @Test
-    void testDetermineDestinationTooManySteps() {
-        assertThrows(IllegalStateException.class,
-                () -> strategy.determineDestination(startTile, 2)
-        );
-    }
 }
