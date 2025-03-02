@@ -42,7 +42,5 @@ public class SnakeAction implements TileAction {
             throw new IllegalStateException("Player should not be able to climb up a snake.");
         }
         player.placeOnTile(destinationTile);
-        // Testing purposes
-        System.out.println("Player" + player.getName() + " climbed down " + destinationTile);
     }
 }

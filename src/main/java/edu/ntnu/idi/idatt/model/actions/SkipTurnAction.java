@@ -29,7 +29,5 @@
         public void perform(Player player) {
             Validation.validateNonNull(player, "Player");
             player.setSkipTurn(true);
-            // Testing purposes
-            System.out.println("Player " + player.getName() + " will skip their next turn!");
         }
     }

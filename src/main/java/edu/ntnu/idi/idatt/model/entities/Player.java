@@ -86,7 +86,6 @@ public class Player {
             startTile = tile;
         }
         currentTile = tile;
-        tile.landPlayer(this);
     }
 
     /**

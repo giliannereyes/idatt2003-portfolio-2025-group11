@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt.model.events;
+package edu.ntnu.idi.idatt.model.events.types;
 
 import edu.ntnu.idi.idatt.model.entities.Player;
 
@@ -9,7 +9,7 @@ import edu.ntnu.idi.idatt.model.entities.Player;
  * @since 0.1
  * @author Gilianne Reyes
  */
-public class DiceRolledEvent implements GameEvent{
+public class DiceRolledEvent implements GameEvent {
     private final Player player;
     private final int roll;
 

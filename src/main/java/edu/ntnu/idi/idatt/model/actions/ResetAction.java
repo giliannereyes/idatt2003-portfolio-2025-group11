@@ -23,7 +23,5 @@ public class ResetAction implements TileAction {
         Validation.validateNonNull(player, "Player");
         Tile startTile = player.getStartTile();
         player.placeOnTile(startTile);
-        // Testing purposes
-        System.out.println("Player " + player.getName() + " returned to start");
     }
 }

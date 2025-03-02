@@ -3,6 +3,8 @@ package edu.ntnu.idi.idatt.model.strategies;
 import edu.ntnu.idi.idatt.model.entities.Tile;
 import edu.ntnu.idi.idatt.utils.Validation;
 
+import java.util.Optional;
+
 /**
  * A class that determines the target tile based on default movement.
  * Default movement is moving a certain number of steps forward.
@@ -32,8 +34,12 @@ public class DefaultMovementStrategy implements MovementStrategy {
     }
     Tile currentTile = startTile;
     for (int i = 0; i < steps; i++) {
-      currentTile = currentTile.getNextTile()
-              .orElseThrow(() -> new IllegalStateException("Next tile is not present."));
+      // Stop at the last tile if no further tiles are available
+      Optional<Tile> nextTile = currentTile.getNextTile();
+      if (nextTile.isEmpty()) {
+        return currentTile;  // Return the last available tile
+      }
+      currentTile = nextTile.get();
     }
     return currentTile;
   }
