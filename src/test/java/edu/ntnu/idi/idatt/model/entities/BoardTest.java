@@ -5,6 +5,8 @@ import edu.ntnu.idi.idatt.model.actions.TileAction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -70,8 +72,9 @@ public class BoardTest {
      */
     @Test
     void testPlacePlayerOnStartTile() {
+        board.initializeBoard(5);
         board.placePlayerOnStartTile(player);
-        assertEquals(0, player.getCurrentTile().getTileId(),
+        assertEquals(1, player.getCurrentTile().getTileId(),
                 "Player should be placed on the start tile 0"
         );
     }
@@ -93,6 +96,21 @@ public class BoardTest {
         assertEquals(expectedAction, actualAction,
                 "Tile action should be the same as the added action"
         );
+    }
+
+    /**
+     * Tests if the board name and description can be changed.
+     *
+     * <p>Expected: The name and description of the board should be changed.</p>
+     */
+    @Test
+    void testSetNewNameAndDescription() {
+        assertEquals("Unnamed Board", board.getName());
+        assertEquals("No description available.", board.getDescription());
+        board.setName("Test Board");
+        board.setDescription("Test Description");
+        assertEquals("Test Board", board.getName());
+        assertEquals("Test Description", board.getDescription());
     }
 
     // ------- Negative tests -------
@@ -160,5 +178,18 @@ public class BoardTest {
         assertThrows(IllegalArgumentException.class,
                 () -> board.addTileAction(1, new LadderAction(board.getTile(3)))
         );
+    }
+
+    /**
+     * Tests if the tiles of the board can be modified outside its methods.
+     *
+     * <p>Expected: An {@link UnsupportedOperationException} should be thrown.</p>
+     */
+    @Test
+    void testModifyBoardTiles() {
+        board.initializeBoard(5);
+        Map<Integer, Tile> tiles = board.getTiles();
+        assertThrows(UnsupportedOperationException.class ,
+                () -> tiles.put(1, new Tile(1)));
     }
 }

@@ -13,6 +13,8 @@ import edu.ntnu.idi.idatt.utils.Validation;
  * @author Gilianne Reyes
  */
 public class ResetAction implements TileAction {
+    public static final String actionType = "ResetAction";
+
     /**
      * Moves the player to the start tile.
      *
@@ -23,5 +25,15 @@ public class ResetAction implements TileAction {
         Validation.validateNonNull(player, "Player");
         Tile startTile = player.getStartTile();
         player.placeOnTile(startTile);
+    }
+
+    /**
+     * Retrieves the type of the action, which is "ResetAction".
+     *
+     * @return the type of the action.
+     */
+    @Override
+    public String getActionType() {
+        return actionType;
     }
 }

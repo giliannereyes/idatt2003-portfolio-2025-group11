@@ -13,6 +13,8 @@
      * @author Gilianne Reyes
      */
     public class SkipTurnAction implements TileAction {
+        public static final String actionType = "SkipTurnAction";
+
         /**
          * Constructs a SkipTurnAction instance.
          */
@@ -29,5 +31,15 @@
         public void perform(Player player) {
             Validation.validateNonNull(player, "Player");
             player.setSkipTurn(true);
+        }
+
+        /**
+         * Retrieves the type of the action, which is "SkipTurnAction".
+         *
+         * @return the type of the action.
+         */
+        @Override
+        public String getActionType() {
+            return actionType;
         }
     }
