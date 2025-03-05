@@ -1,5 +1,6 @@
 package edu.ntnu.idi.idatt.model.entities;
 
+import edu.ntnu.idi.idatt.model.actions.LadderAction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.Optional;
@@ -64,9 +65,9 @@ public class TileTest {
     @Test
     void landPlayerWithAction() {
         Tile tile2 = new Tile(2);
-        tile.setLandAction(player -> player.placeOnTile(tile2));
+        tile.setLandAction(new LadderAction(tile2));
         tile.landPlayer(player);
-        assertEquals(tile2,player.getCurrentTile());
+        assertEquals(tile2, player.getCurrentTile());
     }
 
     /**
