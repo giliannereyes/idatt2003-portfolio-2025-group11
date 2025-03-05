@@ -56,4 +56,15 @@ public class SkipTurnActionFactoryTest {
         TileAction action2 = skipTurnActionFactory.createTileAction();
         assertNotSame(action1, action2, "Factory should return a new instance each time.");
     }
+
+    /**
+     * Tests that the factory returns the correct action type.
+     *
+     * <p>Expected: The factory should return the action type
+     * of the {@link SkipTurnAction}.</p>
+     */
+    @Test
+    public void testGetActionType() {
+        assertEquals(SkipTurnAction.actionType, skipTurnActionFactory.getActionType());
+    }
 }

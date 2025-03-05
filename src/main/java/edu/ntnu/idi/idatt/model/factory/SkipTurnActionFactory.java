@@ -20,4 +20,14 @@ public class SkipTurnActionFactory implements NoDestinationTileActionFactory {
     public TileAction createTileAction() {
         return new SkipTurnAction();
     }
+
+    /**
+     * Retrieves the type of the action.
+     *
+     * @return the type of the action.
+     */
+    @Override
+    public String getActionType() {
+        return SkipTurnAction.actionType;
+    }
 }

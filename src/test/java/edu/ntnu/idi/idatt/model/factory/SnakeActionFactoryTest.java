@@ -57,6 +57,17 @@ public class SnakeActionFactoryTest {
         assertNotSame(action1, action2, "Factory should return a new instance each time.");
     }
 
+    /**
+     * Tests that the factory returns the correct action type.
+     *
+     * <p>Expected: The factory should return the action type
+     * of the {@link SnakeAction}.</p>
+     */
+    @Test
+    public void testGetActionType() {
+        assertEquals(SnakeAction.actionType, snakeActionFactory.getActionType());
+    }
+
     // -------------- Negative tests --------------
 
     /**

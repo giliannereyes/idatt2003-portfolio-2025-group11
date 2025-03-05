@@ -16,4 +16,11 @@ public interface NoDestinationTileActionFactory {
      * @return an instance of the tile action.
      */
     TileAction createTileAction();
+
+    /**
+     * Retrieves the type of the action.
+     *
+     * @return the type of the action.
+     */
+    String getActionType();
 }
