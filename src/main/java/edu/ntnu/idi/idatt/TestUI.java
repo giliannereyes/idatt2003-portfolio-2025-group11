@@ -1,5 +1,9 @@
 package edu.ntnu.idi.idatt;
 
+import edu.ntnu.idi.idatt.io.BoardFileReader;
+import edu.ntnu.idi.idatt.io.BoardFileReaderGson;
+import edu.ntnu.idi.idatt.io.BoardFileWriter;
+import edu.ntnu.idi.idatt.io.BoardFileWriterGson;
 import edu.ntnu.idi.idatt.model.actions.LadderAction;
 import edu.ntnu.idi.idatt.model.actions.ResetAction;
 import edu.ntnu.idi.idatt.model.actions.SkipTurnAction;
@@ -14,8 +18,10 @@ import edu.ntnu.idi.idatt.model.events.handlers.TileActionHandler;
 import edu.ntnu.idi.idatt.model.events.types.DiceRolledEvent;
 import edu.ntnu.idi.idatt.model.events.types.PlayerMovedEvent;
 import edu.ntnu.idi.idatt.model.events.types.TileActionEvent;
+import edu.ntnu.idi.idatt.model.factory.*;
 import edu.ntnu.idi.idatt.model.game.SnakesAndLadders;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -41,9 +47,11 @@ public class TestUI {
 
     private static void setupGame() {
         System.out.println("Setting up Snakes and Ladders...");
-        Board board = new Board();
         Dice dice = new Dice(1);
         List<Player> players = new ArrayList<>();
+
+        // Creates board that will be converted to JSON
+        Board board = new Board();
 
         // Create event bus and register handlers
         DefaultEventBus eventBus = new DefaultEventBus();
@@ -61,8 +69,9 @@ public class TestUI {
             players.add(new Player(name));
         }
 
-        // Ladders
         board.initializeBoard(50);
+
+        // Ladders
         board.addTileAction(3, new LadderAction(board.getTile(8)));
         board.addTileAction(15, new LadderAction(board.getTile(25)));
         // Snakes
@@ -75,7 +84,36 @@ public class TestUI {
         board.addTileAction(30, new ResetAction());
         board.addTileAction(40, new ResetAction());
 
-        // Initialize game
-        game = new SnakesAndLadders(board, players, dice, eventBus);
+        // Add factories to registry
+        TileActionFactoryRegistry registry = new TileActionFactoryRegistry();
+        registry.registerDestinationFactory(new LadderActionFactory());
+        registry.registerNoDestinationFactory(new SkipTurnActionFactory());
+        registry.registerNoDestinationFactory(new ResetActionFactory());
+        registry.registerDestinationFactory(new SnakeActionFactory());
+
+        // Path to the file
+        Path path = Path.of("src/main/resources/testboard.json");
+
+        // Writes the board to a file (already done)
+        /*
+        BoardFileWriter writer = new BoardFileWriterGson();
+        try {
+            writer.writeBoard(path, board);
+            System.out.println("Board written to file successfully");
+        } catch (Exception e) {
+            System.err.println("Error writing board to file");
+        }
+        */
+
+        // Reads the board from the file (previously written)
+        BoardFileReader reader = new BoardFileReaderGson(registry);
+        try {
+            Board readBoard = reader.readBoard(path);
+            System.out.println("Board read from file successfully");
+            // Initializes a new game with the board from the file
+            game = new SnakesAndLadders(readBoard, players, dice, eventBus);
+        } catch (Exception e) {
+            System.err.println("Error reading board from file");
+        }
     }
 }
