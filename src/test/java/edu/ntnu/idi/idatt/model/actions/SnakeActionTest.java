@@ -70,6 +70,29 @@ public class SnakeActionTest {
         assertEquals(destinationTile, newPlayer.getCurrentTile(), "Player should be moved to the destination tile even if not initially placed");
     }
 
+    /**
+     * Test getting the action type of the snake action.
+     *
+     * <p>Expected: The action type retrieved should be alike
+     * to the static actionType of the snake action.</p>
+     */
+    @Test
+    public void testGetActionType() {
+        assertEquals(SnakeAction.actionType, snakeAction.getActionType());
+    }
+
+    /**
+     * Test getting the destination tile of the ladder action.
+     *
+     * <p>Expected: The destination tile retrieved should be the same as
+     * the destination tile of the ladder action.</p>
+     */
+    @Test
+    public void testGetDestinationTile() {
+        assertTrue(snakeAction.getDestinationTile().isPresent());
+        assertEquals(destinationTile, snakeAction.getDestinationTile().get());
+    }
+
     // ------------- Negative tests -------------
 
     /**

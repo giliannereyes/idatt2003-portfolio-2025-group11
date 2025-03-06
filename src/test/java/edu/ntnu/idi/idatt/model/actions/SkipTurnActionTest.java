@@ -44,6 +44,28 @@ public class SkipTurnActionTest {
         assertTrue(player.willSkipTurn());
     }
 
+    /**
+     * Test getting the action type of the skip turn action.
+     *
+     * <p>Expected: The action type retrieved should be alike
+     * to the static actionType of the skip turn action.</p>
+     */
+    @Test
+    public void testGetActionType() {
+        assertEquals(SkipTurnAction.actionType, skipTurnAction.getActionType());
+    }
+
+    /**
+     * Test getting the destination tile of the skip turn action.
+     *
+     * <p>Expected: The destination tile should be empty as skipping
+     * turns require no destination tile.</p>
+     */
+    @Test
+    public void testGetDestinationTile() {
+        assertTrue(skipTurnAction.getDestinationTile().isEmpty());
+    }
+
     // ------- Negative tests -------
 
     /**

@@ -4,6 +4,8 @@ import edu.ntnu.idi.idatt.model.entities.Player;
 import edu.ntnu.idi.idatt.model.entities.Tile;
 import edu.ntnu.idi.idatt.utils.Validation;
 
+import java.util.Optional;
+
 /**
  * LadderAction class is a class that represents the action of a ladder tile.
  * A ladder tile moves the player to a higher tile.
@@ -13,6 +15,7 @@ import edu.ntnu.idi.idatt.utils.Validation;
  * @author Gilianne Reyes
  */
 public class LadderAction implements TileAction {
+    public static final String actionType = "LadderAction";
     private final Tile destinationTile;
 
     /**
@@ -43,5 +46,24 @@ public class LadderAction implements TileAction {
             throw new IllegalStateException("Player should not be able to climb down a ladder.");
         }
         player.placeOnTile(destinationTile);
+    }
+
+    /**
+     * Retrieves the type of the action.
+     *
+     * @return the type of the action.
+     */
+    public String getActionType() {
+        return actionType;
+    }
+
+    /**
+     * Retrieves the destination tile of the action.
+     *
+     * @return an {@link Optional} containing the destination tile.
+     */
+    @Override
+    public Optional<Tile> getDestinationTile() {
+        return Optional.of(destinationTile);
     }
 }

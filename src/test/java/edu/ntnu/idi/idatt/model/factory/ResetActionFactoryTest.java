@@ -8,21 +8,21 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests the RestartActionFactory class.
+ * Tests the ResetActionFactory class.
  *
  * @version 0.1
  * @since 0.1
  * @author Gilianne Reyes
  */
-public class RestartActionFactoryTest {
-    RestartActionFactory restartActionFactory;
+public class ResetActionFactoryTest {
+    ResetActionFactory resetActionFactory;
 
     /**
-     * Sets up the RestartActionFactory before each test.
+     * Sets up the ResetActionFactory before each test.
      */
     @BeforeEach
     public void setUp() {
-        restartActionFactory = new RestartActionFactory();
+        resetActionFactory = new ResetActionFactory();
     }
 
     // ------- Positive tests -------
@@ -34,9 +34,20 @@ public class RestartActionFactoryTest {
      */
     @Test
     public void testCreateResetAction() {
-        TileAction action = restartActionFactory.createTileAction();
+        TileAction action = resetActionFactory.createTileAction();
         assertNotNull(action, "Reset action should not be null");
         assertInstanceOf(ResetAction.class, action, "The factory should return an instance of ResetAction");
+    }
+
+    /**
+     * Tests that the factory returns the correct action type.
+     *
+     * <p>Expected: The factory should return the action type
+     * of the {@link ResetAction}.</p>
+     */
+    @Test
+    public void testGetActionType() {
+        assertEquals(ResetAction.actionType, resetActionFactory.getActionType());
     }
 
     /**
@@ -46,8 +57,8 @@ public class RestartActionFactoryTest {
      */
     @Test
     public void testRestartActionFactoryCreatesNewInstances() {
-        TileAction action1 = restartActionFactory.createTileAction();
-        TileAction action2 = restartActionFactory.createTileAction();
+        TileAction action1 = resetActionFactory.createTileAction();
+        TileAction action2 = resetActionFactory.createTileAction();
         assertInstanceOf(ResetAction.class, action1, "The factory should return an instance of ResetAction");
         assertInstanceOf(ResetAction.class, action2, "The factory should return an instance of ResetAction");
         assertNotSame(action1, action2, "Factory should return a new instance each time.");

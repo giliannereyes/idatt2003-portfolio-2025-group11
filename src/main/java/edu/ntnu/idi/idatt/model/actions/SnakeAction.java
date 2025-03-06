@@ -4,6 +4,8 @@ import edu.ntnu.idi.idatt.model.entities.Player;
 import edu.ntnu.idi.idatt.model.entities.Tile;
 import edu.ntnu.idi.idatt.utils.Validation;
 
+import java.util.Optional;
+
 /**
  * SnakeAction class is a class that represents the action of a snake tile.
  *
@@ -12,6 +14,7 @@ import edu.ntnu.idi.idatt.utils.Validation;
  * @author Gilianne Reyes
  */
 public class SnakeAction implements TileAction {
+    public static final String actionType = "SnakeAction";
     private final Tile destinationTile;
 
     /**
@@ -42,5 +45,23 @@ public class SnakeAction implements TileAction {
             throw new IllegalStateException("Player should not be able to climb up a snake.");
         }
         player.placeOnTile(destinationTile);
+    }
+
+    /**
+     * Retrieves the type of the action, which is "SnakeAction".
+     *
+     * @return the type of the action.
+     */
+    public String getActionType() {
+        return actionType;
+    }
+
+    /**
+     * Retrieves the destination tile of the action.
+     *
+     * @return an {@link Optional} containing the destination tile.
+     */
+    public Optional<Tile> getDestinationTile() {
+        return Optional.of(destinationTile);
     }
 }

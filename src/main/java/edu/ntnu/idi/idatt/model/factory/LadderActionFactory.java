@@ -27,4 +27,14 @@ public class LadderActionFactory implements DestinationTileActionFactory {
         Validation.validateNonNull(destinationTile, "Destination tile");
         return new LadderAction(destinationTile);
     }
+
+    /**
+     * Retrieves the type of the action.
+     *
+     * @return the type of the action.
+     */
+    @Override
+    public String getActionType() {
+        return LadderAction.actionType;
+    }
 }
