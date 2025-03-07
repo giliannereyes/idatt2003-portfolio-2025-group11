@@ -1,14 +1,13 @@
 package edu.ntnu.idi.idatt.io;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import edu.ntnu.idi.idatt.exceptions.BoardParsingException;
 import edu.ntnu.idi.idatt.model.entities.Board;
 import edu.ntnu.idi.idatt.model.entities.Tile;
 import edu.ntnu.idi.idatt.model.factory.TileActionFactoryRegistry;
 import edu.ntnu.idi.idatt.utils.Validation;
+
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.StreamSupport;
@@ -16,7 +15,7 @@ import java.util.stream.StreamSupport;
 /**
  * A GSON-based file reader for reading board files.
  *
- * @version 0.1
+ * @version 0.2
  * @since 0.2
  * @author Gilianne Reyes
  */
@@ -52,8 +51,12 @@ public class BoardFileReaderGson implements BoardFileReader {
             parseBoardMetaData(board, boardJson);
             parseTilesAndAddToBoard(board, tilesJson);
             return board;
+        } catch (IOException e) {
+            throw new BoardParsingException("Failed to read board from file due to I/O error: " + path, e);
+        } catch (JsonSyntaxException e) {
+            throw new BoardParsingException("Failed to read board from file due to JSON syntax error: " + path, e);
         } catch (Exception e) {
-            throw new BoardParsingException("Error parsing JSON board file from " + path, e);
+            throw new BoardParsingException("Failed to read board from file: " + path, e);
         }
     }
 

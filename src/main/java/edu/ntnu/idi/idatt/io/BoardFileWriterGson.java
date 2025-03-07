@@ -14,7 +14,7 @@ import java.nio.file.Path;
 /**
  * A GSON-based file writer for writing board files.
  *
- * @version 0.1
+ * @version 0.2
  * @since 0.2
  * @author Gilianne Reyes
  */
@@ -36,6 +36,10 @@ public class BoardFileWriterGson implements BoardFileWriter {
             boardJson.add("tiles", serializeTiles(board));
             Files.writeString(path, boardJson.toString());
         } catch (IOException e) {
+            throw new BoardSerializeException("Error writing board due to I/O error: " + path, e);
+        } catch (SecurityException e) {
+            throw new BoardSerializeException("Insufficient permissions to write board to file: " + path, e);
+        } catch (Exception e) {
             throw new BoardSerializeException("Error writing board to file: " + path, e);
         }
     }
