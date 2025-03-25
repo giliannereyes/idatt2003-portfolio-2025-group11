@@ -14,7 +14,7 @@ import java.nio.file.Path;
 /**
  * A GSON-based file writer for writing board files.
  *
- * @version 0.2
+ * @version 0.3
  * @since 0.2
  * @author Gilianne Reyes
  */
@@ -33,6 +33,8 @@ public class BoardFileWriterGson implements BoardFileWriter {
             JsonObject boardJson = new JsonObject();
             boardJson.addProperty("name", board.getName());
             boardJson.addProperty("description", board.getDescription());
+            boardJson.addProperty("rows", board.getRows());
+            boardJson.addProperty("columns", board.getColumns());
             boardJson.add("tiles", serializeTiles(board));
             Files.writeString(path, boardJson.toString());
         } catch (IOException e) {
@@ -57,6 +59,8 @@ public class BoardFileWriterGson implements BoardFileWriter {
         return board.getTiles().values().stream().map(tile -> {
             JsonObject tileJson = new JsonObject();
             tileJson.addProperty("id", tile.getTileId());
+            tileJson.addProperty("x", tile.getX());
+            tileJson.addProperty("y", tile.getY());
             tile.getNextTile().ifPresent(nextTile -> tileJson.addProperty("nextTile", nextTile.getTileId()));
             if (tile.getLandAction().isPresent()) {
                 tileJson.add("action", serializeTileAction(tile));

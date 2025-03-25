@@ -26,7 +26,7 @@ public class LadderActionFactoryTest {
      */
     @BeforeEach
     public void setUp() {
-        destinationTile = new Tile(10);
+        destinationTile = new Tile(10, 4, 1);
         ladderActionFactory = new LadderActionFactory();
     }
 

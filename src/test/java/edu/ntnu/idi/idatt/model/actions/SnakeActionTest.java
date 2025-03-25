@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Tests cover tile and player initialisation and snake action.
  *
  * @author Trang Duong
- * @version 0.2
+ * @version 0.3
  * @since 0.1
  */
 public class SnakeActionTest {
@@ -28,8 +28,8 @@ public class SnakeActionTest {
     @BeforeEach
     public void setUp() {
         player = new Player("TestPlayer");
-        startTile = new Tile(10);
-        destinationTile = new Tile(1);
+        startTile = new Tile(10, 4, 1);
+        destinationTile = new Tile(1,0,0);
         snakeAction = new SnakeAction(destinationTile);
         player.placeOnTile(startTile);
     }
@@ -127,7 +127,7 @@ public class SnakeActionTest {
      */
     @Test
     public void testSnakeActionWithPlayerClimbingUp() {
-        Tile higherTile = new Tile(destinationTile.getTileId() - 1);
+        Tile higherTile = new Tile(destinationTile.getTileId() - 1, 2, 2);
         player.placeOnTile(higherTile);
         assertThrows(IllegalStateException.class,
                 () -> snakeAction.perform(player),

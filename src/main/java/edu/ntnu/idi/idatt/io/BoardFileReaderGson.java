@@ -6,7 +6,6 @@ import edu.ntnu.idi.idatt.model.entities.Board;
 import edu.ntnu.idi.idatt.model.entities.Tile;
 import edu.ntnu.idi.idatt.model.factory.TileActionFactoryRegistry;
 import edu.ntnu.idi.idatt.utils.Validation;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,7 +14,7 @@ import java.util.stream.StreamSupport;
 /**
  * A GSON-based file reader for reading board files.
  *
- * @version 0.2
+ * @version 0.3
  * @since 0.2
  * @author Gilianne Reyes
  */
@@ -46,7 +45,9 @@ public class BoardFileReaderGson implements BoardFileReader {
         try {
             String jsonString = Files.readString(path);
             JsonObject boardJson = JsonParser.parseString(jsonString).getAsJsonObject();
-            Board board = new Board();
+            int rows = boardJson.get("rows").getAsInt();
+            int columns = boardJson.get("columns").getAsInt();
+            Board board = new Board(rows, columns);
             JsonArray tilesJson = boardJson.getAsJsonArray("tiles");
             parseBoardMetaData(board, boardJson);
             parseTilesAndAddToBoard(board, tilesJson);
@@ -84,7 +85,9 @@ public class BoardFileReaderGson implements BoardFileReader {
                 .map(JsonElement::getAsJsonObject)
                 .forEach(tileJson -> {
                     int tileId = tileJson.get("id").getAsInt();
-                    Tile tile = new Tile(tileId);
+                    double x = tileJson.get("x").getAsDouble();
+                    double y = tileJson.get("y").getAsDouble();
+                    Tile tile = new Tile(tileId, x, y);
                     board.addTile(tile);
                 });
     }

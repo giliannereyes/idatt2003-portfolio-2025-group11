@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Tests cover board initialisation, add and retrieving tiles, and player-tile-relationship.
  *
  * @author Trang Duong
- * @version 0.2
+ * @version 0.3
  * @since 0.1
  */
 public class BoardTest {
@@ -26,7 +26,7 @@ public class BoardTest {
      */
     @BeforeEach
     public void setUp() {
-        board = new Board();
+        board = new Board(2,2);
         player = new Player("TestPlayer");
     }
 
@@ -39,29 +39,10 @@ public class BoardTest {
      */
     @Test
     public void testAddTile() {
-        Tile tile = new Tile(1);
+        Tile tile = new Tile(1, 1, 1);
         board.addTile(tile);
         assertEquals(tile, board.getTile(1),
                 "Tile should be retrieved from the board"
-        );
-    }
-
-    /**
-     * Tests that board is initialised within a given range of tiles.
-     *
-     * <p>Expected: The board should be initialized with the given number of tiles.</p>
-     */
-    @Test
-    void testInitializeBoard() {
-        board.initializeBoard(5);
-        assertNotNull(board.getTile(1),
-                "First tile should exist after initialization"
-        );
-        assertNotNull(board.getTile(5),
-                "Last tile should exist after initialization"
-        );
-        assertNull(board.getTile(6),
-                "Tile outside initialized range should not exist"
         );
     }
 
@@ -72,9 +53,10 @@ public class BoardTest {
      */
     @Test
     void testPlacePlayerOnStartTile() {
-        board.initializeBoard(5);
+        Tile startTile = new Tile(1, 0, 0);
+        board.addTile(startTile);
         board.placePlayerOnStartTile(player);
-        assertEquals(1, player.getCurrentTile().getTileId(),
+        assertEquals(startTile.getTileId(), player.getCurrentTile().getTileId(),
                 "Player should be placed on the start tile 0"
         );
     }
@@ -86,13 +68,18 @@ public class BoardTest {
      */
     @Test
     void testAddTileAction() {
-        board.initializeBoard(5);
-        TileAction expectedAction = new LadderAction(board.getTile(3));
-        board.addTileAction(1, expectedAction);
-        assertTrue(board.getTile(1).getLandAction().isPresent(),
+        Tile tileWithAction = new Tile(1, 0, 0);
+        Tile destinationTile = new Tile(2, 1, 1);
+        board.addTile(tileWithAction);
+        board.addTile(destinationTile);
+        TileAction expectedAction = new LadderAction(destinationTile);
+        board.addTileAction(tileWithAction.getTileId(), expectedAction);
+        assertTrue(board.getTile(tileWithAction.getTileId())
+                        .getLandAction().isPresent(),
                 "Tile action should be added to the tile"
         );
-        TileAction actualAction = board.getTile(1).getLandAction().get();
+        TileAction actualAction = board.getTile(tileWithAction.getTileId())
+                .getLandAction().get();
         assertEquals(expectedAction, actualAction,
                 "Tile action should be the same as the added action"
         );
@@ -129,19 +116,6 @@ public class BoardTest {
     }
 
     /**
-     * Tests if the board can be initialised with a negative tile count.
-     *
-     * <p>Expected: An {@link IllegalArgumentException} should be thrown.</p>
-     */
-    @Test
-    void testInitializeBoardWithNegativeTileCount() {
-        assertThrows(IllegalArgumentException.class,
-                () -> board.initializeBoard(-1),
-                "Negative tile count should throw an exception"
-        );
-    }
-
-    /**
      * Tests if a null player can be placed on the start tile.
      *
      * <p>Expected: An {@link IllegalArgumentException} should be thrown.</p>
@@ -161,9 +135,10 @@ public class BoardTest {
      */
     @Test
     void testAddNullTileAction() {
-        board.initializeBoard(5);
+        Tile tile = new Tile(1, 0, 0);
+        board.addTile(tile);
         assertThrows(IllegalArgumentException.class,
-                () -> board.addTileAction(1, null),
+                () -> board.addTileAction(tile.getTileId(), null),
                 "Null tile action should not be added to the tile"
         );
     }
@@ -187,9 +162,9 @@ public class BoardTest {
      */
     @Test
     void testModifyBoardTiles() {
-        board.initializeBoard(5);
+        board.addTile(new Tile(1, 0, 0));
         Map<Integer, Tile> tiles = board.getTiles();
         assertThrows(UnsupportedOperationException.class ,
-                () -> tiles.put(1, new Tile(1)));
+                () -> tiles.put(1, new Tile(5,4,0)));
     }
 }

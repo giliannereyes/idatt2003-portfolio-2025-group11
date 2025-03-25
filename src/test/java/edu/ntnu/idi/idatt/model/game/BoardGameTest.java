@@ -3,6 +3,7 @@ package edu.ntnu.idi.idatt.model.game;
 import edu.ntnu.idi.idatt.model.entities.Board;
 import edu.ntnu.idi.idatt.model.entities.Dice;
 import edu.ntnu.idi.idatt.model.entities.Player;
+import edu.ntnu.idi.idatt.model.entities.Tile;
 import edu.ntnu.idi.idatt.model.events.bus.DefaultEventBus;
 import edu.ntnu.idi.idatt.model.events.bus.EventBus;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,9 +34,9 @@ public class BoardGameTest {
      */
     @BeforeEach
     public void setUp() {
-        board = new Board();
-        board.initializeBoard(90);
+        board = new Board(9,10);
         dice = new Dice(2);
+        board.addTile(new Tile(1, 0, 0));
         players = Arrays.asList(new Player("A"), new Player("B"), new Player("C"));
         eventBus = new DefaultEventBus();
         game = new BoardGame(board, players, dice, eventBus) {
