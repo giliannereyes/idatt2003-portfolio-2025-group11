@@ -11,7 +11,7 @@ import java.util.Map;
  * and provides methods to add tiles to the board, get a tile by its id, initialize the board,
  * and place players on the board.
  *
- * @version 0.2
+ * @version 0.3
  * @since 0.1
  * @author Gilianne Reyes
  */
@@ -19,14 +19,20 @@ public class Board {
     private final Map<Integer, Tile> tiles;
     private String description;
     private String name;
+    private final int rows;
+    private final int columns;
 
     /**
      * Constructs the board and initializes the tiles map.
      */
-    public Board() {
+    public Board(int rows, int columns) {
+        Validation.validatePositiveNum(rows, "Row count");
+        Validation.validatePositiveNum(columns, "Column count");
         tiles = new LinkedHashMap<>();
         name = "Unnamed Board";
         description = "No description available.";
+        this.rows = rows;
+        this.columns = columns;
     }
 
     /**
@@ -59,27 +65,6 @@ public class Board {
      */
     public Map<Integer, Tile> getTiles() {
         return Collections.unmodifiableMap(tiles);
-    }
-
-    /**
-     * Sets up the board with the given number of tiles and special effects
-     * like ladder, snake, skip-turn and step-back.
-     *
-     * @param tileCount is the number of tiles to set up.
-     *
-     * @throws IllegalArgumentException if the tile count is not positive.
-     */
-    public void initializeBoard(int tileCount) {
-        Validation.validatePositiveNum(tileCount, "Tile count");
-        // Tile previousTile = startTile; // Special entry point tile
-        Tile previousTile = new Tile(1);
-        addTile(previousTile);
-        for (int i = 2; i <= tileCount; i++) {
-            Tile tile = new Tile(i);
-            previousTile.setNextTile(tile);
-            addTile(tile);
-            previousTile = tile;
-        }
     }
 
     /**
@@ -152,5 +137,23 @@ public class Board {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Retrieves the number of rows of the board.
+     *
+     * @return the number of rows of the board.
+     */
+    public int getRows() {
+        return rows;
+    }
+
+    /**
+     * Retrieves the number of columns of the board.
+     *
+     * @return the number of columns of the board.
+     */
+    public int getColumns() {
+        return columns;
     }
 }
