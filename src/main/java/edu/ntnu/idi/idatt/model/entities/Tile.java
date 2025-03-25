@@ -8,7 +8,7 @@ import java.util.Optional;
 /**
  * Class representing a tile on the board.
  *
- * @version 0.2
+ * @version 0.3
  * @since 0.1
  * @author Gilianne Reyes
  */
@@ -16,17 +16,25 @@ public class Tile {
   private Tile nextTile;
   private final int tileId;
   private TileAction landAction;
+  private final double x;
+  private final double y;
 
   /**
    * Constructs a Tile instance.
    *
    * @param tileId is the id of the tile.
+   * @param x is the x-coordinate of the tile.
+   * @param y is the y-coordinate of the tile.
    *
    * @throws IllegalArgumentException if the tile id is negative.
    */
-  public Tile(int tileId) {
+  public Tile(int tileId, double x, double y) {
     Validation.validateNonNegativeNum(tileId, "Tile id");
+    Validation.validateNonNegativeNum(x, "X-coordinate");
+    Validation.validateNonNegativeNum(y, "Y-coordinate");
     this.tileId = tileId;
+    this.x = x;
+    this.y = y;
   }
 
   /**
@@ -95,5 +103,23 @@ public class Tile {
    */
   public Optional<Tile> getNextTile() {
     return Optional.ofNullable(nextTile);
+  }
+
+  /**
+   * Retrieves the x-coordinate of the tile.
+   *
+   * @return the x-coordinate of the tile.
+   */
+  public double getX() {
+    return x;
+  }
+
+  /**
+   * Retrieves the y-coordinate of the tile.
+   *
+   * @return the y-coordinate of the tile.
+   */
+  public double getY() {
+    return y;
   }
 }

@@ -27,7 +27,7 @@ public class SkipTurnActionTest {
     void setUp() {
         player = new Player("TestPlayer");
         skipTurnAction = new SkipTurnAction();
-        tileWithSkipAction = new Tile(1);
+        tileWithSkipAction = new Tile(1,0,0);
         tileWithSkipAction.setLandAction(skipTurnAction);
     }
 

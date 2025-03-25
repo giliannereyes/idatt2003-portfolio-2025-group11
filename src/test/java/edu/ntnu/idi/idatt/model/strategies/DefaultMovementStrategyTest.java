@@ -21,8 +21,8 @@ public class DefaultMovementStrategyTest {
 
     @BeforeEach
     void setUp() {
-        startTile = new Tile(1);
-        nextTile = new Tile(2);
+        startTile = new Tile(1,0,0);
+        nextTile = new Tile(2,1,0);
         startTile.setNextTile(nextTile);
         strategy = new DefaultMovementStrategy();
     }

@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Tests cover tile and player initialisation and ladder action.
  *
  * @author Trang Duong
- * @version 0.2
+ * @version 0.3
  * @since 0.1
  */
 public class LadderActionTest {
@@ -27,8 +27,8 @@ public class LadderActionTest {
      */
     @BeforeEach
     public void setUp() {
-        startTile = new Tile(1); //Assume tileID
-        destinationTile = new Tile(10);
+        startTile = new Tile(1,0,0);
+        destinationTile = new Tile(10,4,1);
         player = new Player("TestPlayer");
         ladderAction = new LadderAction(destinationTile);
 
@@ -126,7 +126,7 @@ public class LadderActionTest {
      */
     @Test
     public void testLadderActionWithPlayerClimbingDown() {
-        Tile higherTile = new Tile(20);
+        Tile higherTile = new Tile(20, 2, 1);
         player.placeOnTile(higherTile);
         assertThrows(IllegalStateException.class, () -> ladderAction.perform(player));
     }

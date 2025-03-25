@@ -26,9 +26,9 @@ public class ResetActionTest {
      */
     @BeforeEach
     public void setUp() {
-        startTile = new Tile(1);
-        normalTile = new Tile(2);
-        tileWithAction = new Tile(5);
+        startTile = new Tile(1,0,0);
+        normalTile = new Tile(2,1,0);
+        tileWithAction = new Tile(5,0,4);
         tileWithAction.setLandAction(new ResetAction());
         player = new Player("Player");
         player.placeOnTile(startTile); // First tile is the start tile
