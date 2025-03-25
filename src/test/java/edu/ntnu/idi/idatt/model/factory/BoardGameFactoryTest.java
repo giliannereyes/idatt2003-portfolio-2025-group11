@@ -54,7 +54,7 @@ public class BoardGameFactoryTest {
     public void testLoadEasyBoard() {
         Board board = factory.loadEasyBoard();
         assertEquals("Easy board", board.getName());
-        assertEquals(48, board.getTiles().size());
+        assertEquals(56, board.getTiles().size());
         assertTrue(board.getTile(2).getLandAction().isPresent());
         assertInstanceOf(LadderAction.class, board.getTile(2).getLandAction().get());
         assertTrue(board.getTile(32).getLandAction().isPresent());
@@ -71,7 +71,7 @@ public class BoardGameFactoryTest {
     public void testLoadMediumBoard() {
         Board board = factory.loadMediumBoard();
         assertEquals("Medium board", board.getName());
-        assertEquals(56, board.getTiles().size());
+        assertEquals(64, board.getTiles().size());
         assertTrue(board.getTile(3).getLandAction().isPresent());
         assertInstanceOf(LadderAction.class, board.getTile(3).getLandAction().get());
         assertTrue(board.getTile(52).getLandAction().isPresent());
@@ -126,7 +126,7 @@ public class BoardGameFactoryTest {
     @Test
     public void testWriterWasCalled() throws IOException {
         Path tempFile = Files.createTempFile("test", ".json");
-        factory.saveBoardToFile(tempFile, new Board());
+        factory.saveBoardToFile(tempFile, new Board(10, 10));
         assertTrue(writer.wasWriteCalled());
         Files.delete(tempFile);
     }
@@ -168,7 +168,7 @@ public class BoardGameFactoryTest {
     @Test
     public void testSaveBoardWithNullPath() {
         assertThrows(IllegalArgumentException.class,
-                () -> factory.saveBoardToFile(null, new Board()));
+                () -> factory.saveBoardToFile(null, new Board(10, 10)));
     }
 
     /**
@@ -195,7 +195,7 @@ public class BoardGameFactoryTest {
         @Override
         public Board readBoard(Path path) {
             readCalled = true;
-            return new Board();
+            return new Board(10, 10);
         }
 
         public boolean wasReadCalled() {

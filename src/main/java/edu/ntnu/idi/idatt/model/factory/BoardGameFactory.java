@@ -5,6 +5,7 @@ import edu.ntnu.idi.idatt.io.BoardFileWriter;
 import edu.ntnu.idi.idatt.model.actions.*;
 import edu.ntnu.idi.idatt.model.entities.Board;
 import edu.ntnu.idi.idatt.model.entities.Tile;
+import edu.ntnu.idi.idatt.model.strategies.SnakeLayoutStrategy;
 import edu.ntnu.idi.idatt.utils.Validation;
 
 import java.io.IOException;
@@ -16,7 +17,7 @@ import java.util.Optional;
  * A factory for creating board games. The class contains both hardcoded and
  * file-based board loading methods.
  *
- * @version 0.1
+ * @version 0.2
  * @since 0.2
  * @author Gilianne Reyes
  */
@@ -24,6 +25,7 @@ public class BoardGameFactory {
     private final BoardFileReader reader;
     private final BoardFileWriter writer;
     private final TileActionFactoryRegistry registry;
+    private final SnakeLayoutStrategy layoutStrategy;
 
     /**
      * Constructs a BoardGameFactory instance.
@@ -43,12 +45,13 @@ public class BoardGameFactory {
         this.reader = reader;
         this.writer = writer;
         this.registry = registry;
+        this.layoutStrategy = new SnakeLayoutStrategy();
     }
 
     /**
      * Retrieves a board that has an "easy" layout. It contains the following:
      * <ul>
-     *     <li>48 tiles</li>
+     *     <li>7x8 board</li>
      *     <li>4 ladders</li>
      *     <li>2 snakes</li>
      *     <li>1 skip turn</li>
@@ -57,10 +60,10 @@ public class BoardGameFactory {
      * @return the board.
      */
     public Board loadEasyBoard() {
-        Board board = new Board();
+        Board board = new Board(7,8);
         board.setName("Easy board");
         board.setDescription("Easy board with few snakes and skip turn.");
-        board.initializeBoard(48);
+        layoutStrategy.buildLayout(board);
         Object[][] easyActions = {
                 {2, LadderAction.actionType, 12},
                 {5, LadderAction.actionType, 20},
@@ -77,7 +80,7 @@ public class BoardGameFactory {
     /**
      * Retrieves a board that has a "medium" layout. It contains the following:
      * <ul>
-     *     <li>56 tiles (7x8)</li>
+     *     <li>8x8 board</li>
      *     <li>4 ladders</li>
      *     <li>3 snakes</li>
      *     <li>1 skip turn</li>
@@ -87,10 +90,10 @@ public class BoardGameFactory {
      * @return the medium board.
      */
     public Board loadMediumBoard() {
-        Board board = new Board();
+        Board board = new Board(8,8);
         board.setName("Medium board");
-        board.setDescription("Medium board with 56 tiles, balanced ladders and snakes.");
-        board.initializeBoard(56);
+        board.setDescription("Medium board with 64 tiles, balanced ladders and snakes.");
+        layoutStrategy.buildLayout(board);
         Object[][] mediumActions = {
                 {3, LadderAction.actionType, 14},
                 {8, LadderAction.actionType, 22},
@@ -109,7 +112,7 @@ public class BoardGameFactory {
     /**
      * Retrieves a board that has a "hard" layout. It contains the following:
      * <ul>
-     *     <li>100 tiles (10x10)</li>
+     *     <li>10x10 board</li>
      *     <li>5 ladders</li>
      *     <li>6 snakes</li>
      *     <li>1 skip turn</li>
@@ -119,10 +122,10 @@ public class BoardGameFactory {
      * @return the hard board.
      */
     public Board loadHardBoard() {
-        Board board = new Board();
+        Board board = new Board(10,10);
         board.setName("Hard board");
         board.setDescription("Challenging 100 tile board with more snakes and special tiles.");
-        board.initializeBoard(100);
+        layoutStrategy.buildLayout(board);
         Object[][] hardActions = {
                 {4, LadderAction.actionType, 16},
                 {12, LadderAction.actionType, 28},
