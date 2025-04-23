@@ -1,5 +1,6 @@
 package edu.ntnu.idi.idatt.model.entities;
 
+import edu.ntnu.idi.idatt.model.actions.LadderAction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.Optional;
@@ -15,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
  * Tests cover tile initialisation and player action on tile.
  *
  * @author Trang Duong
- * @version 0.2
+ * @version 0.3
  * @since 0.1
  */
 public class TileTest {
@@ -27,7 +28,7 @@ public class TileTest {
      */
     @BeforeEach
     void setUp() {
-        tile = new Tile(1);
+        tile = new Tile(1,1,1);
         player = new Player("Ola");
     }
 
@@ -63,10 +64,10 @@ public class TileTest {
      */
     @Test
     void landPlayerWithAction() {
-        Tile tile2 = new Tile(2);
-        tile.setLandAction(player -> player.placeOnTile(tile2));
+        Tile tile2 = new Tile(2,2,1);
+        tile.setLandAction(new LadderAction(tile2));
         tile.landPlayer(player);
-        assertEquals(tile2,player.getCurrentTile());
+        assertEquals(tile2, player.getCurrentTile());
     }
 
     /**
@@ -76,7 +77,7 @@ public class TileTest {
      */
     @Test
     void testSetAndGetNextTile() {
-        Tile nextTile = new Tile(2);
+        Tile nextTile = new Tile(2,2,1);
         tile.setNextTile(nextTile);
         Optional<Tile> retrievedNextTile = tile.getNextTile();
         assertTrue(retrievedNextTile.isPresent());
@@ -93,7 +94,7 @@ public class TileTest {
      */
     @Test
     void testTileInitialisationWithNegativeId() {
-        assertThrows(IllegalArgumentException.class, () -> new Tile(-1));
+        assertThrows(IllegalArgumentException.class, () -> new Tile(-1,1,1));
     }
 
     /**

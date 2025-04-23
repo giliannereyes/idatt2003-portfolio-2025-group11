@@ -2,8 +2,8 @@ package edu.ntnu.idi.idatt.model.entities;
 
 import edu.ntnu.idi.idatt.model.actions.*;
 import edu.ntnu.idi.idatt.utils.Validation;
-
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -11,19 +11,28 @@ import java.util.Map;
  * and provides methods to add tiles to the board, get a tile by its id, initialize the board,
  * and place players on the board.
  *
- * @version 0.1
+ * @version 0.3
  * @since 0.1
  * @author Gilianne Reyes
  */
 public class Board {
     private final Map<Integer, Tile> tiles;
-    private final Tile startTile = new Tile(0);
+    private String description;
+    private String name;
+    private final int rows;
+    private final int columns;
 
     /**
      * Constructs the board and initializes the tiles map.
      */
-    public Board() {
-        tiles = new HashMap<>();
+    public Board(int rows, int columns) {
+        Validation.validatePositiveNum(rows, "Row count");
+        Validation.validatePositiveNum(columns, "Column count");
+        tiles = new LinkedHashMap<>();
+        name = "Unnamed Board";
+        description = "No description available.";
+        this.rows = rows;
+        this.columns = columns;
     }
 
     /**
@@ -50,22 +59,12 @@ public class Board {
     }
 
     /**
-     * Sets up the board with the given number of tiles and special effects
-     * like ladder, snake, skip-turn and step-back.
+     * Retrieves the tiles on the board.
      *
-     * @param tileCount is the number of tiles to set up.
-     *
-     * @throws IllegalArgumentException if the tile count is not positive.
+     * @return an unmodifiable map of the tiles on the board.
      */
-    public void initializeBoard(int tileCount) {
-        Validation.validatePositiveNum(tileCount, "Tile count");
-        Tile previousTile = startTile; // Special entry point tile
-        for (int i = 1; i <= tileCount; i++) {
-            Tile tile = new Tile(i);
-            previousTile.setNextTile(tile);
-            addTile(tile);
-            previousTile = tile;
-        }
+    public Map<Integer, Tile> getTiles() {
+        return Collections.unmodifiableMap(tiles);
     }
 
     /**
@@ -74,10 +73,10 @@ public class Board {
      * @param player is the player to place on the start tile.
      *
      * @throws IllegalArgumentException if the player is null.
-     */
+    */
     public void placePlayerOnStartTile(Player player) {
         Validation.validateNonNull(player, "Player");
-        player.placeOnTile(startTile);
+        player.placeOnTile(getTile(1));
     }
 
     /**
@@ -86,7 +85,7 @@ public class Board {
      * @return the start tile of the board.
      */
     public Tile getStartTile() {
-        return startTile;
+        return getTile(1);
     }
 
     /**
@@ -102,5 +101,59 @@ public class Board {
         Tile tile = getTile(tileId);
         Validation.validateNonNull(tile, "Tile");
         tile.setLandAction(tileAction);
+    }
+
+    /**
+     * Sets the description of the board.
+     *
+     * @param description is the description of the board.
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * Retrieves the description of the board.
+     *
+     * @param name is the name of the board.
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Retrieves the description of the board.
+     *
+     * @return the description of the board.
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Retrieves the name of the board.
+     *
+     * @return the name of the board.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Retrieves the number of rows of the board.
+     *
+     * @return the number of rows of the board.
+     */
+    public int getRows() {
+        return rows;
+    }
+
+    /**
+     * Retrieves the number of columns of the board.
+     *
+     * @return the number of columns of the board.
+     */
+    public int getColumns() {
+        return columns;
     }
 }

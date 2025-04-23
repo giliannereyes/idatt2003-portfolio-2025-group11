@@ -27,4 +27,14 @@ public class SnakeActionFactory implements DestinationTileActionFactory {
         Validation.validateNonNull(destinationTile, "Destination tile");
         return new SnakeAction(destinationTile);
     }
+
+    /**
+     * Retrieves the type of the action.
+     *
+     * @return the type of the action.
+     */
+    @Override
+    public String getActionType() {
+        return SnakeAction.actionType;
+    }
 }

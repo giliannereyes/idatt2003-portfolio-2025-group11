@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Tests cover tile and player initialisation and ladder action.
  *
  * @author Trang Duong
- * @version 0.2
+ * @version 0.3
  * @since 0.1
  */
 public class LadderActionTest {
@@ -27,8 +27,8 @@ public class LadderActionTest {
      */
     @BeforeEach
     public void setUp() {
-        startTile = new Tile(1); //Assume tileID
-        destinationTile = new Tile(10);
+        startTile = new Tile(1,0,0);
+        destinationTile = new Tile(10,4,1);
         player = new Player("TestPlayer");
         ladderAction = new LadderAction(destinationTile);
 
@@ -75,6 +75,29 @@ public class LadderActionTest {
         assertEquals(destinationTile, newPlayer.getCurrentTile(), "Player should be moved to the destination tile even if not initially placed");
     }
 
+    /**
+     * Test getting the action type of the ladder action.
+     *
+     * <p>Expected: The action type retrieved should be alike
+     * to the static actionType of the ladder action.</p>
+     */
+    @Test
+    public void testGetActionType() {
+        assertEquals(LadderAction.actionType, ladderAction.getActionType());
+    }
+
+    /**
+     * Test getting the destination tile of the ladder action.
+     *
+     * <p>Expected: The destination tile retrieved should be the same as
+     * the destination tile of the ladder action.</p>
+     */
+    @Test
+    public void testGetDestinationTile() {
+        assertTrue(ladderAction.getDestinationTile().isPresent());
+        assertEquals(destinationTile, ladderAction.getDestinationTile().get());
+    }
+
     // ------ Negative tests ------
 
     /**
@@ -103,7 +126,7 @@ public class LadderActionTest {
      */
     @Test
     public void testLadderActionWithPlayerClimbingDown() {
-        Tile higherTile = new Tile(20);
+        Tile higherTile = new Tile(20, 2, 1);
         player.placeOnTile(higherTile);
         assertThrows(IllegalStateException.class, () -> ladderAction.perform(player));
     }

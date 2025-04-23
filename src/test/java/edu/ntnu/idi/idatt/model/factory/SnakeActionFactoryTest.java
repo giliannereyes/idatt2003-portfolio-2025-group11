@@ -26,7 +26,7 @@ public class SnakeActionFactoryTest {
      */
     @BeforeEach
     public void setUp() {
-        destinationTile = new Tile(10);
+        destinationTile = new Tile(10, 4, 1);
         snakeActionFactory = new SnakeActionFactory();
     }
 
@@ -55,6 +55,17 @@ public class SnakeActionFactoryTest {
         TileAction action1 = snakeActionFactory.createTileAction(destinationTile);
         TileAction action2 = snakeActionFactory.createTileAction(destinationTile);
         assertNotSame(action1, action2, "Factory should return a new instance each time.");
+    }
+
+    /**
+     * Tests that the factory returns the correct action type.
+     *
+     * <p>Expected: The factory should return the action type
+     * of the {@link SnakeAction}.</p>
+     */
+    @Test
+    public void testGetActionType() {
+        assertEquals(SnakeAction.actionType, snakeActionFactory.getActionType());
     }
 
     // -------------- Negative tests --------------

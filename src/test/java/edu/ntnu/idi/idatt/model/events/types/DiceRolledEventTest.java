@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * Test class for the DiceRolledEvent class.
  *
- * @version 0.1
+ * @version 0.2
  * @since 0.1
  * @author Gilianne Reyes
  */
@@ -22,9 +22,11 @@ public class DiceRolledEventTest {
     @Test
     public void testDiceRolledEvent() {
         Player player = new Player("Player A");
-        int roll = 5;
-        DiceRolledEvent diceRolledEvent = new DiceRolledEvent(player, roll);
+        int roll1 = 5;
+        int roll2 = 3;
+        DiceRolledEvent diceRolledEvent = new DiceRolledEvent(player, roll1, roll2);
         assertEquals(player, diceRolledEvent.getPlayer());
-        assertEquals(roll, diceRolledEvent.getRoll());
+        assertEquals(roll1, diceRolledEvent.getRoll1());
+        assertEquals(roll2, diceRolledEvent.getRoll2());
     }
 }

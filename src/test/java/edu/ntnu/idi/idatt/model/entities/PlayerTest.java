@@ -25,8 +25,8 @@ public class PlayerTest {
     @BeforeEach
     void setUp() {
         player = new Player("Ola");
-        startTile = new Tile(1);
-        nextTile = new Tile(2);
+        startTile = new Tile(1, 1, 1);
+        nextTile = new Tile(2, 2, 2);
         startTile.setNextTile(nextTile);
         player.placeOnTile(startTile);
     }

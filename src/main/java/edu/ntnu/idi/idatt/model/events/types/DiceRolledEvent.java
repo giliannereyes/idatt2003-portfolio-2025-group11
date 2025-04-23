@@ -11,21 +11,24 @@ import edu.ntnu.idi.idatt.model.entities.Player;
  */
 public class DiceRolledEvent implements GameEvent {
     private final Player player;
-    private final int roll;
+    private final int roll1;
+    private final int roll2;
 
     /**
      * Constructs a DiceRolledEvent instance.
      *
      * @param player is the player that rolled the dice.
-     * @param roll is the number rolled on the dice.
+     * @param roll1 is the number rolled on the first die.
+     * @param roll2 is the number rolled on the second die.
      */
-    public DiceRolledEvent(Player player, int roll) {
+    public DiceRolledEvent(Player player, int roll1, int roll2) {
         this.player = player;
-        this.roll = roll;
+        this.roll1 = roll1;
+        this.roll2 = roll2;
     }
 
     /**
-     * Gets the player that rolled the dice.
+     * Retrieves the player that rolled the dice.
      *
      * @return the player that rolled the dice.
      */
@@ -34,9 +37,16 @@ public class DiceRolledEvent implements GameEvent {
     }
 
     /**
-     * Gets the number rolled on the dice.
+     * Retrieves the number rolled on the first die.
      */
-    public int getRoll() {
-        return roll;
+    public int getRoll1() {
+        return roll1;
+    }
+
+    /**
+     * Retrieves the number rolled on the second die.
+     */
+    public int getRoll2() {
+        return roll2;
     }
 }

@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Tests cover tile and player initialisation and snake action.
  *
  * @author Trang Duong
- * @version 0.2
+ * @version 0.3
  * @since 0.1
  */
 public class SnakeActionTest {
@@ -28,8 +28,8 @@ public class SnakeActionTest {
     @BeforeEach
     public void setUp() {
         player = new Player("TestPlayer");
-        startTile = new Tile(10);
-        destinationTile = new Tile(1);
+        startTile = new Tile(10, 4, 1);
+        destinationTile = new Tile(1,0,0);
         snakeAction = new SnakeAction(destinationTile);
         player.placeOnTile(startTile);
     }
@@ -70,6 +70,29 @@ public class SnakeActionTest {
         assertEquals(destinationTile, newPlayer.getCurrentTile(), "Player should be moved to the destination tile even if not initially placed");
     }
 
+    /**
+     * Test getting the action type of the snake action.
+     *
+     * <p>Expected: The action type retrieved should be alike
+     * to the static actionType of the snake action.</p>
+     */
+    @Test
+    public void testGetActionType() {
+        assertEquals(SnakeAction.actionType, snakeAction.getActionType());
+    }
+
+    /**
+     * Test getting the destination tile of the ladder action.
+     *
+     * <p>Expected: The destination tile retrieved should be the same as
+     * the destination tile of the ladder action.</p>
+     */
+    @Test
+    public void testGetDestinationTile() {
+        assertTrue(snakeAction.getDestinationTile().isPresent());
+        assertEquals(destinationTile, snakeAction.getDestinationTile().get());
+    }
+
     // ------------- Negative tests -------------
 
     /**
@@ -104,7 +127,7 @@ public class SnakeActionTest {
      */
     @Test
     public void testSnakeActionWithPlayerClimbingUp() {
-        Tile higherTile = new Tile(destinationTile.getTileId() - 1);
+        Tile higherTile = new Tile(destinationTile.getTileId() - 1, 2, 2);
         player.placeOnTile(higherTile);
         assertThrows(IllegalStateException.class,
                 () -> snakeAction.perform(player),

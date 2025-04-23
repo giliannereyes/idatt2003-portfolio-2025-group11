@@ -5,13 +5,12 @@ import edu.ntnu.idi.idatt.model.entities.Tile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the ResetAction class.
  *
- * @version 0.1
+ * @version 0.2
  * @since 0.1
  * @author Gilianne Reyes
  */
@@ -27,9 +26,9 @@ public class ResetActionTest {
      */
     @BeforeEach
     public void setUp() {
-        startTile = new Tile(1);
-        normalTile = new Tile(2);
-        tileWithAction = new Tile(5);
+        startTile = new Tile(1,0,0);
+        normalTile = new Tile(2,1,0);
+        tileWithAction = new Tile(5,0,4);
         tileWithAction.setLandAction(new ResetAction());
         player = new Player("Player");
         player.placeOnTile(startTile); // First tile is the start tile
@@ -49,6 +48,30 @@ public class ResetActionTest {
         player.placeOnTile(tileWithAction);
         tileWithAction.landPlayer(player);
         assertEquals(startTile, player.getCurrentTile());
+    }
+
+    /**
+     * Test getting the action type of the reset action.
+     *
+     * <p>Expected: The action type retrieved should be alike
+     * to the static actionType of the reset action.</p>
+     */
+    @Test
+    public void testGetActionType() {
+        ResetAction resetAction = new ResetAction();
+        assertEquals(ResetAction.actionType, resetAction.getActionType());
+    }
+
+    /**
+     * Test getting the destination tile of the reset action.
+     *
+     * <p>Expected: The destination tile should be empty as
+     * reset actions have no other destinations than start tile.</p>
+     */
+    @Test
+    public void testGetDestinationTile() {
+        ResetAction resetAction = new ResetAction();
+        assertTrue(resetAction.getDestinationTile().isEmpty());
     }
 
     // ------- Negative tests -------

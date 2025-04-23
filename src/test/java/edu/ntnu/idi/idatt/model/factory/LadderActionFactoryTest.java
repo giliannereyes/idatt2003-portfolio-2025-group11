@@ -26,7 +26,7 @@ public class LadderActionFactoryTest {
      */
     @BeforeEach
     public void setUp() {
-        destinationTile = new Tile(10);
+        destinationTile = new Tile(10, 4, 1);
         ladderActionFactory = new LadderActionFactory();
     }
 
@@ -57,6 +57,17 @@ public class LadderActionFactoryTest {
         TileAction action2 = ladderActionFactory.createTileAction(destinationTile);
 
         assertNotSame(action1, action2, "Factory should return a new instance each time.");
+    }
+
+    /**
+     * Tests that the factory returns the correct action type.
+     *
+     * <p>Expected: The factory should return the action type
+     * of the {@link LadderAction}.</p>
+     */
+    @Test
+    public void testGetActionType() {
+        assertEquals(LadderAction.actionType, ladderActionFactory.getActionType());
     }
 
     // ----------- Negative Tests -----------

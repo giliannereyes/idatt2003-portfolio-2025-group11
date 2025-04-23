@@ -1,5 +1,8 @@
 package edu.ntnu.idi.idatt;
 
+import edu.ntnu.idi.idatt.config.AppInitializer;
+import edu.ntnu.idi.idatt.utils.ViewManager;
+import edu.ntnu.idi.idatt.view.PlayerSetupView;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -10,7 +13,10 @@ public class BoardGameApp extends Application {
 
   @Override
   public void start(Stage primaryStage) {
-    primaryStage.setTitle("Board Game");
+    AppInitializer appInitializer = new AppInitializer(primaryStage);
+    ViewManager viewManager = appInitializer.getDisplayManager();
+    viewManager.switchTo(PlayerSetupView.class.getName());
+    primaryStage.setTitle("Snakes & Ladders");
     primaryStage.show();
   }
 }
