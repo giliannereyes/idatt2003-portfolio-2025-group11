@@ -13,13 +13,10 @@ import java.util.List;
  * A utility class for writing player data to CSV files using Apache Commons CSV.
  *
  * @author Trang Duong
- * @version 0.1
+ * @version 0.2
  * @since 0.1
  */
-public final class PlayerFileWriter {
-
-    private PlayerFileWriter() {}
-
+public class PlayerFileWriter {
     /**
      * Writes data to a CSV file, optionally including headers.
      *
@@ -28,14 +25,15 @@ public final class PlayerFileWriter {
      * @param headers    Optional headers (null if not needed).
      * @throws IOException If writing fails.
      */
-    public static void writeToCSV(List<String[]> dataLines, File outputFile, String[] headers) throws IOException {
+    public void writeToCSV(List<String[]> dataLines, File outputFile, String[] headers) throws IOException {
+        CSVFormat format = CSVFormat.DEFAULT;
         try (
                 BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
-                CSVPrinter csvPrinter = new CSVPrinter(writer,
-                        headers != null
-                                ? CSVFormat.DEFAULT.withHeader(headers)
-                                : CSVFormat.DEFAULT)
+                CSVPrinter csvPrinter = new CSVPrinter(writer, format)
         ) {
+            if (headers != null) {
+                csvPrinter.printRecord((Object[]) headers);
+            }
             for (String[] row : dataLines) {
                 csvPrinter.printRecord((Object[]) row);
             }
