@@ -4,15 +4,17 @@ import edu.ntnu.idi.idatt.model.entities.Board;
 import edu.ntnu.idi.idatt.model.entities.Dice;
 import edu.ntnu.idi.idatt.model.entities.Player;
 import edu.ntnu.idi.idatt.model.events.bus.EventBus;
+import edu.ntnu.idi.idatt.model.events.types.PlayerWonEvent;
 import edu.ntnu.idi.idatt.utils.Validation;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Abstract class for board games. Contains a board, a list of players, a dice, and a winner.
  * Provides methods for setting up and playing the game.
  *
- * @version 0.2
+ * @version 0.3
  * @since 0.1
  * @author Gilianne Reyes
  */
@@ -23,6 +25,7 @@ public abstract class BoardGame {
     protected Player winner;
     protected int currentPlayerIndex = 0;
     protected EventBus eventBus;
+    private CompletableFuture<Void> diceClickedFuture;
 
     /**
      * Constructs a BoardGame instance.
@@ -55,21 +58,23 @@ public abstract class BoardGame {
     }
 
     /**
-     * Implements the main game loop. Iterates turns until the game is over.
+     * Plays the next turn in the game.
      */
-    public void playGame() {
-        boolean gameRunning = true;
-        while (gameRunning) {
-            for (Player player : players) {
-                if (gameRunning) {
-                    if (player.willSkipTurn()) {
-                        player.setSkipTurn(false);
-                    } else {
-                        playTurn(player);
-                    }
-                    if (isGameOver()) {
-                        gameRunning = false;
-                    }
+    public void playNextTurn() {
+        if (isGameOver()) {
+            eventBus.publish(new PlayerWonEvent(winner));
+        } else {
+            Player currentPlayer = players.get(currentPlayerIndex);
+            if (currentPlayer.willSkipTurn()) {
+                currentPlayer.setSkipTurn(false);
+                currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+                playNextTurn();
+            } else {
+                playTurn(currentPlayer);
+                if (isGameOver()) {
+                    eventBus.publish(new PlayerWonEvent(winner));
+                } else {
+                    currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
                 }
             }
         }

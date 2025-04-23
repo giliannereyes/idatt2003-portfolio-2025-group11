@@ -46,10 +46,9 @@ public class SnakeLayoutStrategy implements BoardLayoutStrategy {
      * @return the tile.
      */
     private Tile getTile(int i, int columns, int rows) {
-        int standardRow = (i - 1) / columns;
-        int row = rows - 1 - standardRow;
+        int row = (i - 1) / columns;
         int col = (i - 1) % columns;
-        if (standardRow % 2 == 1) {
+        if (row % 2 == 1) {
             col = columns - 1 - col;
         }
         return new Tile(i, col, row);

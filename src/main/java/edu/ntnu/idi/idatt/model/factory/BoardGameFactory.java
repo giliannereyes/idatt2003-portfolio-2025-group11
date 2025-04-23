@@ -11,13 +11,17 @@ import edu.ntnu.idi.idatt.utils.Validation;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * A factory for creating board games. The class contains both hardcoded and
  * file-based board loading methods.
  *
- * @version 0.2
+ * @version 0.3
  * @since 0.2
  * @author Gilianne Reyes
  */
@@ -26,6 +30,7 @@ public class BoardGameFactory {
     private final BoardFileWriter writer;
     private final TileActionFactoryRegistry registry;
     private final SnakeLayoutStrategy layoutStrategy;
+    private final List<Supplier<Board>> predefinedBoards;
 
     /**
      * Constructs a BoardGameFactory instance.
@@ -46,6 +51,23 @@ public class BoardGameFactory {
         this.writer = writer;
         this.registry = registry;
         this.layoutStrategy = new SnakeLayoutStrategy();
+        this.predefinedBoards = List.of(
+                this::loadEasyBoard,
+                this::loadMediumBoard,
+                this::loadHardBoard
+        );
+    }
+
+    /**
+     * Returns all predefined boards as a Map of name → board object.
+     */
+    public Map<String, Board> getAllPredefinedBoards() {
+        return predefinedBoards.stream()
+                .map(Supplier::get)
+                .collect(Collectors.toMap(
+                        Board::getName,
+                        board -> board
+                ));
     }
 
     /**
@@ -128,7 +150,7 @@ public class BoardGameFactory {
         layoutStrategy.buildLayout(board);
         Object[][] hardActions = {
                 {4, LadderAction.actionType, 16},
-                {12, LadderAction.actionType, 28},
+                {11, LadderAction.actionType, 28},
                 {20, LadderAction.actionType, 42},
                 {36, LadderAction.actionType, 55},
                 {63, LadderAction.actionType, 81},

@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Represents a game of Snakes and Ladders.
  *
- * @version 0.1
+ * @version 0.2
  * @since 0.1
  * @author Gilianne Reyes
  */
@@ -34,16 +34,20 @@ public class SnakesAndLadders extends BoardGame {
      */
     @Override
     protected void playTurn(Player player) {
-        int diceRoll = dice.roll();
-        publishDiceRoll(player, diceRoll);
+        int diceRollTotal = dice.roll();
+        int diceRoll2 = dice.getDie(1);
+        int diceRoll1 = dice.getDie(0);
+        publishDiceRoll(player, diceRoll1, diceRoll2);
         Tile fromTile= player.getCurrentTile();
-        player.move(diceRoll);
+        player.move(diceRollTotal);
         Tile firstDestinationTile = player.getCurrentTile();
-        publishPlayerMoved(player, fromTile.getTileId(), firstDestinationTile.getTileId());
+        publishPlayerMoved(player, fromTile, firstDestinationTile);
         firstDestinationTile.landPlayer(player);
         publishTileAction(player, firstDestinationTile);
+        /*
         Tile postActionDestination = player.getCurrentTile();
-        publishPlayerMoved(player, firstDestinationTile.getTileId(), postActionDestination.getTileId());
+        publishPlayerMoved(player, firstDestinationTile, postActionDestination);
+         */
     }
 
     /**
@@ -66,22 +70,23 @@ public class SnakesAndLadders extends BoardGame {
      * Publishes a DiceRolledEvent to the event bus.
      *
      * @param player is the player that rolled the dice.
-     * @param diceRoll is the result of the dice roll.
+     * @param diceRoll1 is the result of the roll of the first die.
+     * @param diceRoll2 is the result of the roll of the second die.
      */
-    private void publishDiceRoll(Player player, int diceRoll) {
-        eventBus.publish(new DiceRolledEvent(player, diceRoll));
+    private void publishDiceRoll(Player player, int diceRoll1, int diceRoll2) {
+        eventBus.publish(new DiceRolledEvent(player, diceRoll1, diceRoll2));
     }
 
     /**
      * Publishes a PlayerMovedEvent to the event bus.
      *
      * @param player is the player that moved.
-     * @param fromTileId is the id of the tile the player moved from.
-     * @param destinationTileId is the id of the tile the player moved to.
+     * @param currentTile is the tile the player was on.
+     * @param destinationTile is the tile the player moved to.
      */
-    private void publishPlayerMoved(Player player, int fromTileId, int destinationTileId) {
-        if (fromTileId != destinationTileId) {
-            eventBus.publish(new PlayerMovedEvent(player, fromTileId, destinationTileId));
+    private void publishPlayerMoved(Player player, Tile currentTile, Tile destinationTile) {
+        if (currentTile != destinationTile) {
+            eventBus.publish(new PlayerMovedEvent(player, currentTile, destinationTile));
         }
     }
 
