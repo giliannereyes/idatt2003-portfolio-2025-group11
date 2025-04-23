@@ -1,6 +1,8 @@
 package edu.ntnu.idi.idatt.model.events.handlers;
 
+import edu.ntnu.idi.idatt.controller.GameEventListener;
 import edu.ntnu.idi.idatt.model.entities.Player;
+import edu.ntnu.idi.idatt.model.entities.Tile;
 import edu.ntnu.idi.idatt.model.events.types.PlayerMovedEvent;
 
 /**
@@ -11,6 +13,16 @@ import edu.ntnu.idi.idatt.model.events.types.PlayerMovedEvent;
  * @author Gilianne Reyes
  */
 public class PlayerMovedHandler implements EventHandler<PlayerMovedEvent> {
+    private final GameEventListener listener;
+
+    /**
+     * Constructs a PlayerMovedHandler instance.
+     *
+     */
+    public PlayerMovedHandler(GameEventListener listener) {
+        this.listener = listener;
+    }
+
     /**
      * Handles a PlayerMovedEvent.
      *
@@ -19,8 +31,8 @@ public class PlayerMovedHandler implements EventHandler<PlayerMovedEvent> {
     @Override
     public void handle(PlayerMovedEvent event) {
         Player player = event.getPlayer();
-        int fromTileId = event.getFromTileId();
-        int toTileId = event.getToTileId();
-        System.out.println("[PLAYER " + player.getName() + "] moved from tile " + fromTileId + " to tile " + toTileId);
+        Tile fromTile = event.getFromTile();
+        Tile destinationTile = event.getDestinationTile();
+        listener.onPlayerMoved(player, fromTile, destinationTile);
     }
 }
