@@ -2,6 +2,7 @@ package edu.ntnu.idi.idatt.config;
 
 import edu.ntnu.idi.idatt.controller.*;
 import edu.ntnu.idi.idatt.io.*;
+import edu.ntnu.idi.idatt.model.enums.GameType;
 import edu.ntnu.idi.idatt.model.events.bus.DefaultEventBus;
 import edu.ntnu.idi.idatt.model.events.bus.EventBus;
 import edu.ntnu.idi.idatt.model.events.handlers.DiceRolledHandler;
@@ -24,6 +25,7 @@ import edu.ntnu.idi.idatt.service.GameService;
 import edu.ntnu.idi.idatt.service.PlayerService;
 import edu.ntnu.idi.idatt.utils.ViewManager;
 import edu.ntnu.idi.idatt.view.BoardSetupView;
+import edu.ntnu.idi.idatt.view.GameSelectionView;
 import edu.ntnu.idi.idatt.view.GameView;
 import edu.ntnu.idi.idatt.view.PlayerSetupView;
 import javafx.stage.Stage;
@@ -37,36 +39,51 @@ import javafx.stage.Stage;
  */
 public class AppInitializer {
     private final ViewManager viewManager;
+    private final GameConfig gameConfig;
+    private final GameConfigService gameConfigService;
+    private final PlayerService playerService;
+    private final BoardService boardService;
+    private final EventBus eventBus;
 
     public AppInitializer(Stage primaryStage) {
-        // FACTORY REGISTRY + FACTORIES
+        // FACTORY SETUP
         TileActionFactoryRegistry factoryRegistry = new TileActionFactoryRegistry();
         factoryRegistry.registerDestinationFactory(new LadderActionFactory());
         factoryRegistry.registerNoDestinationFactory(new SkipTurnActionFactory());
         factoryRegistry.registerNoDestinationFactory(new ResetActionFactory());
         factoryRegistry.registerDestinationFactory(new SnakeActionFactory());
 
-        // FILE WRITERS + READERS
         BoardFileWriter boardWriter = new BoardFileWriterGson();
         BoardFileReader boardReader = new BoardFileReaderGson(factoryRegistry);
-        PlayerFileReader playerReader = new PlayerFileReader();
-        PlayerFileWriter playerWriter = new PlayerFileWriter();
         BoardGameFactory boardGameFactory = new BoardGameFactory(boardReader, boardWriter, factoryRegistry);
 
-        // EVENT BUS
-        EventBus eventBus = new DefaultEventBus();
+        PlayerFileReader playerReader = new PlayerFileReader();
+        PlayerFileWriter playerWriter = new PlayerFileWriter();
 
-        // GAME CONFIG
-        GameConfig gameConfig = new GameConfig();
+        eventBus = new DefaultEventBus();
+        gameConfig = new GameConfig();
+        gameConfigService = new GameConfigService(gameConfig);
+        playerService = new PlayerService(playerReader, playerWriter);
+        boardService = new BoardService(boardGameFactory);
 
-        // SERVICES
-        GameConfigService gameConfigService = new GameConfigService(gameConfig);
-        PlayerService playerService = new PlayerService(playerReader, playerWriter);
-        BoardService boardService = new BoardService(boardGameFactory);
-
-        // VIEWS + CONTROLLERS
         viewManager = new ViewManager(primaryStage);
 
+        // Game Selection Screen
+        GameSelectionView selectionView = new GameSelectionView();
+        GameSelectionController selectionController = new GameSelectionController(viewManager, selectionView, this);
+        selectionView.setController(selectionController);
+        viewManager.add(selectionView);
+    }
+
+    public void initializeGame(GameType gameType) {
+        switch (gameType) {
+            case SNAKES_AND_LADDERS -> initSnakesAndLadders();
+            case LUDO -> initLudo();
+            default -> throw new IllegalArgumentException("Unsupported game type: " + gameType);
+        }
+    }
+
+    private void initSnakesAndLadders() {
         PlayerSetupView playerSetupView = new PlayerSetupView();
         PlayerSetupController playerSetupController = new PlayerSetupController(
               playerSetupView, playerService, gameConfigService, viewManager
@@ -79,26 +96,36 @@ public class AppInitializer {
         );
         boardSetupView.setController(boardSetupController);
 
-        // GAME SERVICE
         GameService gameService = new GameService(gameConfig, eventBus);
-
         GameView gameView = new GameView();
-        SnakesAndLaddersController boardGameController = new SnakesAndLaddersController(
-              gameConfigService, gameService, gameView);
-        gameView.setController(boardGameController);
+        SnakesAndLaddersController gameController = new SnakesAndLaddersController(
+              gameConfigService, gameService, gameView
+        );
+        gameView.setController(gameController);
 
-        viewManager.add(playerSetupView );
+        viewManager.add(playerSetupView);
         viewManager.add(boardSetupView);
         viewManager.add(gameView);
 
-        // GAME EVENTS + HANDLERS
-        eventBus.register(DiceRolledEvent.class, new DiceRolledHandler(boardGameController));
-        eventBus.register(PlayerMovedEvent.class, new PlayerMovedHandler(boardGameController));
-        eventBus.register(TileActionEvent.class, new TileActionHandler(boardGameController));
-        eventBus.register(PlayerWonEvent.class, new PlayerWonHandler(boardGameController));
+        eventBus.register(DiceRolledEvent.class, new DiceRolledHandler(gameController));
+        eventBus.register(PlayerMovedEvent.class, new PlayerMovedHandler(gameController));
+        eventBus.register(TileActionEvent.class, new TileActionHandler(gameController));
+        eventBus.register(PlayerWonEvent.class, new PlayerWonHandler(gameController));
     }
 
-    public ViewManager getDisplayManager() {
+    private void initLudo() {
+        /*
+        LudoSetupView ludoSetupView = new LudoSetupView();
+        LudoSetupController ludoController = new LudoSetupController(
+              ludoSetupView, playerService, gameConfigService, viewManager
+        );
+        ludoSetupView.setController(ludoController);
+        viewManager.add(ludoSetupView);
+        viewManager.activate(LudoSetupView.class);
+         */
+    }
+
+    public ViewManager getViewManager() {
         return viewManager;
     }
 }
