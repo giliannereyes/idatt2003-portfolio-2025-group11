@@ -1,0 +1,147 @@
+.board-canvas {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 20, 0.5, 0, 0);
+    -fx-border-color: #333;
+    -fx-border-width: 3px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.button {
+    -fx-background-color:
+            linear-gradient(to bottom, #f2f2f2 0%, #e6e6e6 100%);
+    -fx-background-radius: 5px;
+    -fx-background-insets: 0;
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
+    -fx-padding: 8px 16px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0.5, 0, 1);
+    -fx-cursor: hand;
+    -fx-transition: all 150ms ease-in-out;
+}
+
+.button:hover {
+    -fx-background-color:
+            linear-gradient(to bottom, #ffffff 0%, #f2f2f2 100%);
+}
+
+.button:pressed {
+    -fx-background-color:
+            linear-gradient(to bottom, #d4d4d4 0%, #c2c2c2 100%);
+    -fx-effect: innershadow(two-pass-box, rgba(0,0,0,0.4), 6, 0.0, 0, 2);
+}
+
+.button:disabled {
+    -fx-opacity: 0.6;
+    -fx-effect: none;
+    -fx-cursor: default;
+}
+
+.button:focused {
+    -fx-border-color: #4a90e2;
+    -fx-border-width: 2px;
+    -fx-background-insets: 0, 1;
+}
+
+/* Base Text / Label styling */
+.text, .label {
+    /* font family, size, weight, style */
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 16px;
+    -fx-font-weight: normal;        /* normal | bold | bolder | lighter | 100–900 */
+    -fx-font-style: normal;         /* normal | italic | oblique */
+
+    /* text color */
+    -fx-fill: #333333;              /* for Text nodes */
+    -fx-text-fill: #333333;         /* for Label controls */
+
+    /* letter and word spacing */
+    -fx-letter-spacing: 1px;      /* controls tracking */
+    -fx-word-spacing: 2px;
+
+    /* decorations */
+    -fx-underline: false;
+    -fx-strikethrough: false;
+}
+
+.heading {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+/* ================================
+   ComboBox (Dropdown) Styling
+   ================================ */
+.combo-box {
+    -fx-background-color: white;
+    -fx-border-color: #aaa;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 2 30 2 8;          /* left/right padding so arrow doesn’t overlap text */
+}
+.combo-box:hover {
+    -fx-border-color: #888;
+}
+.combo-box:focused {
+    -fx-border-color: #4a90e2;
+    -fx-effect: dropshadow(gaussian, rgba(74,144,226,0.5), 4, 0.3, 0, 0);
+}
+/* arrow button & arrow glyph */
+.combo-box .arrow-button {
+    -fx-background-color: transparent;
+}
+.combo-box .arrow {
+    -fx-shape: "M0,0 L1,0.5 L2,0 Z";  /* simple triangle */
+    -fx-background-color: #666;
+}
+
+/* ================================
+   TextField & TextArea Styling
+   ================================ */
+.text-field, .text-area {
+    -fx-background-color: white;
+    -fx-border-color: #aaa;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 4px 6px;           /* vertical/horizontal padding */
+}
+.text-field:hover, .text-area:hover {
+    -fx-border-color: #888;
+}
+.text-field:focused, .text-area:focused {
+    -fx-border-color: #4a90e2;
+    -fx-effect: dropshadow(gaussian, rgba(74,144,226,0.4), 4, 0.3, 0, 0);
+}
+
+/* placeholder (prompt) text color */
+.text-field .text, .text-area .text {
+    -fx-prompt-text-fill: derive(-fx-control-inner-background, -30%);
+}
+
+/* ================================
+   RadioButton Styling
+   ================================ */
+.radio-button {
+    -fx-font-size: 14px;
+    -fx-padding: 4 0 4 0;
+}
+.radio-button .radio {
+    -fx-mark-color: #4a90e2;        /* dot/mark color when selected */
+    -fx-background-color: white;    /* circle background */
+    -fx-border-color: #aaa;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+.radio-button:hover .radio {
+    -fx-border-color: #888;
+}
+.radio-button:selected .radio {
+    -fx-mark-color: white;
+    -fx-background-color: #4a90e2;
+    -fx-border-color: #4a90e2;
+}
+
+/* optional focus ring */
+.radio-button:focused .radio {
+    -fx-effect: dropshadow(gaussian, rgba(74,144,226,0.5), 4, 0.3, 0, 0);
+}

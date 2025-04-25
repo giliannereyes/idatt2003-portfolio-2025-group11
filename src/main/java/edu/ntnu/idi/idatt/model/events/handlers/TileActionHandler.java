@@ -1,5 +1,6 @@
 package edu.ntnu.idi.idatt.model.events.handlers;
 
+import edu.ntnu.idi.idatt.controller.GameEventListener;
 import edu.ntnu.idi.idatt.model.actions.TileAction;
 import edu.ntnu.idi.idatt.model.entities.Tile;
 import edu.ntnu.idi.idatt.model.events.types.TileActionEvent;
@@ -12,12 +13,18 @@ import edu.ntnu.idi.idatt.model.events.types.TileActionEvent;
  * @author Gilianne Reyes
  */
 public class TileActionHandler implements EventHandler<TileActionEvent> {
+    private final GameEventListener listener;
+
+    public TileActionHandler(GameEventListener listener) {
+        this.listener = listener;
+    }
+
     @Override
     public void handle(TileActionEvent event) {
         Tile tile = event.getTile();
         if (tile.getLandAction().isPresent()) {
-            TileAction action = tile.getLandAction().get();
-            System.out.println("Player landed on tile " + tile.getTileId() + " and triggered an action: " + action.getClass().getSimpleName());
+            TileAction landAction = tile.getLandAction().get();
+            listener.onTileAction(event.getPlayer(), landAction);
         }
     }
 }
