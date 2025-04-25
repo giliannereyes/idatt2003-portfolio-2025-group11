@@ -18,10 +18,7 @@ import java.util.List;
  * @version 0.1
  * @since 0.1
  */
-public final class PlayerFileReader {
-
-    private PlayerFileReader() {}
-
+public class PlayerFileReader {
     /**
      * Reads a CSV file and returns the data as a list of String arrays (rows).
      * Assumes the file includes a header row (skips it).
@@ -30,12 +27,13 @@ public final class PlayerFileReader {
      * @return List of rows, each as a String array.
      * @throws IOException If reading fails.
      */
-    public static List<String[]> readFromCSV(File inputFile) throws IOException {
+    public List<String[]> readFromCSV(File inputFile) throws IOException {
         List<String[]> records = new ArrayList<>();
 
         try (
                 BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-                CSVParser parser = new CSVParser(reader, CSVFormat.DEFAULT.withFirstRecordAsHeader())
+                CSVParser parser = CSVParser.parse(reader, CSVFormat.DEFAULT)
+
         ) {
             for (CSVRecord record : parser) {
                 String[] row = new String[record.size()];

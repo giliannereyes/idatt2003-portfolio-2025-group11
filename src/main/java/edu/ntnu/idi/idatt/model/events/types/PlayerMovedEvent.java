@@ -1,6 +1,7 @@
 package edu.ntnu.idi.idatt.model.events.types;
 
 import edu.ntnu.idi.idatt.model.entities.Player;
+import edu.ntnu.idi.idatt.model.entities.Tile;
 
 /**
  * Represents an event where a player moves from one tile to another.
@@ -11,20 +12,20 @@ import edu.ntnu.idi.idatt.model.entities.Player;
  */
 public class PlayerMovedEvent implements GameEvent {
     private final Player player;
-    private final int fromTileId;
-    private final int toTileId;
+    private final Tile fromTile;
+    private final Tile destinationTile;
 
     /**
      * Constructs a PlayerMovedEvent instance.
      *
      * @param player is the player that moved.
-     * @param fromTileId is the id of the tile the player moved from.
-     * @param toTileId is the id of the tile the player moved to.
+     * @param fromTile is the tile player moved from.
+     * @param destinationTile is the tile the player moved to.
      */
-    public PlayerMovedEvent(Player player, int fromTileId, int toTileId) {
+    public PlayerMovedEvent(Player player, Tile fromTile, Tile destinationTile) {
         this.player = player;
-        this.fromTileId = fromTileId;
-        this.toTileId = toTileId;
+        this.fromTile = fromTile;
+        this.destinationTile = destinationTile;
     }
 
     /**
@@ -36,21 +37,11 @@ public class PlayerMovedEvent implements GameEvent {
         return player;
     }
 
-    /**
-     * Gets the id of the tile the player moved from.
-     *
-     * @return id of the tile the player moved from.
-     */
-    public int getFromTileId() {
-        return fromTileId;
+    public Tile getDestinationTile() {
+        return destinationTile;
     }
 
-    /**
-     * Gets the id of the tile the player moved to.
-     *
-     * @return id of the tile the player moved to.
-     */
-    public int getToTileId() {
-        return toTileId;
+    public Tile getFromTile() {
+        return fromTile;
     }
 }
