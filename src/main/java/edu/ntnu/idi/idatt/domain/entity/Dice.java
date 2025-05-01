@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt.model.entities;
+package edu.ntnu.idi.idatt.domain.entity;
 
 import edu.ntnu.idi.idatt.utils.Validation;
 

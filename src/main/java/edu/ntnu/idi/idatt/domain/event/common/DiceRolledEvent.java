@@ -1,6 +1,7 @@
-package edu.ntnu.idi.idatt.model.events.types;
+package edu.ntnu.idi.idatt.domain.event.common;
 
-import edu.ntnu.idi.idatt.model.entities.Player;
+import edu.ntnu.idi.idatt.domain.entity.Player;
+import edu.ntnu.idi.idatt.domain.event.GameEvent;
 
 /**
  * Represents an event where a player rolls the dice.
