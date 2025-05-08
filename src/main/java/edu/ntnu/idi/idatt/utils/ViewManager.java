@@ -1,6 +1,6 @@
 package edu.ntnu.idi.idatt.utils;
 
-import edu.ntnu.idi.idatt.view.View;
+import edu.ntnu.idi.idatt.ui.view.View;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -21,6 +21,8 @@ public class ViewManager {
     Stage primaryStage;
     int displayWidth = 1200;
     int displayHeight = 700;
+    private final Map<String, String> transitions = new HashMap<>();
+    private String currentViewName;
 
     /**
      * Constructs a DisplayManager instance.
@@ -53,10 +55,10 @@ public class ViewManager {
      * @throws IllegalArgumentException if the display is not found or the class name is null/empty.
      */
     public void switchTo(String displayClassName) {
-        Validation.validateNonEmptyStr(displayClassName, "Display class name");
+        Validation.validateNonEmptyStr(displayClassName, "View class name");
         View view = displays.get(displayClassName);
         if (view == null) {
-            throw new IllegalArgumentException("Display not found.");
+            throw new IllegalArgumentException("The view was not found: " + displayClassName);
         }
         Parent root = view.getRoot();
         Scene scene = new Scene(root, displayWidth, displayHeight);
@@ -66,6 +68,37 @@ public class ViewManager {
         );
         primaryStage.setScene(scene);
         view.initializeView();
+        currentViewName = displayClassName;
+    }
+
+    /**
+     * Registers which view should follow another.
+     * Can be called repeatedly to build complex flows.
+     *
+     * @param from the class of the current view
+     * @param to   the class of the next view
+     */
+    public void registerTransition(Class<? extends View> from, Class<? extends View> to) {
+        String fromName = from.getName();
+        String toName   = to.getName();
+        transitions.put(fromName, toName);
+    }
+
+    /**
+     * Switches to the view registered as next after the current one.
+     * @throws IllegalStateException if no transition is registered for the active view.
+     */
+    public void switchToNextView() {
+        if (currentViewName == null) {
+            throw new IllegalStateException("No current view is set.");
+        }
+        String next = transitions.get(currentViewName);
+        if (next == null) {
+            throw new IllegalStateException(
+                  "No transition registered from " + currentViewName
+            );
+        }
+        switchTo(next);
     }
 
 }
