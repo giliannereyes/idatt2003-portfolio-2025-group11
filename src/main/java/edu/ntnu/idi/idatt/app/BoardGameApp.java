@@ -1,6 +1,6 @@
 package edu.ntnu.idi.idatt.app;
 
-import edu.ntnu.idi.idatt.config.AppInitializer;
+import edu.ntnu.idi.idatt.config.initializer.AppInitializer;
 import edu.ntnu.idi.idatt.utils.ViewManager;
 import edu.ntnu.idi.idatt.ui.view.GameSelectionView;
 import javafx.application.Application;
