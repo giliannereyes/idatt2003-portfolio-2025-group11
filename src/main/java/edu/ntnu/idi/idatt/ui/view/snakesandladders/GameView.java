@@ -1,7 +1,8 @@
-package edu.ntnu.idi.idatt.ui.view;
+package edu.ntnu.idi.idatt.ui.view.snakesandladders;
 
 import edu.ntnu.idi.idatt.ui.controller.BoardGameController;
 import edu.ntnu.idi.idatt.domain.entity.Board;
+import edu.ntnu.idi.idatt.ui.view.View;
 import edu.ntnu.idi.idatt.ui.view.components.BoardCanvas;
 import edu.ntnu.idi.idatt.ui.view.components.DiceCanvas;
 import edu.ntnu.idi.idatt.ui.view.components.PlayerTokenCanvas;

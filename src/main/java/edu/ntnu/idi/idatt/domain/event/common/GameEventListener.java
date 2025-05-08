@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt.ui.controller;
+package edu.ntnu.idi.idatt.domain.event.common;
 
 import edu.ntnu.idi.idatt.domain.action.TileAction;
 import edu.ntnu.idi.idatt.domain.entity.Player;

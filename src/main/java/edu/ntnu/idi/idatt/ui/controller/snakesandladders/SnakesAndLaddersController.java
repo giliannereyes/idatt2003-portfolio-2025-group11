@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt.ui.controller;
+package edu.ntnu.idi.idatt.ui.controller.snakesandladders;
 
 import edu.ntnu.idi.idatt.config.PlayerConfig;
 import edu.ntnu.idi.idatt.domain.action.TileAction;
@@ -6,7 +6,9 @@ import edu.ntnu.idi.idatt.domain.entity.Player;
 import edu.ntnu.idi.idatt.domain.entity.Tile;
 import edu.ntnu.idi.idatt.service.GameConfigService;
 import edu.ntnu.idi.idatt.service.snakesandladders.GameService;
-import edu.ntnu.idi.idatt.ui.view.GameView;
+import edu.ntnu.idi.idatt.ui.controller.BoardGameController;
+import edu.ntnu.idi.idatt.domain.event.common.GameEventListener;
+import edu.ntnu.idi.idatt.ui.view.snakesandladders.GameView;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 import java.nio.file.Path;
