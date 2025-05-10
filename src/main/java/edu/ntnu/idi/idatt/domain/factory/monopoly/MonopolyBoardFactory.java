@@ -1,11 +1,9 @@
 package edu.ntnu.idi.idatt.domain.factory.monopoly;
 
 import edu.ntnu.idi.idatt.domain.action.monopoly.JailTileAction;
-import edu.ntnu.idi.idatt.domain.action.monopoly.PropertyAction;
 import edu.ntnu.idi.idatt.domain.entity.Board;
-import edu.ntnu.idi.idatt.domain.entity.Tile;
-import edu.ntnu.idi.idatt.domain.entity.monopoly.MonopolyBoard;
 import edu.ntnu.idi.idatt.domain.entity.monopoly.Property;
+import edu.ntnu.idi.idatt.domain.entity.monopoly.PropertyRegistry;
 import edu.ntnu.idi.idatt.domain.strategy.monopoly.MonopolyLayoutStrategy;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -14,23 +12,24 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class MonopolyBoardFactory {
-  private static final int GRID_SIZE = 7;
   private final MonopolyLayoutStrategy layoutStrategy;
-  private final List<Supplier<MonopolyBoard>> predefinedBoards;
+  private final List<Supplier<Board>> predefinedBoards;
+  private final PropertyRegistry propertyRegistry;
 
   public MonopolyBoardFactory() {
     this.layoutStrategy = new MonopolyLayoutStrategy();
+    this.propertyRegistry = PropertyRegistry.getInstance();
     this.predefinedBoards = List.of(
           this::loadSmallBoard,
           this::loadLargeBoard
     );
   }
 
-  public Map<String, MonopolyBoard> getAllPredefinedBoards() {
+  public Map<String, Board> getAllPredefinedBoards() {
     return predefinedBoards.stream()
         .map(Supplier::get)
         .collect(Collectors.toMap(
-              MonopolyBoard::getName, board -> board
+              Board::getName, board -> board
         ));
   }
 
@@ -40,14 +39,14 @@ public class MonopolyBoardFactory {
    *
    * @return a MonopolyBoard object with properties and actions.
    */
-  public MonopolyBoard loadSmallBoard() {
-    MonopolyBoard board = new MonopolyBoard(7,7);
+  public Board loadSmallBoard() {
+    Board board = new Board(7, 7);
     board.setName("Small board");
     board.setDescription("24-space perimeter. Properties have rent 10% of the property value.");
     layoutStrategy.buildLayout(board);
     board.addTileAction(7, new JailTileAction(board.getTile(7)));
     board.addTileAction(19, new JailTileAction(board.getTile(7)));
-    getSmallBoardPropertyMap().forEach(board::addMonopolyProperty);
+    getSmallBoardPropertyMap().forEach(propertyRegistry::registerProperty);
     return board;
   }
 
@@ -57,29 +56,14 @@ public class MonopolyBoardFactory {
    *
    * @return a MonopolyBoard object with properties and actions.
    */
-  public MonopolyBoard loadLargeBoard() {
-    MonopolyBoard board = new MonopolyBoard(10,10);
+  public Board loadLargeBoard() {
+    Board board = new Board(10, 10);
     board.setName("Large board");
     board.setDescription("36-space perimeter. Properties have rent 10% of the property value.");
     layoutStrategy.buildLayout(board);
     board.addTileAction(10, new JailTileAction(board.getTile(10)));
     board.addTileAction(28, new JailTileAction(board.getTile(10)));
-    getLargeBoardPropertyMap().forEach(board::addMonopolyProperty);
-    return board;
-  }
-
-  public Board loadBoard() {
-    Board board = new Board(GRID_SIZE, GRID_SIZE);
-    board.setName("Monopoly Lite");
-    board.setDescription("24-space perimeter with custom properties");
-    layoutStrategy.buildLayout(board);
-    Tile jailTile = board.getTile(7);
-    board.addTileAction(7, new JailTileAction(jailTile));
-    board.addTileAction(jailTile.getTileId(), new JailTileAction(jailTile));
-    getSmallBoardPropertyMap().forEach((tileId, prop) ->
-          board.addTileAction(tileId, new PropertyAction(prop))
-    );
-    board.addTileAction(28, new JailTileAction(jailTile));
+    getLargeBoardPropertyMap().forEach(propertyRegistry::registerProperty);
     return board;
   }
 
@@ -93,7 +77,7 @@ public class MonopolyBoardFactory {
 
     props.put(8,  new Property("Pajaro St.",     120, 12));
     props.put(9,  new Property("Blanco Rd.",     140, 14));
-    props.put(10, new Property("Grand Central Station",100,10));
+    props.put(10, new Property("Grand Central Station", 100, 10));
     props.put(11, new Property("Kentucky Ave.",  180, 18));
     props.put(12, new Property("Broadway",       200, 20));
 
@@ -105,7 +89,7 @@ public class MonopolyBoardFactory {
 
     props.put(20, new Property("Reynolds Ave.",  320, 32));
     props.put(21, new Property("Columbia Rd.",   350, 35));
-    props.put(22, new Property("King St. Station",100,10));
+    props.put(22, new Property("King St. Station", 100, 10));
     props.put(23, new Property("17 Mile Drive",  350, 35));
     props.put(24, new Property("Lombard St.",    400, 40));
 

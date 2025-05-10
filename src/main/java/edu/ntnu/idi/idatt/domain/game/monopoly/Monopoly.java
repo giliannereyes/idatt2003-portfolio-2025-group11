@@ -1,6 +1,5 @@
 package edu.ntnu.idi.idatt.domain.game.monopoly;
 
-import edu.ntnu.idi.idatt.domain.action.monopoly.PropertyAction;
 import edu.ntnu.idi.idatt.domain.entity.*;
 import edu.ntnu.idi.idatt.domain.entity.monopoly.*;
 import edu.ntnu.idi.idatt.domain.event.common.*;
@@ -14,12 +13,13 @@ import java.util.Map;
 
 public class Monopoly extends BoardGame {
   private final Map<Player, AssetsAccount> accounts = new HashMap<>();
-  private final MonopolyBoard board;
+  private final PropertyRegistry propertyRegistry;
 
-  public Monopoly(MonopolyBoard board, List<Player> players, Dice dice, EventBus eventBus) {
+  public Monopoly(Board board, List<Player> players, Dice dice, EventBus eventBus) {
     super(board, players, dice, eventBus);
     players.forEach(player -> accounts.put(player, new AssetsAccount(player, 300)));
     this.board = board;
+    this.propertyRegistry = PropertyRegistry.getInstance();
   }
 
   @Override
@@ -89,7 +89,7 @@ public class Monopoly extends BoardGame {
   }
 
   private void handlePropertyLanding(Player player, Tile tile) {
-    board.getPropertyFor(tile).ifPresent(property -> {
+    propertyRegistry.getPropertyAt(tile).ifPresent(property -> {
       if (property.isOwned()) {
         handleRentPayment(player, property);
       } else {
