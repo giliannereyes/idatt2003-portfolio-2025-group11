@@ -1,15 +1,14 @@
 package edu.ntnu.idi.idatt.config.initializer;
 
 import edu.ntnu.idi.idatt.config.GameConfig;
+import edu.ntnu.idi.idatt.domain.entity.Board;
 import edu.ntnu.idi.idatt.domain.entity.Player;
-import edu.ntnu.idi.idatt.domain.entity.monopoly.MonopolyBoard;
 import edu.ntnu.idi.idatt.domain.event.EventBus;
-import edu.ntnu.idi.idatt.domain.event.monopoly.BuyPropertyRequestEvent;
-import edu.ntnu.idi.idatt.domain.event.monopoly.PlayerPaidRentEvent;
-import edu.ntnu.idi.idatt.domain.event.monopoly.PlayerBankruptEvent;
-import edu.ntnu.idi.idatt.domain.event.monopoly.BuyPropertyRequestHandler;
-import edu.ntnu.idi.idatt.domain.event.monopoly.PlayerPaidRentHandler;
-import edu.ntnu.idi.idatt.domain.event.monopoly.PlayerBankruptHandler;
+import edu.ntnu.idi.idatt.domain.event.common.DiceRolledEvent;
+import edu.ntnu.idi.idatt.domain.event.common.PlayerMovedEvent;
+import edu.ntnu.idi.idatt.domain.event.common.PlayerWonEvent;
+import edu.ntnu.idi.idatt.domain.event.common.TileActionEvent;
+import edu.ntnu.idi.idatt.domain.event.monopoly.*;
 import edu.ntnu.idi.idatt.domain.factory.monopoly.MonopolyBoardFactory;
 import edu.ntnu.idi.idatt.persistence.reader.PlayerFileReader;
 import edu.ntnu.idi.idatt.persistence.writer.PlayerFileWriter;
@@ -17,7 +16,7 @@ import edu.ntnu.idi.idatt.service.GameConfigService;
 import edu.ntnu.idi.idatt.service.ManualService;
 import edu.ntnu.idi.idatt.service.PlayerService;
 import edu.ntnu.idi.idatt.service.monopoly.MonopolyGameService;
-import edu.ntnu.idi.idatt.service.monopoly.MonopolyPredefinedBoardService;
+import edu.ntnu.idi.idatt.service.monopoly.MonopolyBoardPresetService;
 import edu.ntnu.idi.idatt.ui.controller.BoardConfigController;
 import edu.ntnu.idi.idatt.ui.controller.PlayerSetupController;
 import edu.ntnu.idi.idatt.ui.controller.monopoly.MonopolyController;
@@ -31,8 +30,8 @@ public class MonopolyInitializer implements GameInitializer {
   @Override
   public void initialize(AppInitializer app) {
     // core dependencies
-    GameConfig<MonopolyBoard>        config    = createConfig();
-    GameConfigService<MonopolyBoard> cs        = createConfigService(config);
+    GameConfig config = createConfig();
+    GameConfigService cs        = createConfigService(config);
     PlayerService                    ps        = createPlayerService();
     ManualService                    ms        = createManualService();
     ViewManager                      vm        = app.getViewManager();
@@ -44,15 +43,15 @@ public class MonopolyInitializer implements GameInitializer {
     MonopolyController controller = configureGame(vm, eb, cs, ms, config);
 
     // wire up event listeners
-    registerEvents(app, eb, controller);
+    registerEvents(eb, controller);
   }
 
-  private GameConfig<MonopolyBoard> createConfig() {
-    return new GameConfig<>();
+  private GameConfig createConfig() {
+    return new GameConfig();
   }
 
-  private GameConfigService<MonopolyBoard> createConfigService(GameConfig<MonopolyBoard> cfg) {
-    return new GameConfigService<>(cfg);
+  private GameConfigService createConfigService(GameConfig cfg) {
+    return new GameConfigService(cfg);
   }
 
   private PlayerService createPlayerService() {
@@ -70,7 +69,7 @@ public class MonopolyInitializer implements GameInitializer {
   private void configurePlayerSetup(
         ViewManager vm,
         PlayerService ps,
-        GameConfigService<MonopolyBoard> cs
+        GameConfigService cs
   ) {
     PlayerSetupView view     = new PlayerSetupView();
     PlayerSetupController ctrl =
@@ -81,19 +80,20 @@ public class MonopolyInitializer implements GameInitializer {
 
   private void configureBoardConfig(
         ViewManager vm,
-        GameConfigService<MonopolyBoard> cs
+        GameConfigService cs
   ) {
     MonopolyBoardFactory factory = new MonopolyBoardFactory();
-    MonopolyBoard      board   = factory.loadLargeBoard();
+    Board board = factory.loadLargeBoard();
     cs.updateBoard(board);
 
     BoardConfigView view = new BoardConfigView();
-    BoardConfigController<MonopolyBoard> ctrl =
-          new BoardConfigController<>(
+    BoardConfigController ctrl =
+          new BoardConfigController(
                 view,
-                new MonopolyPredefinedBoardService(factory),
+                new MonopolyBoardPresetService(factory),
                 vm,
-                cs
+                cs,
+                null
           );
     view.setController(ctrl);
     vm.add(view);
@@ -102,13 +102,13 @@ public class MonopolyInitializer implements GameInitializer {
   private MonopolyController configureGame(
         ViewManager vm,
         EventBus eb,
-        GameConfigService<MonopolyBoard> cs,
+        GameConfigService cs,
         ManualService ms,
-        GameConfig<MonopolyBoard> cfg
+        GameConfig cfg
   ) {
     MonopolyGameService service    = new MonopolyGameService(cfg, eb);
-    MonopolyGameView    view       = new MonopolyGameView();
-    MonopolyController  controller =
+    MonopolyGameView view       = new MonopolyGameView();
+    MonopolyController controller =
           new MonopolyController(cs, service, ms, view);
     view.setController(controller);
     vm.add(view);
@@ -116,16 +116,16 @@ public class MonopolyInitializer implements GameInitializer {
   }
 
   private void registerEvents(
-        AppInitializer app,
         EventBus eb,
         MonopolyController controller
   ) {
-    app.registerBasicEvents(controller);
-    eb.register(BuyPropertyRequestEvent.class,
-          new BuyPropertyRequestHandler(controller));
-    eb.register(PlayerPaidRentEvent.class,
-          new PlayerPaidRentHandler(controller));
-    eb.register(PlayerBankruptEvent.class,
-          new PlayerBankruptHandler(controller));
+    eb.register(DiceRolledEvent.class, controller::onDiceRolled);
+    eb.register(PlayerMovedEvent.class, controller::onPlayerMoved);
+    eb.register(TileActionEvent.class, controller::onTileAction);
+    eb.register(PlayerWonEvent.class, controller::onPlayerWon);
+    eb.register(BuyPropertyRequestEvent.class, controller::onBuyPropertyRequest);
+    eb.register(InsufficientFundsEvent.class, controller::onInsufficientFunds);
+    eb.register(PlayerPaidRentEvent.class, controller::onRentPaid);
+    eb.register(PlayerBankruptEvent.class, controller::onPlayerBankrupt);
   }
 }
