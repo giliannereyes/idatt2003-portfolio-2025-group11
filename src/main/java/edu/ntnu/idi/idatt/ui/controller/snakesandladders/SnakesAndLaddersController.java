@@ -8,6 +8,7 @@ import edu.ntnu.idi.idatt.service.GameConfigService;
 import edu.ntnu.idi.idatt.service.snakesandladders.LaddersGameService;
 import edu.ntnu.idi.idatt.ui.controller.BoardGameController;
 import edu.ntnu.idi.idatt.ui.view.snakesandladders.GameView;
+
 import java.nio.file.Path;
 import java.util.List;
 
@@ -80,9 +81,10 @@ public class SnakesAndLaddersController implements
       if (gameConfigService.isConfigComplete()) {
         view.registerBoard(gameConfigService.build().getBoard());
         List<PlayerConfig> playerConfigs = gameConfigService.build().getPlayerConfigs();
-        playerConfigs.forEach(playerConfig -> view.registerPlayerTokens(
-              playerConfig.getPlayer().getName(),
-              Path.of(playerConfig.getTokenImagePath()))
+        playerConfigs.forEach(playerConfig -> {
+                  view.registerPlayerTokens(
+                          playerConfig.getPlayer().getName(), playerConfig.getTokenImagePath());
+                }
         );
         laddersGameService.startGame();
       }

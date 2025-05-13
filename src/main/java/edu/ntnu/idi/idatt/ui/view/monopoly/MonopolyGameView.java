@@ -18,6 +18,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -93,8 +94,7 @@ public class MonopolyGameView implements View {
   public void registerPlayerToken(String playerName, String tokenPath) {
     createPlayerBox(playerName);
     updatePlayerBalance(playerName, "300.0");
-    Path path = Path.of(tokenPath);
-    playerTokenCanvas.addPlayerToken(playerName, path);
+    playerTokenCanvas.addPlayerToken(playerName, tokenPath);
   }
 
   public void setStatusLabel(String message) {

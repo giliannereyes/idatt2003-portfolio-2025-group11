@@ -16,15 +16,15 @@ public class PlayerTokenCanvas {
         return tokenPane;
     }
 
-    public void addPlayerToken(String playerName, Path imagePath) {
-        InputStream is = getClass().getResourceAsStream(imagePath.toString());
+    public void addPlayerToken(String playerName, String imagePath) {
+        InputStream is = getClass().getResourceAsStream(imagePath);
         if (is == null) {
             throw new RuntimeException("Path to image for player token not found: " + imagePath);
         } else {
             Image tokenImage = new Image(is, 30, 30, true, true);
             ImageView token = new ImageView(tokenImage);
             token.setFitWidth(30);
-            token.setFitHeight(30);
+            token.setFitHeight(60);
             playerTokens.put(playerName, token);
             tokenPane.getChildren().add(token);
         }

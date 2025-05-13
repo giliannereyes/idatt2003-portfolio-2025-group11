@@ -22,9 +22,9 @@ public class DiceCanvas extends StackPane {
         dice2 = new ImageView();
         // Resize the dice images
         dice1.setFitWidth(width / 2);
-        dice1.setFitHeight(height);
+        dice1.setFitHeight(height / 2);
         dice2.setFitWidth(width / 2);
-        dice2.setFitHeight(height);
+        dice2.setFitHeight(height / 2);
         HBox diceBox = new HBox(10);
         diceBox.setAlignment(Pos.CENTER);
         diceBox.getChildren().addAll(dice1, dice2);
