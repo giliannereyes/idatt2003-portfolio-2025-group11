@@ -1,9 +1,31 @@
+background {
+    -fx-background-color: #f0f8ff;
+    -fx-padding: 15px;
+}
+
 .board-canvas {
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 20, 0.5, 0, 0);
     -fx-border-color: #333;
     -fx-border-width: 3px;
     -fx-border-radius: 5px;
     -fx-background-radius: 5px;
+}
+
+.title-text {
+    -fx-font-size: 35px;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+}
+
+.status-text {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+}
+
+.centered-container {
+    -fx-alignment: center;
+    -fx-padding: 20px;
 }
 
 .button {
@@ -144,4 +166,10 @@
 /* optional focus ring */
 .radio-button:focused .radio {
     -fx-effect: dropshadow(gaussian, rgba(74,144,226,0.5), 4, 0.3, 0, 0);
+}
+
+/* Root background, font family */
+#root-pane {
+    -fx-background-color: #f0f2f5;
+    -fx-font-family: "Segoe UI", sans-serif;
 }

@@ -1,6 +1,6 @@
 package edu.ntnu.idi.idatt.config;
 
-import edu.ntnu.idi.idatt.model.entities.Player;
+import edu.ntnu.idi.idatt.domain.entity.Player;
 import edu.ntnu.idi.idatt.utils.Validation;
 
 /**
@@ -13,8 +13,8 @@ import edu.ntnu.idi.idatt.utils.Validation;
  * @author Gilianne Reyes
  */
 public class PlayerConfig {
-    Player player;
-    String tokenImagePath;
+    private final Player player;
+    private final String tokenImagePath;
 
     /**
      * Constructs a PlayerConfig instance.
