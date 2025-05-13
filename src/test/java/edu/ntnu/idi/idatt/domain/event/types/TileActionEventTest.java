@@ -26,7 +26,7 @@ public class TileActionEventTest {
         Player player = new Player("Player A");
         Tile tile = new Tile(1, 0, 0);
         TileActionEvent event = new TileActionEvent(player, tile);
-        assertEquals(player, event.getPlayer());
-        assertEquals(tile, event.getTile());
+        assertEquals(player, event.player());
+        assertEquals(tile, event.tile());
     }
 }

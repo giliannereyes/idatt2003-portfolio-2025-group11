@@ -26,8 +26,8 @@ public class DiceRolledEventTest {
         int roll1 = 5;
         int roll2 = 3;
         DiceRolledEvent diceRolledEvent = new DiceRolledEvent(player, roll1, roll2);
-        assertEquals(player, diceRolledEvent.getPlayer());
-        assertEquals(roll1, diceRolledEvent.getRoll1());
-        assertEquals(roll2, diceRolledEvent.getRoll2());
+        assertEquals(player, diceRolledEvent.player());
+        assertEquals(roll1, diceRolledEvent.roll1());
+        assertEquals(roll2, diceRolledEvent.roll2());
     }
 }

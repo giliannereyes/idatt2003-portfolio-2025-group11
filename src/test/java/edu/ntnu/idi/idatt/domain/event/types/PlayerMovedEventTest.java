@@ -27,8 +27,8 @@ public class PlayerMovedEventTest {
         Tile fromTile = new Tile(1,0,0);
         Tile toTile= new Tile(2,1,0);
         PlayerMovedEvent event = new PlayerMovedEvent(player, fromTile, toTile);
-        assertEquals(player, event.getPlayer());
-        assertEquals(fromTile, event.getFromTile());
-        assertEquals(toTile, event.getDestinationTile());
+        assertEquals(player, event.player());
+        assertEquals(fromTile, event.fromTile());
+        assertEquals(toTile, event.destinationTile());
     }
 }
