@@ -1,0 +1,15 @@
+Monopoly Game Manual
+
+Objective:
+Become the wealthiest player by buying properties, collecting rent, and avoiding bankruptcy.
+
+Game Setup:
+- 2–4 players.
+- Each player starts with $500.
+- Players roll two dice and move clockwise around the board.
+
+...
+
+Controls:
+- Click “Throw Dice” to take your turn.
+- Click “Monopoly” (this title) to open this manual again.

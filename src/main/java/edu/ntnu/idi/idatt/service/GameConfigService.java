@@ -1,31 +1,30 @@
-package edu.ntnu.idi.idatt.service;
+  package edu.ntnu.idi.idatt.service;
 
-import edu.ntnu.idi.idatt.config.GameConfig;
-import edu.ntnu.idi.idatt.config.PlayerConfig;
-import edu.ntnu.idi.idatt.model.entities.Board;
+  import edu.ntnu.idi.idatt.config.GameConfig;
+  import edu.ntnu.idi.idatt.config.PlayerConfig;
+  import edu.ntnu.idi.idatt.domain.entity.Board;
+  import java.util.List;
 
-import java.util.List;
-
-public class GameConfigService {
+  public class GameConfigService {
     private final GameConfig gameConfig;
 
     public GameConfigService(GameConfig gameConfig) {
-        this.gameConfig = gameConfig;
+      this.gameConfig = gameConfig;
     }
 
-    public GameConfig getGameConfig() {
-        return gameConfig;
+    public GameConfig build() {
+      return gameConfig;
     }
 
     public void updateBoard(Board board) {
-        gameConfig.setBoard(board);
+      gameConfig.setBoard(board);
     }
 
     public void updatePlayerConfigs(List<PlayerConfig> playerConfigs) {
-        gameConfig.setPlayerConfigs(playerConfigs);
+      gameConfig.setPlayerConfigs(playerConfigs);
     }
 
     public boolean isConfigComplete() {
-        return gameConfig.isComplete();
+      return gameConfig.isComplete();
     }
-}
+  }
