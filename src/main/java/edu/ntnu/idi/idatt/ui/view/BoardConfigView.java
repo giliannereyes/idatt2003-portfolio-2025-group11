@@ -7,6 +7,9 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
+
+import java.io.File;
 import java.util.Objects;
 
 /**
@@ -21,13 +24,15 @@ import java.util.Objects;
 public class BoardConfigView implements View {
   protected final VBox root;
   protected final ToggleGroup boardToggleGroup;
-  protected BoardConfigController<?> controller;
+  protected BoardConfigController controller;
   protected Label selectedBoardLabel;
   private final VBox boardSelectionBox;
   private final Button startGameButton;
   private final Text titleText;
   private final Text descriptionText;
   private final Text placeholderText;
+  Button loadBoardButton;
+  Button saveBoardButton;
 
   /**
    * Constructs a BoardSetupView instance.
@@ -42,6 +47,8 @@ public class BoardConfigView implements View {
     titleText = new Text("Board Configuration");
     descriptionText = new Text("Select a board configuration for the game.");
     placeholderText = new Text("An error occurred while loading the board options!");
+    loadBoardButton = new Button("Load Board from JSON");
+    saveBoardButton = new Button("Save Board to JSON");
     boardSelectionBox.getChildren().add(placeholderText);
     root.getStylesheets()
           .add(Objects.requireNonNull(getClass()
@@ -54,7 +61,7 @@ public class BoardConfigView implements View {
    *
    * @param controller is the controller to set for this view.
    */
-  public void setController(BoardConfigController<?> controller) {
+  public void setController(BoardConfigController controller) {
     this.controller = controller;
   }
 
@@ -77,12 +84,16 @@ public class BoardConfigView implements View {
     root.setAlignment(Pos.CENTER);
     boardSelectionBox.setAlignment(Pos.CENTER);
     startGameButton.setOnAction(e -> controller.registerBoardSelection());
+    loadBoardButton.setOnAction(e -> onLoadFromFile());
+    saveBoardButton.setOnAction(e -> onSaveToFile());
     root.getChildren().addAll(
           titleText,
           descriptionText,
+          loadBoardButton,
           selectedBoardLabel,
           boardSelectionBox,
-          startGameButton
+          startGameButton,
+          saveBoardButton
     );
   }
 
@@ -107,6 +118,11 @@ public class BoardConfigView implements View {
     boardSelectionBox.getChildren().add(boardOption);
   }
 
+  public void updateSelectedBoard(String boardName) {
+    boardToggleGroup.selectToggle(null);
+    selectedBoardLabel.setText("Selected: " + boardName);
+  }
+
   /**
    * Displays an alert with the given title and content.
    *
@@ -119,5 +135,29 @@ public class BoardConfigView implements View {
     alert.setHeaderText(null);
     alert.setContentText(content);
     alert.showAndWait();
+  }
+
+  private void onLoadFromFile() {
+    FileChooser chooser = new FileChooser();
+    chooser.setTitle("Load Board JSON File");
+    chooser.getExtensionFilters().add(
+          new FileChooser.ExtensionFilter("JSON Files", "*.json")
+    );
+    File file = chooser.showOpenDialog(getRoot().getScene().getWindow());
+    if (file != null) {
+      controller.loadBoardConfiguration(file);
+    }
+  }
+
+  private void onSaveToFile() {
+    FileChooser chooser = new FileChooser();
+    chooser.setTitle("Save Board Configuration");
+    chooser.getExtensionFilters().add(
+          new FileChooser.ExtensionFilter("JSON Files", "*.json")
+    );
+    File file = chooser.showSaveDialog(getRoot().getScene().getWindow());
+    if (file != null) {
+      controller.saveBoardConfiguration(file);
+    }
   }
 }
