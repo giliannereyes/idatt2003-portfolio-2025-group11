@@ -3,21 +3,20 @@
   import edu.ntnu.idi.idatt.config.GameConfig;
   import edu.ntnu.idi.idatt.config.PlayerConfig;
   import edu.ntnu.idi.idatt.domain.entity.Board;
-
   import java.util.List;
 
-  public class GameConfigService<B extends Board> {
-    private final GameConfig<B> gameConfig;
+  public class GameConfigService {
+    private final GameConfig gameConfig;
 
-    public GameConfigService(GameConfig<B> gameConfig) {
+    public GameConfigService(GameConfig gameConfig) {
       this.gameConfig = gameConfig;
     }
 
-    public GameConfig<B> build() {
+    public GameConfig build() {
       return gameConfig;
     }
 
-    public void updateBoard(B board) {
+    public void updateBoard(Board board) {
       gameConfig.setBoard(board);
     }
 

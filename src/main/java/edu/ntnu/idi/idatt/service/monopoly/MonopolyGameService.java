@@ -4,22 +4,20 @@ import edu.ntnu.idi.idatt.config.GameConfig;
 import edu.ntnu.idi.idatt.config.PlayerConfig;
 import edu.ntnu.idi.idatt.domain.entity.Dice;
 import edu.ntnu.idi.idatt.domain.entity.Player;
-import edu.ntnu.idi.idatt.domain.entity.monopoly.MonopolyBoard;
 import edu.ntnu.idi.idatt.domain.entity.monopoly.Property;
 import edu.ntnu.idi.idatt.domain.event.EventBus;
 import edu.ntnu.idi.idatt.domain.game.monopoly.Monopoly;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service to initialize and drive a Monopoly Lite game.
  */
 public class MonopolyGameService {
-  private final GameConfig<MonopolyBoard> config;
+  private final GameConfig config;
   private Monopoly game;
   private final EventBus eventBus;
 
-  public MonopolyGameService(GameConfig<MonopolyBoard> config, EventBus eventBus) {
+  public MonopolyGameService(GameConfig config, EventBus eventBus) {
     this.config   = config;
     this.eventBus = eventBus;
   }

@@ -13,9 +13,9 @@ import java.util.List;
  * @since 0.1
  * @author Gilianne Reyes
  */
-public class GameConfig<B extends Board> {
+public class GameConfig {
   List<PlayerConfig> playerConfigs;
-  B board;
+  Board board;
 
   /**
    * Constructs a GameConfig instance.
@@ -43,7 +43,7 @@ public class GameConfig<B extends Board> {
    *
    * @throws IllegalArgumentException if the board configuration is null.
    */
-  public void setBoard(B board) {
+  public void setBoard(Board board) {
     Validation.validateNonNull(board, "Board configuration");
     this.board = board;
   }
@@ -62,7 +62,7 @@ public class GameConfig<B extends Board> {
    *
    * @return the board configuration.
    */
-  public B getBoard() {
+  public Board getBoard() {
     return board;
   }
 

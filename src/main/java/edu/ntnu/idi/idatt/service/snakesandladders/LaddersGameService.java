@@ -2,7 +2,6 @@ package edu.ntnu.idi.idatt.service.snakesandladders;
 
 import edu.ntnu.idi.idatt.config.GameConfig;
 import edu.ntnu.idi.idatt.config.PlayerConfig;
-import edu.ntnu.idi.idatt.domain.entity.Board;
 import edu.ntnu.idi.idatt.domain.entity.Dice;
 import edu.ntnu.idi.idatt.domain.entity.Player;
 import edu.ntnu.idi.idatt.domain.event.EventBus;
@@ -10,12 +9,12 @@ import edu.ntnu.idi.idatt.domain.game.snakesandladders.SnakesAndLadders;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GameService {
-  private final GameConfig<Board> config;
+public class LaddersGameService {
+  private final GameConfig config;
   private final EventBus eventBus;
   private SnakesAndLadders game;
 
-  public GameService(GameConfig<Board> config, EventBus eventBus) {
+  public LaddersGameService(GameConfig config, EventBus eventBus) {
     this.config = config;
     this.eventBus = eventBus;
   }

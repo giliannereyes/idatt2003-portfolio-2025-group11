@@ -2,29 +2,37 @@ package edu.ntnu.idi.idatt.ui.controller.monopoly;
 
 import edu.ntnu.idi.idatt.config.GameConfig;
 import edu.ntnu.idi.idatt.domain.entity.monopoly.AssetsAccount;
-import edu.ntnu.idi.idatt.domain.entity.monopoly.MonopolyBoard;
 import edu.ntnu.idi.idatt.domain.entity.monopoly.Property;
+import edu.ntnu.idi.idatt.domain.event.common.*;
+import edu.ntnu.idi.idatt.domain.event.monopoly.*;
 import edu.ntnu.idi.idatt.service.GameConfigService;
 import edu.ntnu.idi.idatt.service.ManualService;
 import edu.ntnu.idi.idatt.service.monopoly.MonopolyGameService;
-import edu.ntnu.idi.idatt.domain.action.TileAction;
 import edu.ntnu.idi.idatt.domain.entity.Player;
 import edu.ntnu.idi.idatt.domain.entity.Tile;
 import edu.ntnu.idi.idatt.ui.controller.BoardGameController;
-import edu.ntnu.idi.idatt.domain.event.common.GameEventListener;
-import edu.ntnu.idi.idatt.domain.event.monopoly.MonopolyEventListener;
 import edu.ntnu.idi.idatt.ui.view.monopoly.MonopolyGameView;
 
 /**
  * Controller for Monopoly Lite, bridging view, service, and events.
  */
-public class MonopolyController implements BoardGameController, GameEventListener, MonopolyEventListener {
-  private final GameConfigService<MonopolyBoard> configSvc;
+public class MonopolyController implements
+      BoardGameController,
+      DiceRolledListener,
+      PlayerMovedListener,
+      PlayerWonListener,
+      TileActionListener,
+      BuyPropertyRequestListener,
+      InsufficientFundsListener,
+      PlayerPaidRentListener,
+      PlayerBankruptListener
+{
+  private final GameConfigService configSvc;
   private final MonopolyGameService gameSvc;
   private final MonopolyGameView view;
   private final ManualService manualService;
 
-  public MonopolyController(GameConfigService<MonopolyBoard> configSvc,
+  public MonopolyController(GameConfigService configSvc,
                             MonopolyGameService gameSvc,
                             ManualService manualService,
                             MonopolyGameView view) {
@@ -41,7 +49,7 @@ public class MonopolyController implements BoardGameController, GameEventListene
         throw new IllegalStateException("Configuration incomplete");
       }
       view.setUserManualText(manualService.loadManualText("/userManuals/monopoly_user_manual.txt"));
-      GameConfig<MonopolyBoard> config = configSvc.build();
+      GameConfig config = configSvc.build();
       view.registerBoard(config.getBoard());
       config.getPlayerConfigs().forEach(pc -> {
             view.registerPlayerToken(pc.getPlayer().getName(),
@@ -60,13 +68,15 @@ public class MonopolyController implements BoardGameController, GameEventListene
   }
 
   @Override
-  public void onDiceRolled(Player player, int dice1, int dice2) {
-    view.updateDice(dice1, dice2);
-
+  public void onDiceRolled(DiceRolledEvent e) {
+    view.updateDice(e.roll1(), e.roll2());
   }
 
   @Override
-  public void onPlayerMoved(Player player, Tile from, Tile to) {
+  public void onPlayerMoved(PlayerMovedEvent e) {
+    Player player = e.player();
+    Tile from = e.fromTile();
+    Tile to = e.destinationTile();
     view.setStatusLabel(
           String.format("%s moved from %d to %d",
                 player.getName(), from.getTileId(), to.getTileId())
@@ -75,19 +85,28 @@ public class MonopolyController implements BoardGameController, GameEventListene
   }
 
   @Override
-  public void onTileAction(Player player, TileAction action) {
-    view.setStatusLabel(
-          String.format("%s landed on %s", player.getName(), action.getActionType())
-    );
+  public void onTileAction(TileActionEvent e) {
+    /*
+    e.getTile().getLandAction().ifPresent({
+          action -> {
+            view.setStatusLabel(
+                  String.format("%s landed on %s", e.getPlayer().getName(), action.getActionType())
+            );
+          }
+    });
+     */
   }
 
   @Override
-  public void onPlayerWon(Player player) {
-    view.onPlayerWon(player.getName());
+  public void onPlayerWon(PlayerWonEvent e) {
+    view.onPlayerWon(e.winner().getName());
   }
 
   @Override
-  public void onBuyPropertyRequest(Player player, Property property, AssetsAccount account) {
+  public void onBuyPropertyRequest(BuyPropertyRequestEvent e) {
+    Player player = e.player();
+    Property property = e.property();
+    AssetsAccount account = e.account();
     boolean buy = view.promptYesNo(
           "Player " + player.getName(),
           "Pay $" + property.getCost() + "to buy " + property.getName() + "?"
@@ -108,14 +127,21 @@ public class MonopolyController implements BoardGameController, GameEventListene
   }
 
   @Override
-  public void onInsufficientFunds(Player player, Property property) {
+  public void onInsufficientFunds(InsufficientFundsEvent e) {
+    /*
     view.setStatusLabel(
-          String.format("%s does not have enough money to buy %s", player.getName(), property.getName())
+          String.format("%s does not have enough money to buy %s", e.getPlayer().getName(), property.getName())
     );
+     */
   }
 
   @Override
-  public void onRentPaid(Player tenant, Player landlord, double rent, double tenantBalance, double landlordBalance) {
+  public void onRentPaid(PlayerPaidRentEvent e) {
+    Player tenant = e.tenant();
+    Player landlord = e.landlord();
+    double rent = e.rent();
+    double tenantBalance = e.tenantBalance();
+    double landlordBalance = e.landlordBalance();
     view.setStatusLabel(
           String.format("%s paid $%.2f rent to %s", tenant.getName(), rent, landlord.getName())
     );
@@ -126,7 +152,8 @@ public class MonopolyController implements BoardGameController, GameEventListene
   }
 
   @Override
-  public void onPlayerBankrupt(Player player) {
+  public void onPlayerBankrupt(PlayerBankruptEvent e) {
+    Player player = e.player();
     view.setStatusLabel(
           String.format("%s is bankrupt and out of the game!", player.getName())
     );

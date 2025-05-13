@@ -2,13 +2,13 @@ package edu.ntnu.idi.idatt.service.snakesandladders;
 
 import edu.ntnu.idi.idatt.domain.entity.Board;
 import edu.ntnu.idi.idatt.domain.factory.snakesandladders.SnakesAndLaddersFactory;
-import edu.ntnu.idi.idatt.service.FileBoardService;
-import edu.ntnu.idi.idatt.service.PredefinedBoardService;
+import edu.ntnu.idi.idatt.service.BoardPersistenceService;
+import edu.ntnu.idi.idatt.service.BoardPresetService;
 import java.io.File;
 import java.util.Map;
 import java.util.Optional;
 
-public class LaddersGameBoardService implements FileBoardService<Board>, PredefinedBoardService<Board> {
+public class LaddersGameBoardService implements BoardPersistenceService, BoardPresetService {
   private final SnakesAndLaddersFactory factory;
 
   public LaddersGameBoardService(SnakesAndLaddersFactory factory) {
