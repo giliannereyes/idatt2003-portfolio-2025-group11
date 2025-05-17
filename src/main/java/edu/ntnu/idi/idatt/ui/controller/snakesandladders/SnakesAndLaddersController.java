@@ -1,6 +1,7 @@
 package edu.ntnu.idi.idatt.ui.controller.snakesandladders;
 
 import edu.ntnu.idi.idatt.config.PlayerConfig;
+import edu.ntnu.idi.idatt.domain.action.TileAction;
 import edu.ntnu.idi.idatt.domain.entity.Player;
 import edu.ntnu.idi.idatt.domain.entity.Tile;
 import edu.ntnu.idi.idatt.domain.event.common.*;
@@ -8,8 +9,8 @@ import edu.ntnu.idi.idatt.service.GameConfigService;
 import edu.ntnu.idi.idatt.service.snakesandladders.LaddersGameService;
 import edu.ntnu.idi.idatt.ui.controller.BoardGameController;
 import edu.ntnu.idi.idatt.ui.view.snakesandladders.GameView;
-
-import java.nio.file.Path;
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
 import java.util.List;
 
 public class SnakesAndLaddersController implements
@@ -50,7 +51,8 @@ public class SnakesAndLaddersController implements
 
   @Override
   public void onTileAction(TileActionEvent e) {
-    /*
+    Player player = e.player();
+    TileAction action = e.tile().getLandAction().orElse(null);
     PauseTransition afterAction = new PauseTransition(Duration.seconds(2.0));
     afterAction.setOnFinished(evt -> {
       view.setStatusLabel("Player " + player.getName() + " landed on a" + action.getActionType());
@@ -60,7 +62,6 @@ public class SnakesAndLaddersController implements
       ));
     });
     afterAction.play();
-     */
   }
 
   public void onDiceClicked() {
