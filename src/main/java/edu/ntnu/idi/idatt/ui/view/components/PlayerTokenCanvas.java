@@ -1,6 +1,5 @@
 package edu.ntnu.idi.idatt.ui.view.components;
 
-import edu.ntnu.idi.idatt.domain.entity.Player;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.image.Image;
@@ -15,7 +14,6 @@ public class PlayerTokenCanvas {
     private final Pane tokenPane = new Pane();
     private final Map<String, ImageView> playerTokens = new HashMap<>();
     private final Map<String, double[]> playerPosition = new HashMap<>();
-    private Map<String, Player> players = new HashMap<>();
 
     public Pane getTokenPane() {
         return tokenPane;
@@ -48,8 +46,6 @@ public class PlayerTokenCanvas {
 
         double targetX = gridX * tileW + tileW / 2 - token.getFitWidth() / 2;
         double targetY = (totalRows - gridY - 1) * tileH + tileH / 2 - token.getFitHeight() / 2;
-
-        Player player = players.get(playerName);
 
         double[] currentPos = playerPosition.getOrDefault(playerName, new double[]{0, 0});
         double currentX = currentPos[0];
