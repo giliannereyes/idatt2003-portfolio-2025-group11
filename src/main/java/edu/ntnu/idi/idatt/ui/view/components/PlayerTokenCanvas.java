@@ -51,47 +51,36 @@ public class PlayerTokenCanvas {
 
         Player player = players.get(playerName);
 
-        if (player != null && player.getCurrentTile().getLandAction().isPresent()) {
-            token.setLayoutX(targetX);
-            token.setLayoutY(targetY);
-        } else {
-            double[] currentPos = playerPosition.getOrDefault(playerName, new double[]{0, 0});
-            double currentX = currentPos[0];
-            double currentY = currentPos[1];
+        double[] currentPos = playerPosition.getOrDefault(playerName, new double[]{0, 0});
+        double currentX = currentPos[0];
+        double currentY = currentPos[1];
 
-            double startX = token.getLayoutX();
-            double startY = token.getLayoutY();
+        double startX = token.getLayoutX();
+        double startY = token.getLayoutY();
 
-            double diffX = targetX - startX;
-            double diffY = targetY - startY;
+        double diffX = targetX - startX;
+        double diffY = targetY - startY;
 
-            int steps = 10;
-            double stepX = diffX / steps;
-            double stepY = diffY / steps;
+        int steps = 10;
+        double stepX = diffX / steps;
+        double stepY = diffY / steps;
 
-            Timeline timeline = new Timeline();
-            for (int i = 0; i < steps; i++) {
-                final int step = i;
-                KeyFrame keyFrame = new KeyFrame(Duration.millis(70 * i), event -> {
-                    double newX = startX + step * 1.12*stepX;
-                    double newY = startY + step * 1.12*stepY;
-                    token.setLayoutX(newX);
-                    token.setLayoutY(newY);
-                });
-                timeline.getKeyFrames().add(keyFrame);
-            }
-
-            timeline.setCycleCount(1);
-            timeline.play();
-            timeline.setOnFinished(event -> {
-                // Check if the destination tile has a LandAction
-                if (player != null && player.getCurrentTile().getLandAction().isPresent()) {
-                    System.out.println("Executing action for player " + playerName + " on destination tile.");
-                    token.setLayoutX(targetX);
-                    token.setLayoutY(targetY);
-                }
+        Timeline timeline = new Timeline();
+        for (int i = 0; i < steps; i++) {
+            final int step = i;
+            KeyFrame keyFrame = new KeyFrame(Duration.millis(70 * i), event -> {
+                double newX = startX + step * 1.12 * stepX;
+                double newY = startY + step * 1.12 * stepY;
+                token.setLayoutX(newX);
+                token.setLayoutY(newY);
             });
-            playerPosition.put(playerName, new double[]{gridX, gridY});
+            timeline.getKeyFrames().add(keyFrame);
         }
+
+        timeline.setCycleCount(1);
+        timeline.play();
+        timeline.setOnFinished(event -> {
+            playerPosition.put(playerName, new double[]{gridX, gridY});
+        });
     }
 }
