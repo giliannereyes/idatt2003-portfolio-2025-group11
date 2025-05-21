@@ -10,10 +10,10 @@ package edu.ntnu.idi.idatt.domain.event;
  * @author Gilianne Reyes
  */
 public interface EventHandler<E extends GameEvent> {
-    /**
-     * Handles an event.
-     *
-     * @param event is the event to handle.
-     */
-    void handle(E event);
+  /**
+   * Handles an event.
+   *
+   * @param event is the event to handle.
+   */
+  void handle(E event);
 }
