@@ -16,9 +16,10 @@ import java.util.stream.IntStream;
  * A service class for managing player-related operations such
  * as loading and saving player data.
  *
- * @version 0.1
+ * @version 0.2
  * @since 0.1
  * @author Gilianne Reyes
+ * @author Trang Duong
  */
 public class PlayerService {
   private final PlayerFileReader fileReader;
@@ -106,14 +107,19 @@ public class PlayerService {
    * @return true if the data is valid, false otherwise
    */
   public boolean isPlayerConfigDataValid(List<String> playerNames, List<String> tokenNames) {
-    if (playerNames.size() != tokenNames.size()) {
-      return false;
+    try {
+      if (playerNames.size() != tokenNames.size()) {
+        return false;
+      }
+
+      Set<String> seenNames = new HashSet<>();
+      Set<String> seenTokens = new HashSet<>();
+      return IntStream.range(0, playerNames.size()).allMatch(i ->
+              isValidEntry(playerNames.get(i), tokenNames.get(i), seenNames, seenTokens)
+      );
+    } catch (Exception e) {
+      throw new RuntimeException("Error validating player configs: " + e.getMessage());
     }
-    Set<String> seenNames = new HashSet<>();
-    Set<String> seenTokens = new HashSet<>();
-    return IntStream.range(0, playerNames.size()).allMatch(i ->
-          isValidEntry(playerNames.get(i), tokenNames.get(i), seenNames, seenTokens)
-    );
   }
 
   /**
