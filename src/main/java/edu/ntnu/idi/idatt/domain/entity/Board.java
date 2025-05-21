@@ -5,6 +5,7 @@ import edu.ntnu.idi.idatt.utils.Validation;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * The Board class represents the game board. It contains a map of tiles and a start tile,
@@ -86,6 +87,40 @@ public class Board {
      */
     public Tile getStartTile() {
         return getTile(1);
+    }
+
+
+    /**
+     * Retrieves the last tile in the grid based on the total number of rows and columns.
+     * It also checks if there is a next tile after the last one and logs a message if none exists.
+     *
+     * @return the last {@link Tile} in the grid.
+     */
+    public Tile getLastTile() {
+        Tile lastTile = getTile(rows * columns);
+        Optional<Tile> nextTile = getNextTile(lastTile);
+        if (nextTile.isEmpty()) {
+            System.out.println("No next tile exists. This is the last tile.");
+        }
+        return lastTile;
+    }
+
+    /**
+     * Returns the next tile in the grid based on the current tile's ID.
+     * If the current tile is the last one, it returns an empty {@link Optional}.
+     *
+     * @param currentTile the current {@link Tile} from which to find the next tile.
+     * @return an {@link Optional} containing the next {@link Tile}, or empty if the current tile is the last one.
+     */
+    public Optional<Tile> getNextTile(Tile currentTile) {
+        int currentTileId = currentTile.getTileId();
+        int nextTileId = currentTileId + 1;
+
+        if (nextTileId > rows * columns) {
+            return Optional.empty();
+        } else {
+            return Optional.of(getTile(nextTileId));
+        }
     }
 
     /**
