@@ -11,12 +11,10 @@ import edu.ntnu.idi.idatt.domain.enums.TileColorType;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
-import java.io.InputStream;
 import java.util.Map;
 import java.util.Optional;
 
@@ -66,7 +64,12 @@ public class BoardCanvas extends Canvas {
                         drawActionConnector(gc, tile, action, tileWidth, tileHeight, rows)
                 )
         );
-        addStarToLastTile(rows, cols, "/images/star.png");
+
+        Tile finalTile = board.getLastTile();
+        double tileX = finalTile.getX() * tileWidth;
+        double tileY = (rows - 1 - finalTile.getY()) * tileHeight;
+
+        drawStarOnTile(gc, tileX, tileY, tileWidth, tileHeight);
     }
 
     /**
@@ -163,49 +166,68 @@ public class BoardCanvas extends Canvas {
                 endCenter[1] -= dy * CONNECTOR_MARGIN;
             }
             switch (action.getActionType()) {
-                case "LadderAction" -> gc.setStroke(Color.DARKGREEN);
-                case "SnakeAction"  -> gc.setStroke(Color.DARKRED);
-                default             -> gc.setStroke(Color.BLUE);
+                case "LadderAction":
+                    gc.setStroke(Color.DARKGREEN);
+                    drawLadder(gc, startCenter[0], startCenter[1], endCenter[0], endCenter[1]);
+                    break;
+                case "SnakeAction":
+                     gc.setStroke(Color.DARKRED);
+                    drawLadder(gc, startCenter[0], startCenter[1], endCenter[0], endCenter[1]);
+                    break;
             }
+        }
+    }
+
+    /**
+     * Draws a ladder between two points on the canvas using the specified GraphicsContext.
+     * The ladder consists of two vertical lines and a number of horizontal rungs.
+     *
+     * @param gc the GraphicsContext used to draw on the canvas
+     * @param startX the x-coordinate of the ladder's starting point
+     * @param startY the y-coordinate of the ladder's starting point
+     * @param endX the x-coordinate of the ladder's ending point
+     * @param endY the y-coordinate of the ladder's ending point
+     */
+    private void drawLadder(GraphicsContext gc, double startX, double startY, double endX, double endY) {
+        double dx = endX - startX;
+        double dy = endY - startY;
+        double len = Math.sqrt(dx * dx + dy * dy);
+        if (len > 0) {
+            dx /= len;
+            dy /= len;
+
+            double offset = 10;
+            double leftX = startX - offset;
+            double rightX = startX + offset;
+            double leftY = startY;
+            double rightY = startY;
+
             gc.setLineWidth(5);
-            gc.strokeLine(startCenter[0], startCenter[1], endCenter[0], endCenter[1]);
+            gc.strokeLine(leftX, leftY, leftX + dx * len, leftY + dy * len);
+            gc.strokeLine(rightX, rightY, rightX + dx * len, rightY + dy * len);
+
+            int numRungs = 5;
+            for (int i = 1; i < numRungs; i++) {
+                double rungX = startX + (dx * len * i) / numRungs;
+                double rungY = startY + (dy * len * i) / numRungs;
+                double rungOffsetX = 10;
+                gc.strokeLine(rungX - rungOffsetX, rungY, rungX + rungOffsetX, rungY);
+            }
         }
     }
 
-    public void addStarToLastTile(int totalRows, int totalCols, String starImagePath) {
-        InputStream is = getClass().getResourceAsStream(starImagePath);
-        if (is == null) {
-            throw new RuntimeException("Path to image for star token not found: " + starImagePath);
-        }
 
-        Image starImage = new Image(is, 30, 30, true, true);
-        ImageView star = new ImageView(starImage);
-        star.setFitWidth(30);
-        star.setFitHeight(30);
-
-        tokenPane.layoutBoundsProperty().addListener((observable, oldValue, newValue) -> {
-            System.err.println("tokenPane size changed: " + newValue);
-            placeStarOnBoard(totalRows, totalCols, star);
-        });
-    }
-
-    private void placeStarOnBoard(int totalRows, int totalCols, ImageView star) {
-        double paneW = tokenPane.getWidth();
-        double paneH = tokenPane.getHeight();
-
-        if (paneW == 0 || paneH == 0) {
-            throw new IllegalStateException("tokenPane size is 0, cannot place the star.");
-        }
-
-        double tileW = paneW / totalCols;
-        double tileH = paneH / totalRows;
-
-        double targetX = (totalCols - 1) * tileW + tileW / 2 - star.getFitWidth() / 2;
-        double targetY = (totalRows - 1) * tileH + tileH / 2 - star.getFitHeight() / 2;
-
-        star.setLayoutX(targetX);
-        star.setLayoutY(targetY);
-
-        tokenPane.getChildren().add(star);
+    /**
+     * Draws a star image on a tile at the specified position and size.
+     *
+     * @param gc the GraphicsContext used to draw on the canvas
+     * @param x the x-coordinate of the top-left corner of the tile
+     * @param y the y-coordinate of the top-left corner of the tile
+     * @param tileWidth the width of the tile
+     * @param tileHeight the height of the tile
+     */
+    private void drawStarOnTile(GraphicsContext gc, double x, double y, double tileWidth, double tileHeight) {
+        Image starImage = new Image("/images/star.png");
+        gc.drawImage(starImage, x, y, tileWidth, tileHeight);
     }
 }
