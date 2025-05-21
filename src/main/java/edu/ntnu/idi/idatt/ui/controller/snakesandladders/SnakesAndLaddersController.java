@@ -13,6 +13,15 @@ import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 import java.util.List;
 
+/**
+ * Controller class for managing the Snakes and Ladders game logic and interactions.
+ * Implements various event listeners to respond to game events and update the view accordingly.
+ *
+ * @version 0.2
+ * @since 0.1
+ * @author Gilianne Reyes
+ * @author Trang Duong
+ */
 public class SnakesAndLaddersController implements
       BoardGameController,
       DiceRolledListener,
@@ -24,6 +33,13 @@ public class SnakesAndLaddersController implements
   GameConfigService gameConfigService;
   LaddersGameService laddersGameService;
 
+  /**
+   * Constructs a new SnakesAndLaddersController with the given services and view.
+   *
+   * @param gameConfigService the service managing game configuration
+   * @param laddersGameService the service handling game logic for Snakes and Ladders
+   * @param view the view interface for updating the UI
+   */
   public SnakesAndLaddersController(
         GameConfigService gameConfigService, LaddersGameService laddersGameService, GameView view
   ) {
@@ -32,11 +48,23 @@ public class SnakesAndLaddersController implements
     this.view = view;
   }
 
+  /**
+   * Handles the event when the dice is rolled.
+   * Updates the view with the result of the dice roll.
+   *
+   * @param e the dice rolled event containing the roll values
+   */
   @Override
   public void onDiceRolled(DiceRolledEvent e) {
     view.updateDice(e.roll1(), e.roll2());
   }
 
+  /**
+   * Handles the event when a player moves.
+   * Updates the status label and moves the player's token on the board.
+   *
+   * @param e the player moved event containing player and tile information
+   */
   @Override
   public void onPlayerMoved(PlayerMovedEvent e) {
     Player player = e.player();
@@ -49,6 +77,12 @@ public class SnakesAndLaddersController implements
     view.movePlayerToken(player.getName(), destinationTile.getX(), destinationTile.getY());
   }
 
+  /**
+   * Handles the event when a player moves.
+   * Updates the status label and moves the player's token on the board.
+   *
+   * @param e the player moved event containing player and tile information
+   */
   @Override
   public void onTileAction(TileActionEvent e) {
     Player player = e.player();
@@ -64,10 +98,20 @@ public class SnakesAndLaddersController implements
     afterAction.play();
   }
 
+  /**
+   * Called when the dice is clicked by the user.
+   * Delegates the action to the game service.
+   */
   public void onDiceClicked() {
     laddersGameService.onDiceClicked();
   }
 
+  /**
+   * Handles the event when a player wins the game.
+   * Notifies the view to display the winner.
+   *
+   * @param e the player won event containing the winning player
+   */
   @Override
   public void onPlayerWon(PlayerWonEvent e) {
     view.onPlayerWon(e.winner().getName());

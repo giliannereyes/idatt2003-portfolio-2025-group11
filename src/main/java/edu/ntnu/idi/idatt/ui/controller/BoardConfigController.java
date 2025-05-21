@@ -10,6 +10,16 @@ import java.io.File;
 import java.util.Map;
 import java.util.Optional;
 
+
+/**
+ * Controller responsible for managing board configuration in the UI.
+ * Handles loading predefined boards, selecting and saving board configurations,
+ * and updating the game configuration accordingly.
+ *
+ * @version 0.1
+ * @since 0.1
+ * @author Gilianne Reyes
+ */
 public class BoardConfigController {
   private final BoardConfigView view;
   private final Map<String, Board> predefinedBoards;
@@ -18,6 +28,15 @@ public class BoardConfigController {
   protected final GameConfigService gameConfigService;
   protected Board selectedBoard;
 
+  /**
+   * Constructs a new BoardConfigController.
+   *
+   * @param view the view responsible for displaying board configuration options
+   * @param boardPresetService the service providing predefined board configurations
+   * @param viewManager the manager for switching between views
+   * @param gameConfigService the service for updating the game configuration
+   * @param boardPersistenceService the service for loading and saving board configurations
+   */
   public BoardConfigController(
         BoardConfigView view,
         BoardPresetService boardPresetService,
@@ -34,6 +53,10 @@ public class BoardConfigController {
     loadPredefinedBoards();
   }
 
+  /**
+   * Loads predefined boards into the view for user selection.
+   * Displays an alert if loading fails.
+   */
   public void loadPredefinedBoards() {
     try {
       predefinedBoards.values().forEach(
@@ -44,6 +67,11 @@ public class BoardConfigController {
     }
   }
 
+
+  /**
+   * Registers the currently selected board into the game configuration.
+   * Switches to the next view if successful, otherwise shows an error alert.
+   */
   public void registerBoardSelection() {
     if (selectedBoard != null) {
       try {
@@ -57,6 +85,12 @@ public class BoardConfigController {
     }
   }
 
+  /**
+   * Selects a predefined board by its name.
+   * Shows an alert if the board name is invalid.
+   *
+   * @param boardName the name of the board to select
+   */
   public void selectPredefinedBoard(String boardName) {
     selectedBoard = predefinedBoards.get(boardName);
     if (selectedBoard == null) {
@@ -64,6 +98,12 @@ public class BoardConfigController {
     }
   }
 
+  /**
+   * Loads a board configuration from a file.
+   * Updates the selected board and view if successful, otherwise shows an error alert.
+   *
+   * @param file the file containing the board configuration
+   */
   public void loadBoardConfiguration(File file) {
     if (fileHandler == null) {
       view.showAlert("Unavailable service", "File handling service is not available");
@@ -83,6 +123,12 @@ public class BoardConfigController {
     }
   }
 
+  /**
+   * Saves the currently selected board configuration to a file.
+   * Shows a success or error alert depending on the outcome.
+   *
+   * @param file the file to save the board configuration to
+   */
   public void saveBoardConfiguration(File file) {
     if (fileHandler == null) {
       view.showAlert("Unavailable service", "File handling service is not available");
