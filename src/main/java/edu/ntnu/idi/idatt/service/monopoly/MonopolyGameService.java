@@ -11,6 +11,10 @@ import java.util.List;
 
 /**
  * Service to initialize and drive a Monopoly Lite game.
+ *
+ * @version 0.1
+ * @since 0.1
+ * @author Gilianne Reyes
  */
 public class MonopolyGameService {
   private final GameConfig config;

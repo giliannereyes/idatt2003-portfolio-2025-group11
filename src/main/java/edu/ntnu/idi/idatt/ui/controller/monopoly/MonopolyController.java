@@ -15,6 +15,10 @@ import edu.ntnu.idi.idatt.ui.view.monopoly.MonopolyGameView;
 
 /**
  * Controller for Monopoly Lite, bridging view, service, and events.
+ *
+ * @version 0.1
+ * @since 0.1
+ * @author Gilianne Reyes
  */
 public class MonopolyController implements
       BoardGameController,
@@ -86,15 +90,15 @@ public class MonopolyController implements
 
   @Override
   public void onTileAction(TileActionEvent e) {
-    /*
-    e.getTile().getLandAction().ifPresent({
+    Player player = e.player();
+    Tile tile = e.tile();
+    tile.getLandAction().ifPresent({
           action -> {
             view.setStatusLabel(
-                  String.format("%s landed on %s", e.getPlayer().getName(), action.getActionType())
+                  String.format("%s landed on %s", player.getName(), action.getActionType())
             );
           }
     });
-     */
   }
 
   @Override
@@ -128,11 +132,11 @@ public class MonopolyController implements
 
   @Override
   public void onInsufficientFunds(InsufficientFundsEvent e) {
-    /*
+    Player player = e.player();
+    Property property = e.property();
     view.setStatusLabel(
-          String.format("%s does not have enough money to buy %s", e.getPlayer().getName(), property.getName())
+          String.format("%s does not have enough money to buy %s", player.getName(), property.getName())
     );
-     */
   }
 
   @Override

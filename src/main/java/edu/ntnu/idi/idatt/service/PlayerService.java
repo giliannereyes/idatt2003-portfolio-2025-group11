@@ -16,9 +16,10 @@ import java.util.stream.IntStream;
  * A service class for managing player-related operations such
  * as loading and saving player data.
  *
- * @version 0.1
+ * @version 0.2
  * @since 0.1
  * @author Gilianne Reyes
+ * @author Trang Duong
  */
 public class PlayerService {
   private final PlayerFileReader fileReader;
@@ -44,6 +45,13 @@ public class PlayerService {
     this.playerFactory = playerFactory;
   }
 
+  /**
+   * Loads player data from a CSV file.
+   *
+   * @param file the CSV file containing player data
+   * @return a list of string arrays, each representing a player's data
+   * @throws RuntimeException if the file cannot be read or the number of players is invalid
+   */
   public List<String[]> loadPlayersFromCsv(File file) {
     try {
       List<String[]> playerData = fileReader.readFromCSV(file);
@@ -58,6 +66,13 @@ public class PlayerService {
     }
   }
 
+  /**
+   * Saves player data to a CSV file.
+   *
+   * @param file the file to write to
+   * @param playerData the list of player data to save
+   * @throws RuntimeException if writing to the file fails
+   */
   public void savePlayersToCsv(File file, List<String[]> playerData) {
     try {
       fileWriter.writeToCSV(playerData, file, null);
@@ -66,6 +81,14 @@ public class PlayerService {
     }
   }
 
+  /**
+   * Creates a list of {@link PlayerConfig} objects from player and token names.
+   *
+   * @param playerNames list of player names
+   * @param tokenNames list of token names corresponding to each player
+   * @return a list of {@link PlayerConfig} objects
+   * @throws RuntimeException if creation fails
+   */
   public List<PlayerConfig> createPlayerConfigs(List<String> playerNames, List<String> tokenNames) {
     try {
       return IntStream.range(0, playerNames.size())
@@ -76,17 +99,37 @@ public class PlayerService {
     }
   }
 
+  /**
+   * Validates player and token name lists for consistency and uniqueness.
+   *
+   * @param playerNames list of player names
+   * @param tokenNames list of token names
+   * @return true if the data is valid, false otherwise
+   */
   public boolean isPlayerConfigDataValid(List<String> playerNames, List<String> tokenNames) {
-    if (playerNames.size() != tokenNames.size()) {
-      return false;
+    try {
+      if (playerNames.size() != tokenNames.size()) {
+        return false;
+      }
+
+      Set<String> seenNames = new HashSet<>();
+      Set<String> seenTokens = new HashSet<>();
+      return IntStream.range(0, playerNames.size()).allMatch(i ->
+              isValidEntry(playerNames.get(i), tokenNames.get(i), seenNames, seenTokens)
+      );
+    } catch (Exception e) {
+      throw new RuntimeException("Error validating player configs: " + e.getMessage());
     }
-    Set<String> seenNames = new HashSet<>();
-    Set<String> seenTokens = new HashSet<>();
-    return IntStream.range(0, playerNames.size()).allMatch(i ->
-          isValidEntry(playerNames.get(i), tokenNames.get(i), seenNames, seenTokens)
-    );
   }
 
+  /**
+   * Creates a single {@link PlayerConfig} from a player name and token name.
+   *
+   * @param playerName the player's name
+   * @param tokenName the name of the token
+   * @return a {@link PlayerConfig} object
+   * @throws IllegalArgumentException if the token name is invalid
+   */
   private PlayerConfig createPlayerConfig(String playerName, String tokenName) {
     PlayerToken playerToken = PlayerToken.fromName(tokenName);
     if (playerToken == null) {
@@ -97,6 +140,9 @@ public class PlayerService {
     return new PlayerConfig(player, tokenPath);
   }
 
+  /**
+   * Validates a single player/token entry for correctness and uniqueness.
+   */
   private boolean isValidEntry(String name, String tokenName, Set<String> seenNames, Set<String> seenTokens) {
     if (!isValidPlayerName(name)) {
       return false;
@@ -111,18 +157,30 @@ public class PlayerService {
     return isUniqueToken(token.getImagePath(), seenTokens);
   }
 
+  /**
+   * Checks if a player name is unique.
+   */
   private boolean isUniqueName(String name, Set<String> seenNames) {
     return seenNames.add(name.toLowerCase()); // returns false if already present
   }
 
+  /**
+   * Checks if a token image path is unique.
+   */
   private boolean isUniqueToken(String imagePath, Set<String> seenTokens) {
     return seenTokens.add(imagePath.toLowerCase()); // returns false if already present
   }
 
+  /**
+   * Validates that a player name is not null or empty.
+   */
   private boolean isValidPlayerName(String playerName) {
     return playerName != null && !playerName.trim().isEmpty();
   }
 
+  /**
+   * Validates that a token name is not null, not empty, and corresponds to a valid {@link PlayerToken}.
+   */
   private boolean isValidPlayerToken(String tokenName) {
     return tokenName != null && !tokenName.trim().isEmpty() && PlayerToken.fromName(tokenName) != null;
   }

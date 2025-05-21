@@ -78,7 +78,7 @@ public class GameView implements View {
         boardCanvas.drawBoard(board);
     }
 
-    public void registerPlayerTokens(String playerName, Path tokenImagePath) {
+    public void registerPlayerTokens(String playerName, String tokenImagePath) {
         playerTokenCanvas.addPlayerToken(playerName, tokenImagePath);
     }
 

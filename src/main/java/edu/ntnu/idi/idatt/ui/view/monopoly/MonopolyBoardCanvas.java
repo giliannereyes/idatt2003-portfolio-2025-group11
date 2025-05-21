@@ -7,6 +7,7 @@ import edu.ntnu.idi.idatt.domain.entity.Tile;
 import edu.ntnu.idi.idatt.domain.entity.monopoly.Property;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
@@ -43,6 +44,10 @@ public class MonopolyBoardCanvas extends Canvas {
         drawPropertyTile(gc, x, y, tileWidth, tileHeight, propertyAction.getProperty());
       } else if (tile.getLandAction().isPresent() && tile.getLandAction().get() instanceof JailTileAction) {
         drawSpecialTile(gc, x, y, tileWidth, tileHeight, "JAIL");
+        drawJailOnTile(gc, x, y, tileWidth, tileHeight);
+      }
+        else if (tile.getLandAction().isPresent() && tile.getLandAction().get() instanceof JailTileAction) {
+          drawSpecialTile(gc, x, y, tileWidth, tileHeight, "GO TO JAIL");
       } else if (tile.equals(board.getStartTile())) {
         drawSpecialTile(gc, x, y, tileWidth, tileHeight, "GO");
       } else {
@@ -94,6 +99,20 @@ public class MonopolyBoardCanvas extends Canvas {
       case "Lombard St.", "17 Mile Drive" -> Color.DARKBLUE;
       default -> Color.LIGHTGRAY;
     };
+  }
+
+  /**
+   * Draws a jail image on a tile at the specified position and size.
+   *
+   * @param gc the GraphicsContext used to draw on the canvas
+   * @param x the x-coordinate of the top-left corner of the tile
+   * @param y the y-coordinate of the top-left corner of the tile
+   * @param tileWidth the width of the tile
+   * @param tileHeight the height of the tile
+   */
+  private void drawJailOnTile(GraphicsContext gc, double x, double y, double tileWidth, double tileHeight) {
+    Image jailImage = new Image("/images/jail.png");
+    gc.drawImage(jailImage, x, y, tileWidth, tileHeight);
   }
 }
 
