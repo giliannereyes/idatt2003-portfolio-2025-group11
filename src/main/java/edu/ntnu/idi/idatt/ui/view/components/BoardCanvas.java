@@ -10,8 +10,13 @@ import edu.ntnu.idi.idatt.domain.entity.Tile;
 import edu.ntnu.idi.idatt.domain.enums.TileColorType;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+
+import java.io.InputStream;
 import java.util.Map;
 import java.util.Optional;
 
@@ -34,6 +39,7 @@ public class BoardCanvas extends Canvas {
             SnakeAction.actionType, TileColorType.SNAKE_END
     );
     private static final double CONNECTOR_MARGIN = 2; // pixels to inset from tile edge
+    private final Pane tokenPane = new Pane();
 
     public BoardCanvas(double width, double height) {
         super(width, height);
@@ -60,7 +66,7 @@ public class BoardCanvas extends Canvas {
                         drawActionConnector(gc, tile, action, tileWidth, tileHeight, rows)
                 )
         );
-        System.out.println("All tiles drawn");
+        addStarToLastTile(rows, cols, "/images/star.png");
     }
 
     /**
@@ -164,5 +170,42 @@ public class BoardCanvas extends Canvas {
             gc.setLineWidth(5);
             gc.strokeLine(startCenter[0], startCenter[1], endCenter[0], endCenter[1]);
         }
+    }
+
+    public void addStarToLastTile(int totalRows, int totalCols, String starImagePath) {
+        InputStream is = getClass().getResourceAsStream(starImagePath);
+        if (is == null) {
+            throw new RuntimeException("Path to image for star token not found: " + starImagePath);
+        }
+
+        Image starImage = new Image(is, 30, 30, true, true);
+        ImageView star = new ImageView(starImage);
+        star.setFitWidth(30);
+        star.setFitHeight(30);
+
+        tokenPane.layoutBoundsProperty().addListener((observable, oldValue, newValue) -> {
+            System.err.println("tokenPane size changed: " + newValue);
+            placeStarOnBoard(totalRows, totalCols, star);
+        });
+    }
+
+    private void placeStarOnBoard(int totalRows, int totalCols, ImageView star) {
+        double paneW = tokenPane.getWidth();
+        double paneH = tokenPane.getHeight();
+
+        if (paneW == 0 || paneH == 0) {
+            throw new IllegalStateException("tokenPane size is 0, cannot place the star.");
+        }
+
+        double tileW = paneW / totalCols;
+        double tileH = paneH / totalRows;
+
+        double targetX = (totalCols - 1) * tileW + tileW / 2 - star.getFitWidth() / 2;
+        double targetY = (totalRows - 1) * tileH + tileH / 2 - star.getFitHeight() / 2;
+
+        star.setLayoutX(targetX);
+        star.setLayoutY(targetY);
+
+        tokenPane.getChildren().add(star);
     }
 }
