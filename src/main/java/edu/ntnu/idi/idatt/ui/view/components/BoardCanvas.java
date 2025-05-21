@@ -21,9 +21,10 @@ import java.util.Optional;
 /**
  * A canvas for drawing the Snakes and Ladders board.
  *
- * @version 0.1
+ * @version 0.2
  * @since 0.1
  * @author Gilianne Reyes
+ * @author Trang Duong
  */
 public class BoardCanvas extends Canvas {
     private final Map<String, TileColorType> ACTION_COLOR_MAPPING = Map.of(
