@@ -5,6 +5,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
@@ -14,7 +15,7 @@ import java.util.Objects;
 
 /**
  * Represents the view for setting up the game board. It is responsible for
- * displaying the available board options and allowing th e user to select one,
+ * displaying the available board options and allowing the user to select one,
  * or load a board from a JSON file.
  *
  * @version 0.1
@@ -29,7 +30,6 @@ public class BoardConfigView implements View {
   private final VBox boardSelectionBox;
   private final Button startGameButton;
   private final Text titleText;
-  private final Text descriptionText;
   private final Text placeholderText;
   Button loadBoardButton;
   Button saveBoardButton;
@@ -39,21 +39,18 @@ public class BoardConfigView implements View {
    * Initializes the root layout and the toggle group for board options.
    */
   public BoardConfigView() {
-    root = new VBox(10);
+    root = new VBox(25);
     boardToggleGroup = new ToggleGroup();
-    boardSelectionBox = new VBox(10);
+    boardSelectionBox = new VBox(15);
     selectedBoardLabel = new Label("Board selected: None");
     startGameButton = new Button("Start Game");
     titleText = new Text("Board Configuration");
-    descriptionText = new Text("Select a board configuration for the game.");
     placeholderText = new Text("An error occurred while loading the board options!");
     loadBoardButton = new Button("Load Board from JSON");
-    saveBoardButton = new Button("Save Board to JSON");
+    saveBoardButton = new Button("Save Board Configuration");
     boardSelectionBox.getChildren().add(placeholderText);
-    root.getStylesheets()
-          .add(Objects.requireNonNull(getClass()
-          .getResource("/css/style.css"))
-          .toExternalForm());
+    root.getStyleClass().add("centered-container");
+    root.setId("root-pane");
   }
 
   /**
@@ -80,21 +77,92 @@ public class BoardConfigView implements View {
    */
   @Override
   public void initializeView() {
-    root.setPadding(new Insets(20));
+    root.setPadding(new Insets(30));
     root.setAlignment(Pos.CENTER);
-    boardSelectionBox.setAlignment(Pos.CENTER);
+    setupComponentStyling();
+    VBox headerSection = createHeaderSection();
+    VBox fileSection = createFileSection();
+    VBox selectionSection = createSelectionSection();
+    VBox actionSection = createActionSection();
+    root.getChildren().addAll(
+          headerSection,
+          fileSection,
+          selectionSection,
+          actionSection
+    );
     startGameButton.setOnAction(e -> controller.registerBoardSelection());
     loadBoardButton.setOnAction(e -> onLoadFromFile());
     saveBoardButton.setOnAction(e -> onSaveToFile());
-    root.getChildren().addAll(
-          titleText,
-          descriptionText,
-          loadBoardButton,
+  }
+
+  /**
+   * Sets up styling for all components
+   */
+  private void setupComponentStyling() {
+    titleText.getStyleClass().add("title-text");
+    placeholderText.getStyleClass().add("alternative-text");
+
+    startGameButton.getStyleClass().add("primary-button");
+
+    selectedBoardLabel.getStyleClass().add("section-label");
+
+    boardSelectionBox.getStyleClass().addAll("board-selection-container", "player-grid");
+    boardSelectionBox.setAlignment(Pos.CENTER);
+  }
+
+  /**
+   * Creates the header section with title and description
+   */
+  private VBox createHeaderSection() {
+    VBox headerSection = new VBox();
+    headerSection.setAlignment(Pos.CENTER);
+    headerSection.getChildren().addAll(titleText);
+    return headerSection;
+  }
+
+  /**
+   * Creates the file operations section
+   */
+  private VBox createFileSection() {
+    VBox fileSection = new VBox(10);
+    fileSection.setAlignment(Pos.CENTER);
+    Text fileOptionsText = new Text("Option 1: Load Custom Board");
+    fileOptionsText.getStyleClass().add("alternative-text");
+    fileSection.getChildren().addAll(fileOptionsText, loadBoardButton);
+    VBox.setMargin(fileSection, new Insets(15, 0, 15, 0));
+    return fileSection;
+  }
+
+  /**
+   * Creates the board selection section
+   */
+  private VBox createSelectionSection() {
+    VBox selectionSection = new VBox(10);
+    selectionSection.setAlignment(Pos.CENTER);
+    Text selectionOptionsText = new Text("Option 2: Choose Predefined Board");
+    selectionOptionsText.getStyleClass().add("alternative-text");
+    selectedBoardLabel.getStyleClass().add("status-label");
+    selectionSection.getChildren().addAll(
+          selectionOptionsText,
           selectedBoardLabel,
-          boardSelectionBox,
-          startGameButton,
-          saveBoardButton
+          boardSelectionBox
     );
+    VBox.setMargin(selectionSection, new Insets(15, 0, 10, 0));
+    return selectionSection;
+  }
+
+  /**
+   * Creates the action buttons section
+   */
+  private VBox createActionSection() {
+    VBox actionSection = new VBox(15);
+    actionSection.setAlignment(Pos.CENTER);
+    HBox saveContainer = new HBox();
+    saveContainer.setAlignment(Pos.CENTER);
+    saveContainer.getChildren().add(saveBoardButton);
+    actionSection.getChildren().addAll(saveContainer, startGameButton);
+    VBox.setMargin(actionSection, new Insets(20, 0, 0, 0));
+    return actionSection;
   }
 
   /**
@@ -107,14 +175,19 @@ public class BoardConfigView implements View {
     boardSelectionBox.getChildren().remove(placeholderText);
     RadioButton radioButton = new RadioButton(boardName);
     radioButton.setToggleGroup(boardToggleGroup);
+    radioButton.getStyleClass().add("board-radio-button");
     Label descriptionLabel = new Label(description);
     descriptionLabel.setWrapText(true);
-    VBox boardOption = new VBox(5, radioButton, descriptionLabel);
+    descriptionLabel.getStyleClass().add("board-description");
+    VBox boardOption = new VBox(8);
+    boardOption.getStyleClass().add("board-option-container");
+    boardOption.setAlignment(Pos.CENTER);
+    boardOption.getChildren().addAll(radioButton, descriptionLabel);
+
     radioButton.setOnAction(e -> {
       controller.selectPredefinedBoard(boardName);
       selectedBoardLabel.setText("Board Selected: " + boardName);
     });
-    boardOption.setAlignment(Pos.CENTER);
     boardSelectionBox.getChildren().add(boardOption);
   }
 
