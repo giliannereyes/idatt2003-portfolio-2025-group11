@@ -56,7 +56,7 @@ If the user has initially chosen **Monopoly**, similar to **Snakes and Ladders**
     - Select **Monopoly** on the Game Selection View. 
     - Choose the numbers of players and their name and colour. To save the player configuration for later, choose "Save Player Configuration to CSV". Then click "Register Player Configuration".
     - Choose one of the default board modes, Small or Large board (Easy, Medium, or Hard for **Snakes and Ladders**).
-    - Press "Start Game" to start playing with the customised player configuration.
+    - Press "Start Game" to start playing with the customised configuration.
 
 ---
 
