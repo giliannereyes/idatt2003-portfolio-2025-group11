@@ -1,6 +1,6 @@
-# Snakes and Ladders
+# Snakes and Ladders & Monopoly
 
-*Snakes and Ladders* is a Java-based application for users to play Snake and Ladders with customisation.
+*Snakes and Ladders & Monopoly* is a Java-based application for users to play Snake and Ladders or Monopoly with customisation.
 
 ## Table of Contents
 - [Installation](#installation)
@@ -26,26 +26,37 @@
 
 ## Usage
 
-*Snakes and Ladders* allows you to customise the classical board game effortlessly through a user-friendly application. The application provides the following features:
+*Snakes and Ladders & Monopoly* allows you to customise the classical board games effortlessly through a user-friendly application. The application provides the following features:
 
-1. **Feature 1**:
-2. **Feature 2**:
+### 1. **Game Selection View**
+After starting the application, you will be presented with the Game Selection View. Here you can choose between either **Snakes and Ladders** or **Monopoly**. Choosing either of the boardgame options will lead to the "Player Setup"-page. Here the user can choose from:
+1. **Loading a predefined player configuration.** Then the user can register the configuration to start playing.
+2. **Customising the player configuration.** The user can choose from minimum two to maximum five players, each with their own customisable name and colour (red, blue, purple, orange, and green). The user can then save and/or register the configuration.
+
+### 2. **Snakes and Ladders**:
+If the user has initially chosen **Snakes and Ladders**, the user can choose either loading a predefined board configuration or one of the three default boards (Easy, Medium, and Hard) after registering the player configuration. The player can then choose to save the board configuration if they wish to. After the board configuration can the user click on the "Start Game"-button to start the game.
+### 3. **Monopoly**:
+If the user has initially chosen **Monopoly**, similar to **Snakes and Ladders**, the user can choose either loading a predefined board configuration or one of the 2 default boards (Small and Large) after registering the player configuration. The following actions are exactly like that in **Snakes and Ladders**: the user can choose to save the board configuration, and then start the game by clicking on the "Start Game"-button.
 
 ### **Example usage**:
 1. **Run the application**:
    ```bash
    java -jar target/boardgame-idatt2003-1.0-SNAPSHOT.jar
    ```
-   The application will display the main Homie-page
+   The application will display the main Game Selection View.
 
-2. **Feature 1**:
-    - Description
 
-3. **Feature 2**:
-    - Description
+2. **Snakes and Ladders with a predefined player and board configuration**:
+    - Select **Snakes and Ladders** on the Game Selection View. 
+    - Choose "Load Player Configuration from CSV" and choose the CSV file accordingly. Then click "Register Player Configuration".
+    - Choose "Load Board from JSON" and choose the JSON file accordingly.
+    - Click "Start Game" to start playing with the predefined configuration.
 
-4. **Feature 3**:
-    - Description
+3. **Monopoly with a customised player and board configuration**:
+    - Select **Monopoly** on the Game Selection View. 
+    - Choose the numbers of players and their name and colour. To save the player configuration for later, choose "Save Player Configuration to CSV". Then click "Register Player Configuration".
+    - Choose one of the default board modes, Small or Large board (Easy, Medium, or Hard for **Snakes and Ladders**).
+    - Press "Start Game" to start playing with the customised player configuration.
 
 ---
 
@@ -62,11 +73,11 @@
    ```
    alternatively
    ```bash
-      mvn clean compile exec:java -Dexec.mainClass="no.ntnu.idatt1005.BoardGameApp"
+      mvn clean compile exec:java -Dexec.mainClass="no.ntnu.idatt.app.BoardGameApp"
      ```
    or
       ```bash
-      mvn exec:java
+      mvn javafx:run
      ```
 ---
 
@@ -83,5 +94,6 @@
 
 ## License
 This project is licensed under the following:
-1. [Eclipse Public License 2.0](https://github.com/junit-team/junit5/blob/main/LICENSE.md): Covers Junit 5.
-2. [GNU General Public License v2.0](https://github.com/openjdk/jfx/blob/jfx23/LICENSE): Covers JavaFX.
+1. [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0): Covers Apache Commons CSV and Google Gson libraries.
+2. [Eclipse Public License 2.0](https://github.com/junit-team/junit5/blob/main/LICENSE.md): Covers Junit 5.
+3. [GNU General Public License v2.0](https://github.com/openjdk/jfx/blob/jfx23/LICENSE): Covers JavaFX.
