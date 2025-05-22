@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Represents the assets account of a player. It contains the player's
+ * Represents the assets account of a {@link Player}. It contains the player's
  * balance, properties owned, and whether the player is bankrupt. It also
  * provides methods to credit and debit money, buy and release properties,
  * and pay rent to other players' accounts.
@@ -95,21 +95,21 @@ public class AssetsAccount {
 
   /**
    * Pays rent to the owner of a property. If the player does not have enough money,
-   * they go bankrupt and release all properties.
+   * they pay all their balance and go bankrupt. Their properties are also released.
    *
    * @param landlordAccount is the property owner's account.
    * @param rent is the amount of rent to be paid.
    *
-   * @throws IllegalArgumentException if the owner is null or if the rent is not positive.
+   * @throws IllegalArgumentException if the owner is null or if the rent is negative.
    */
   public void payRent(AssetsAccount landlordAccount, double rent) {
     Validation.validateNonNull(landlordAccount, "Landlord's account");
-    Validation.validatePositiveNum(rent, "Rent");
+    Validation.validateNonNegativeNum(rent, "Rent");
     if (balance >= rent) {
       debit(rent);
       landlordAccount.credit(rent);
     } else {
-      landlordAccount.credit(balance); // TODO: Player pays all remaining money! (Re-asses this)
+      landlordAccount.credit(balance);
       debit(balance);
       bankrupt = true;
       releaseProperties();

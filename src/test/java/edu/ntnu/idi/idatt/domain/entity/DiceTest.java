@@ -1,18 +1,18 @@
 package edu.ntnu.idi.idatt.domain.entity;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 /**
  * Test class for the Dice class.
- * <p>
- *  Tests the following:
+ *
+ * <p>Tests the following:
  *  <ul>
  *    <li>Instantiation of a Dice object, both valid and invalid.</li>
  *    <li>Rolling the dice and checking for valid values and correct total values.</li>
@@ -52,7 +52,7 @@ public class DiceTest {
    * Tests the rolling of the dice and checks for valid values
    * and correct total values.
    *
-   * <p> Expected outcome: Roll values are within 2 to 12 and
+   * <p>Expected outcome: Roll values are within 2 to 12 and
    * calculated total values are correct.</p>
    */
   @Test
@@ -81,13 +81,13 @@ public class DiceTest {
   /**
    * Tests getting the value of a die with an invalid die number.
    *
-   * <p> Expected outcome: IllegalArgumentException is thrown if the die number
+   * <p>Expected outcome: IndexOutOfBoundsException is thrown if the die number
    * is less than 0 or greater than the number of dice.</p>
    */
   @Test
   public void testGetDieWithInvalidDieNumber() {
-    assertThrows(IllegalArgumentException.class, () -> dice.getDie(-1));
-    assertThrows(IllegalArgumentException.class, () -> dice.getDie(2));
+    assertThrows(IndexOutOfBoundsException.class, () -> dice.getDie(-1));
+    assertThrows(IndexOutOfBoundsException.class, () -> dice.getDie(2));
   }
 }
 

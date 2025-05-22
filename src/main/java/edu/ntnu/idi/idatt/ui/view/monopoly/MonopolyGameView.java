@@ -1,5 +1,6 @@
 package edu.ntnu.idi.idatt.ui.view.monopoly;
 
+import edu.ntnu.idi.idatt.domain.entity.monopoly.PropertyRegistry;
 import edu.ntnu.idi.idatt.ui.controller.monopoly.MonopolyController;
 import edu.ntnu.idi.idatt.domain.entity.Board;
 import edu.ntnu.idi.idatt.ui.view.View;
@@ -85,7 +86,7 @@ public class MonopolyGameView implements View {
 
   public void registerBoard(Board board) {
     this.board = board;
-    boardCanvas.drawBoard(board);
+    boardCanvas.drawBoard(board, null);
   }
 
   /**

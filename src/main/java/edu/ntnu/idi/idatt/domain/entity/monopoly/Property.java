@@ -1,11 +1,12 @@
 package edu.ntnu.idi.idatt.domain.entity.monopoly;
 
 import edu.ntnu.idi.idatt.domain.entity.Player;
+import edu.ntnu.idi.idatt.domain.game.monopoly.Monopoly;
 import edu.ntnu.idi.idatt.utils.Validation;
 import java.util.Optional;
 
 /**
- * Represents a property in the Monopoly game. It has a name, cost, rent,
+ * Represents a property in the {@link Monopoly} game. It has a name, cost, rent,
  * and can be owned by a player. The class provides methods to retrieve
  * property details, set ownership, and check if the property is owned.
  *
@@ -20,11 +21,12 @@ public class Property {
   private Player owner;
 
   /**
-   * Constructs a Property instance.
+   * Constructs a Property instance with the given name, cost, and rent.
+   * The property's owner is initially set to null, indicating that it is not owned.
    *
-   * @param name  the name of the property.
-   * @param cost  the cost to purchase the property.
-   * @param rent  the rent paid when another player lands on this property.
+   * @param name is the name of the property.
+   * @param cost is the cost to purchase the property.
+   * @param rent is the rent paid when another player lands on this property.
    *
    * @throws IllegalArgumentException if any of arguments are invalid.
    */
@@ -90,14 +92,15 @@ public class Property {
   /**
    * Checks if the property is currently owned by any player.
    *
-   * @return true if owned, false otherwise.
+   * @return {@code true} if owned, {@code false} otherwise.
    */
   public boolean isOwned() {
     return owner != null;
   }
 
   /**
-   * Resets ownership of the property (e.g., after bankruptcy).
+   * Resets ownership of the property to null,
+   * indicating that it is not owned.
    */
   public void resetOwnership() {
     this.owner = null;

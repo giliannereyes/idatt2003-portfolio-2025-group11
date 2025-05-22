@@ -9,22 +9,22 @@ package edu.ntnu.idi.idatt.exceptions;
  * @author Gilianne Reyes
  */
 public class BoardParsingException extends RuntimeException {
-    /**
-     * Constructs a BoardParsingException with the specified detail message.
-     *
-     * @param message is the detail message.
-     */
-    public BoardParsingException(String message) {
-        super(message);
-    }
+  /**
+   * Constructs a BoardParsingException with the specified detail message.
+   *
+   * @param message is the detail message.
+   */
+  public BoardParsingException(String message) {
+    super(message);
+  }
 
-    /**
-     * Constructs a BoardParsingException with the specified detail message and cause.
-     *
-     * @param message is the detail message.
-     * @param cause is the cause.
-     */
-    public BoardParsingException(String message, Throwable cause) {
-        super(message, cause);
-    }
+  /**
+   * Constructs a BoardParsingException with the specified detail message and cause.
+   *
+   * @param message is the detail message.
+   * @param cause is the cause.
+   */
+  public BoardParsingException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }

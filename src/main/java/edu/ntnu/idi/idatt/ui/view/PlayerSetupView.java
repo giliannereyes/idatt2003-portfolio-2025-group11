@@ -35,13 +35,15 @@ public class PlayerSetupView implements View {
      * Initializes the UI components and layout.
      */
     public PlayerSetupView() {
-        root = new VBox(10);
+        root = new VBox(20);
         playerCountDropdown = new ComboBox<>();
         playerGrid = new GridPane();
         nameFields = new ArrayList<>();
         tokenSelectors = new ArrayList<>();
-        root.setPadding(new Insets(20));
+        root.setPadding(new Insets(30));
         root.setAlignment(Pos.CENTER);
+        root.getStyleClass().add("centered-container");
+        root.setId("root-pane");
     }
 
     /**
@@ -68,22 +70,56 @@ public class PlayerSetupView implements View {
      */
     public void initializeView() {
         Text title = new Text("Player Setup");
-        title.getStyleClass().add("heading");
-        Button loadCsvButton = new Button("Load Player Configuration from CSV");
-        Button registerButton = new Button("Register Player Configuration");
-        Button saveCsvButton = new Button("Save Player Configuration to CSV");
-        Label playerCountLabel = new Label("Or select the number of players:");
+        title.getStyleClass().add("title-text");
+
+        Text csvAlternativeText = new Text("Option 1: Load player configuration from CSV");
+        csvAlternativeText.getStyleClass().add("alternative-text");
+        Button loadCsvButton = new Button("Load Player Configuration (CSV)");
+        loadCsvButton.setPrefSize(260, 40);
+
+        Text manualAlternativeText = new Text("Option 2: Manually enter player names and tokens");
+        manualAlternativeText.getStyleClass().add("alternative-text");
+
+        Label playerCountLabel = new Label("Number of players:");
+        playerCountLabel.getStyleClass().add("section-label");
+
         playerCountDropdown.getItems().addAll(2, 3, 4, 5);
         playerCountDropdown.setValue(2);
+        playerCountDropdown.getStyleClass().add("player-count-dropdown");
+
+        Button saveCsvButton = new Button("Save This Configuration (CSV)");
+        saveCsvButton.setPrefSize(260, 40);
+
+        Button registerButton = new Button("Register Players");
+        registerButton.getStyleClass().add("primary-button");
+
         updatePlayerInputs();
         playerCountDropdown.setOnAction(e -> updatePlayerInputs());
-        playerGrid.setHgap(10);
-        playerGrid.setVgap(10);
         loadCsvButton.setOnAction(e -> onLoadCsvButtonClicked());
         registerButton.setOnAction(e -> onRegisterButtonClicked());
         saveCsvButton.setOnAction(e -> onSaveCsvButtonClicked());
-        root.getChildren().addAll(title, loadCsvButton, playerCountLabel,
-                playerCountDropdown, playerGrid, registerButton, saveCsvButton);
+
+        playerGrid.setHgap(15);
+        playerGrid.setVgap(12);
+        playerGrid.setAlignment(Pos.CENTER);
+        playerGrid.getStyleClass().add("player-grid");
+
+        VBox.setMargin(csvAlternativeText, new Insets(15, 0, 0, 0));
+        VBox.setMargin(manualAlternativeText, new Insets(25, 0, 0, 0));
+        VBox.setMargin(registerButton, new Insets(20, 0, 0, 0));
+        VBox.setMargin(saveCsvButton, new Insets(10, 0, 0, 0));
+
+        root.getChildren().addAll(
+              title,
+              csvAlternativeText,
+              loadCsvButton,
+              manualAlternativeText,
+              playerCountLabel,
+              playerCountDropdown,
+              playerGrid,
+              saveCsvButton,
+              registerButton
+        );
     }
 
     /**
@@ -101,17 +137,27 @@ public class PlayerSetupView implements View {
         }
         for (int i = 0; i < playerCount; i++) {
             Label nameLabel = new Label("Player " + (i + 1) + " Name:");
+            nameLabel.getStyleClass().add("input-label");
+
             TextField nameField = new TextField();
+            nameField.setPromptText("Enter player name");
+            nameField.getStyleClass().add("player-name-field");
+
             Label tokenLabel = new Label("Token:");
+            tokenLabel.getStyleClass().add("input-label");
+
             ComboBox<String> tokenDropdown = new ComboBox<>();
             tokenDropdown.getItems().addAll(availableTokens);
+            tokenDropdown.setPromptText("Select token");
+            tokenDropdown.getStyleClass().add("token-dropdown");
+
             nameFields.add(nameField);
             tokenSelectors.add(tokenDropdown);
+
             playerGrid.add(nameLabel, 0, i);
             playerGrid.add(nameField, 1, i);
             playerGrid.add(tokenLabel, 2, i);
             playerGrid.add(tokenDropdown, 3, i);
-            playerGrid.setAlignment(Pos.CENTER);
         }
     }
 
@@ -144,14 +190,14 @@ public class PlayerSetupView implements View {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save Player Configuration");
         fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("CSV Files", "*.csv")
+              new FileChooser.ExtensionFilter("CSV Files", "*.csv")
         );
         File file = fileChooser.showSaveDialog(root.getScene().getWindow());
         if (file != null) {
             controller.savePlayersToCsv(getPlayerNames(), getSelectedTokens(), file);
         } else {
             showAlert("Save Canceled",
-                    "The player configuration file was not saved. Please try again.");
+                  "The player configuration file was not saved. Please try again.");
         }
     }
 
@@ -162,14 +208,14 @@ public class PlayerSetupView implements View {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select CSV file");
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("CSV Files", "*.csv")
+              new FileChooser.ExtensionFilter("CSV Files", "*.csv")
         );
         File file = fileChooser.showOpenDialog(root.getScene().getWindow());
         if (file != null) {
             controller.loadPlayersFromCsv(file);
         } else {
             showAlert("No file selected",
-                    "No players were loaded because no file was selected. Please try again."
+                  "No players were loaded because no file was selected. Please try again."
             );
         }
     }
@@ -205,8 +251,8 @@ public class PlayerSetupView implements View {
      */
     public void onInvalidCsvData() {
         showAlert("Invalid CSV data",
-                "The players could not be loaded from the CSV file because some " +
-                        "player names or token names are invalid or not unique."
+              "The players could not be loaded from the CSV file because some " +
+                    "player names or token names are invalid or not unique."
         );
     }
 
@@ -215,7 +261,7 @@ public class PlayerSetupView implements View {
      */
     public void onSuccessfulCsvLoad() {
         showAlert("Players loaded successfully",
-                "Players have been loaded from the CSV file."
+              "Players have been loaded from the CSV file."
         );
     }
 
@@ -224,21 +270,21 @@ public class PlayerSetupView implements View {
      */
     public void onErrorLoadingCsv(String errorMessage) {
         showAlert("Error loading players",
-                "An error occurred while loading players from the CSV file: "
-                        + errorMessage
+              "An error occurred while loading players from the CSV file: "
+                    + errorMessage
         );
     }
 
     public void onErrorSavingCsv(String errorMessage) {
         showAlert("Error saving players",
-                "An error occurred while saving players to the CSV file: "
-                        + errorMessage
+              "An error occurred while saving players to the CSV file: "
+                    + errorMessage
         );
     }
 
     public void onSuccessfulCsvSave() {
         showAlert("Players saved successfully",
-                "Players have been saved to the CSV file."
+              "Players have been saved to the CSV file."
         );
     }
 

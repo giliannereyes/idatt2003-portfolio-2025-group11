@@ -15,7 +15,7 @@ public class BoardGameApp extends Application {
   public void start(Stage primaryStage) {
     AppInitializer appInitializer = new AppInitializer(primaryStage);
     ViewManager viewManager = appInitializer.getViewManager();
-    viewManager.switchTo(GameSelectionView.class.getName());
+    viewManager.switchTo(GameSelectionView.class);
     primaryStage.setTitle("Board Games");
     primaryStage.show();
   }

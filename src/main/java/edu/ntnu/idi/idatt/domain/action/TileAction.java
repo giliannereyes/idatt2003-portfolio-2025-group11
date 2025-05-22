@@ -2,11 +2,11 @@ package edu.ntnu.idi.idatt.domain.action;
 
 import edu.ntnu.idi.idatt.domain.entity.Player;
 import edu.ntnu.idi.idatt.domain.entity.Tile;
-
 import java.util.Optional;
 
 /**
- * Interface for actions that can be performed on a tile.
+ * Represents a game-related action that can be performed when a player lands on a specific tile.
+ * Implementations define behavior such as moving the player or managing their turn.
  *
  * @version 0.1
  * @since 0.1
@@ -14,24 +14,24 @@ import java.util.Optional;
  */
 public interface TileAction {
   /**
-   * Performs the action on the player.
+   * Executes the defined action on the specified player.
    *
-   * @param player is the player that landed on the tile.
+   * @param player is the player who triggered the action by landing on the tile.
    */
   void perform(Player player);
 
   /**
-   * Retrieves the type of the action.
+   * Retrieves a string identifier describing the type of this tile action.
    *
-   * @return the type of the action.
+   * @return a non-null string representing the action type.
    */
   String getActionType();
 
   /**
-   * Retrieves the destination tile of the action.
+   * Returns the destination tile associated with this action, if any.
    *
-   * @return an {@link Optional} containing the destination
-   * tile of the action, which is empty by default.
+   * @return an {@link Optional} containing the destination {@link Tile},
+   *         or {@link Optional#empty()} if the action does not involve movement.
    */
   default Optional<Tile> getDestinationTile() {
     return Optional.empty();
