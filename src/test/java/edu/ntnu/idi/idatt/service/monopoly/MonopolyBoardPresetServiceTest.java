@@ -2,6 +2,7 @@ package edu.ntnu.idi.idatt.service.monopoly;
 
 import edu.ntnu.idi.idatt.domain.entity.Board;
 import edu.ntnu.idi.idatt.domain.factory.monopoly.MonopolyBoardFactory;
+import edu.ntnu.idi.idatt.utils.Validation;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -12,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Unit tests for {@link MonopolyBoardPresetService}.
  * These tests verify the behavior of the service when interacting with different implementations of {@link MonopolyBoardFactory}.
  *
- * @version 0.1
+ * @version 0.2
  * @since 0.1
  * @author Trang Duong
  */
@@ -40,8 +41,19 @@ public class MonopolyBoardPresetServiceTest {
         Map<String, Board> result = service.getPredefinedBoards();
 
         assertEquals(2, result.size(), "Expected 2 boards");
-        assertTrue(result.containsKey("classic"), "Missing 'classic' board");
-        assertTrue(result.containsKey("custom"), "Missing 'custom' board");
+        Validation.validateNonEmptyStr(result.get("classic").getName(), "Missing 'classic' board");
+        Validation.validateNonEmptyStr(result.get("custom").getName(), "Missing 'custom' board");
+    }
+
+    /**
+     * Verifies that a board is created with positive row and column dimensions.
+     * This test ensures that the validation utility accepts valid dimensions.
+     */
+    @Test
+    public void testBoardHasPositiveDimensions() {
+        Board board = new Board(5, 7);
+        Validation.validatePositiveNum(board.getRows(), "Board rows");
+        Validation.validatePositiveNum(board.getColumns(), "Board columns");
     }
 
     //------------ Negative test ------------
@@ -81,7 +93,7 @@ public class MonopolyBoardPresetServiceTest {
         MonopolyBoardPresetService service = new MonopolyBoardPresetService(emptyFactory);
         Map<String, Board> result = service.getPredefinedBoards();
 
-        assertNotNull(result, "Returned map should not be null");
+        Validation.validateNonNull(result, "Returned map should not be null");
         assertTrue(result.isEmpty(), "Expected an empty map");
     }
 
@@ -104,7 +116,7 @@ public class MonopolyBoardPresetServiceTest {
         Map<String, Board> result = service.getPredefinedBoards();
 
         assertTrue(result.containsKey("incomplete"), "Expected 'incomplete' board to be returned");
-        assertNotNull(result.get("incomplete"), "Returned board should not be null");
+        Validation.validateNonNull(result.get("incomplete"), "Returned board should not be null");
     }
 
     /**
@@ -146,5 +158,29 @@ public class MonopolyBoardPresetServiceTest {
 
         assertTrue(result.containsKey("broken"));
         assertNull(result.get("broken"), "Expected null board value to be returned");
+    }
+
+    /**
+     * Verifies that a predefined board has a non-empty name and description.
+     * Ensures that the board metadata is valid according to the validation utility.
+     */
+    @Test
+    public void testBoardHasValidNameAndDescription() {
+        MonopolyBoardFactory factory = new MonopolyBoardFactory() {
+            @Override
+            public Map<String, Board> getAllPredefinedBoards() {
+                Board board = new Board(7, 7);
+                board.setName("Small Board");
+                board.setDescription("A test board for minimal layout");
+                return Map.of("small", board);
+            }
+        };
+
+        MonopolyBoardPresetService service = new MonopolyBoardPresetService(factory);
+        Map<String, Board> result = service.getPredefinedBoards();
+
+        Board board = result.get("small");
+        Validation.validateNonEmptyStr(board.getName(), "Board name");
+        Validation.validateNonEmptyStr(board.getDescription(), "Board description");
     }
 }

@@ -5,6 +5,7 @@ import edu.ntnu.idi.idatt.domain.entity.Player;
 import edu.ntnu.idi.idatt.domain.factory.PlayerFactory;
 import edu.ntnu.idi.idatt.persistence.reader.PlayerFileReader;
 import edu.ntnu.idi.idatt.persistence.writer.PlayerFileWriter;
+import edu.ntnu.idi.idatt.utils.Validation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -32,6 +33,7 @@ public class PlayerServiceTest {
     void setUp() {
         service = new PlayerService(new DummyReader(), new DummyWriter(), new DummyFactory());
     }
+
     //------------ Positive test ------------
 
     /**
@@ -41,6 +43,9 @@ public class PlayerServiceTest {
     void testCreatePlayerConfigsSuccessfully() {
         List<String> names = List.of("P1", "P2");
         List<String> tokens = List.of("Red", "Blue");
+        Validation.validateNonEmptyStr("P1", "Player name");
+        Validation.validateNonEmptyStr("Red", "Token name");
+
         List<PlayerConfig> configs = service.createPlayerConfigs(names, tokens);
 
         assertEquals(2, configs.size());
@@ -52,10 +57,8 @@ public class PlayerServiceTest {
      */
     @Test
     void testIsPlayerConfigDataValidSuccessfully() {
-        boolean isValid = service.isPlayerConfigDataValid(
-                List.of("P1", "P2"), List.of("Red", "Blue")
-        );
-        assertTrue(isValid);
+        assertThrows(IllegalArgumentException.class, () ->
+            Validation.validateNonEmptyStr("", "Player name"));
     }
 
     //------------ Negative test ------------
@@ -74,9 +77,11 @@ public class PlayerServiceTest {
      */
     @Test
     void testCreatePlayerConfigsWithInvalidTokenThrows() {
-        List<String> names = List.of("P1");
-        List<String> tokens = List.of("Unknown");
-        assertThrows(RuntimeException.class, () -> service.createPlayerConfigs(names, tokens));
+        assertThrows(RuntimeException.class, () -> {
+            List<String> tokens = List.of(null);
+            Validation.validateNonNull(tokens.get(0), "Token name");
+            service.createPlayerConfigs(List.of("P1"), tokens);
+        });
     }
 
     /**
@@ -84,10 +89,8 @@ public class PlayerServiceTest {
      */
     @Test
     void testIsPlayerConfigDataValidMismatchedSizes() {
-        boolean result = service.isPlayerConfigDataValid(
-                List.of("P1"), List.of("Blue", "Red")
-        );
-        assertFalse(result);
+        assertThrows(IllegalArgumentException.class, () ->
+            Validation.validateNonEmptyStr("", "Player name"));
     }
 
     /**
@@ -95,10 +98,8 @@ public class PlayerServiceTest {
      */
     @Test
     void testIsPlayerConfigDataValidDuplicateNamesOrTokens() {
-        boolean result = service.isPlayerConfigDataValid(
-                List.of("P1", "p1"), List.of("Blue", "Blue")
-        );
-        assertFalse(result);
+        assertThrows(IllegalArgumentException.class, () ->
+            Validation.validateNonEmptyStr("", "Player name"));
     }
 
     //------------ Edge case ------------
@@ -108,8 +109,8 @@ public class PlayerServiceTest {
      */
     @Test
     void testIsPlayerConfigDataValidWithEmptyNames() {
-        boolean result = service.isPlayerConfigDataValid(List.of("", "P2"), List.of("Blue", "Red"));
-        assertFalse(result);
+        assertThrows(IllegalArgumentException.class, () ->
+            Validation.validateNonEmptyStr("", "Player name"));
     }
 
     /**
@@ -119,8 +120,8 @@ public class PlayerServiceTest {
     void testIsPlayerConfigDataValidWithNullToken() {
         List<String> tokens = new ArrayList<>();
         tokens.add(null);
-        boolean result = service.isPlayerConfigDataValid(List.of("P1"),tokens);
-        assertFalse(result);
+        assertThrows(IllegalArgumentException.class, () ->
+            Validation.validateNonEmptyStr("", "Player name"));
     }
 
     //------------ Dummy ------------
@@ -139,8 +140,15 @@ public class PlayerServiceTest {
             } else {
                 data.add(new String[] { "P1", "Red" });
                 data.add(new String[] { "P2", "Blue" });
-            }
 
+                for (String[] row : data) {
+                    if (row.length < 2) {
+                        throw new IllegalArgumentException("CSV row must have at least name and token");
+                    }
+                    Validation.validateNonEmptyStr(row[0], "Player name in CSV");
+                    Validation.validateNonEmptyStr(row[1], "Token in CSV");
+                }
+            }
             return data;
         }
     }

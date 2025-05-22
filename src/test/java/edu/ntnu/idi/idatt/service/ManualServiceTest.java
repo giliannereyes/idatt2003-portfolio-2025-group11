@@ -1,5 +1,6 @@
 package edu.ntnu.idi.idatt.service;
 
+import edu.ntnu.idi.idatt.utils.Validation;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,8 +23,8 @@ public class ManualServiceTest {
     @Test
     void testLoadManualTextSuccessfully() {
         String result = manualService.loadManualText("/manuals/sample_manual.txt");
-        assertNotNull(result);
-        assertFalse(result.isBlank(), "Manual text should not be blank");
+        Validation.validateNonNull(result, "result should not be null");
+        Validation.validateNonEmptyStr(result, "Manual text");
         assertTrue(result.contains("Welcome") || result.length() > 0, "Expected content in manual");
     }
 

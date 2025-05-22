@@ -8,6 +8,7 @@ import edu.ntnu.idi.idatt.domain.entity.Tile;
 import edu.ntnu.idi.idatt.domain.event.EventBus;
 import edu.ntnu.idi.idatt.domain.event.EventHandler;
 import edu.ntnu.idi.idatt.domain.event.GameEvent;
+import edu.ntnu.idi.idatt.utils.Validation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -32,10 +33,21 @@ public class LaddersGameServiceTest {
     @BeforeEach
     public void setUp() {
         // Minimal valid setup
+        Tile tile = new Tile(1, 0, 0);
+        Validation.validatePositiveNum(tile.getTileId(), "Tile ID");
+        Validation.validateNonNegativeNum(tile.getX(), "Tile X");
+        Validation.validateNonNegativeNum(tile.getY(), "Tile Y");
+
         Board board = new Board(5, 5);
-        board.addTile(new Tile(1, 0, 0));
+        board.addTile(tile);
+
+        Validation.validatePositiveNum(board.getRows(), "Board rows");
+        Validation.validatePositiveNum(board.getColumns(), "Board columns");
 
         PlayerConfig playerConfig = new PlayerConfig(new Player("P1"), "image1.png");
+        Validation.validateNonEmptyStr(playerConfig.getPlayer().getName(), "Player name");
+        Validation.validateNonEmptyStr(playerConfig.getTokenImagePath(), "Player image path");
+
         validConfig = new GameConfig() {
             @Override
             public boolean isComplete() {
@@ -128,11 +140,19 @@ public class LaddersGameServiceTest {
             }
         };
 
+        Tile tile = new Tile(1, 0, 0);
+        Validation.validatePositiveNum(tile.getTileId(), "Tile ID");
+        Validation.validateNonNegativeNum(tile.getX(), "Tile X");
+        Validation.validateNonNegativeNum(tile.getY(), "Tile Y");
         Board board = new Board(1, 1);
-        board.addTile(new Tile(1, 0, 0));
+        board.addTile(tile);
         Player player = new Player("Tiny");
         minimal.setBoard(board);
         minimal.setPlayerConfigs(List.of(new PlayerConfig(player, "tiny.png")));
+        Validation.validatePositiveNum(board.getRows(), "Board rows");
+        Validation.validatePositiveNum(board.getColumns(), "Board columns");
+        Validation.validateNonEmptyStr(player.getName(), "Player name");
+        Validation.validateNonEmptyStr("tiny.png", "Token image path");
 
         LaddersGameService service = new LaddersGameService(minimal, dummyEventBus);
         assertDoesNotThrow(service::startGame);

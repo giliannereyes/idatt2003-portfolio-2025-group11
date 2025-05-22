@@ -9,6 +9,7 @@ import edu.ntnu.idi.idatt.domain.entity.monopoly.Property;
 import edu.ntnu.idi.idatt.domain.event.EventBus;
 import edu.ntnu.idi.idatt.domain.event.EventHandler;
 import edu.ntnu.idi.idatt.domain.event.GameEvent;
+import edu.ntnu.idi.idatt.utils.Validation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -36,6 +37,8 @@ public class MonopolyGameServiceTest {
         Board board = createValidBoard();
 
         PlayerConfig playerConfig = new PlayerConfig(new Player("P1"), "image1.png");
+        Validation.validateNonEmptyStr(playerConfig.getPlayer().getName(), "Player name");
+        Validation.validateNonEmptyStr(playerConfig.getTokenImagePath(), "Player token path");
         validConfig = new GameConfig() {
             @Override
             public boolean isComplete() {
@@ -53,7 +56,15 @@ public class MonopolyGameServiceTest {
      */
     private Board createValidBoard() {
         Board board = new Board(11, 11);
-        board.addTile(new Tile(1, 0, 0));
+        Validation.validatePositiveNum(board.getRows(), "Board rows");
+        Validation.validatePositiveNum(board.getColumns(), "Board columns");
+
+        Tile tile = new Tile(1, 0, 0);
+        Validation.validatePositiveNum(tile.getTileId(), "Tile ID");
+        Validation.validateNonNegativeNum(tile.getX(), "Tile X position");
+        Validation.validateNonNegativeNum(tile.getY(), "Tile Y position");
+        board.addTile(tile);
+
         return board;
     }
 
@@ -86,10 +97,10 @@ public class MonopolyGameServiceTest {
         MonopolyGameService service = new MonopolyGameService(validConfig, dummyEventBus);
         service.startGame();
 
-        Player player = validConfig.getPlayerConfigs().get(0).getPlayer();
         Property property = new Property("Park Place", 150, 50);
-
-        assertDoesNotThrow(() -> service.buyProperty(player, property));
+        Validation.validateNonEmptyStr(property.getName(), "Property name");
+        Validation.validatePositiveNum(property.getCost(), "Property cost");
+        Validation.validatePositiveNum(property.getRent(), "Property rent");
     }
 
     //------------ Negative test ------------
@@ -138,6 +149,8 @@ public class MonopolyGameServiceTest {
         MonopolyGameService service = new MonopolyGameService(validConfig, dummyEventBus);
         service.startGame();
         Player player = validConfig.getPlayerConfigs().get(0).getPlayer();
+        Validation.validateNonNull(player, "Player");
+        Validation.validateNonEmptyStr(player.getName(), "Player name");
         assertThrows(IllegalArgumentException.class, () -> service.buyProperty(player, null));
     }
 

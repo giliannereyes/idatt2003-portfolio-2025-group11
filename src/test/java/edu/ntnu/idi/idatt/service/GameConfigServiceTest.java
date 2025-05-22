@@ -5,9 +5,11 @@ import edu.ntnu.idi.idatt.config.PlayerConfig;
 import edu.ntnu.idi.idatt.domain.entity.Board;
 import edu.ntnu.idi.idatt.domain.entity.Player;
 import edu.ntnu.idi.idatt.domain.entity.Tile;
+import edu.ntnu.idi.idatt.utils.Validation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,7 +38,11 @@ public class GameConfigServiceTest {
         };
         gameConfig.setBoard(new Board(2, 2));
         gameConfig.getBoard().addTile(new Tile(1, 0, 0));
-        gameConfig.setPlayerConfigs(List.of(new PlayerConfig(new Player("Alice"), "a.png")));
+        gameConfig.setPlayerConfigs(List.of(new PlayerConfig(new Player("A"), "a.png")));
+        Validation.validatePositiveNum(gameConfig.getBoard().getRows(), "Board rows");
+        Validation.validatePositiveNum(gameConfig.getBoard().getColumns(), "Board columns");
+        Validation.validateNonEmptyStr("A", "Player name");
+        Validation.validateNonEmptyStr("a.png", "Token path");
 
         service = new GameConfigService(gameConfig);
     }
@@ -70,10 +76,14 @@ public class GameConfigServiceTest {
     @Test
     void testUpdatePlayerConfigsSuccessfully() {
         List<PlayerConfig> newPlayers = List.of(
-                new PlayerConfig(new Player("Bob"), "b.png"),
-                new PlayerConfig(new Player("Eve"), "e.png")
+                new PlayerConfig(new Player("B"), "b.png"),
+                new PlayerConfig(new Player("C"), "c.png")
         );
         service.updatePlayerConfigs(newPlayers);
+        for (PlayerConfig config : newPlayers) {
+            Validation.validateNonEmptyStr(config.getPlayer().getName(), "Player name");
+            Validation.validateNonEmptyStr(config.getTokenImagePath(), "Token path");
+        }
 
         assertEquals(newPlayers, service.build().getPlayerConfigs(), "PlayerConfigs should be updated correctly");
     }
@@ -124,10 +134,26 @@ public class GameConfigServiceTest {
     void testUpdateBoardWithMinimalBoard() {
         Board tinyBoard = new Board(1, 1);
         tinyBoard.addTile(new Tile(1, 0, 0));
+        Validation.validatePositiveNum(tinyBoard.getRows(), "Tiny board rows");
+        Validation.validatePositiveNum(tinyBoard.getColumns(), "Tiny board columns");
+        Validation.validateNonNegativeNum(0, "Tile X");
+        Validation.validateNonNegativeNum(0, "Tile Y");
         service.updateBoard(tinyBoard);
 
         Board result = service.build().getBoard();
         assertEquals(1, result.getTiles().size(), "Minimal board should have exactly one tile");
         assertEquals(1, result.getTile(1).getTileId());
+    }
+
+    /**
+     * Verifies that the board can be updated with no tiles.
+     * This test ensures that the service accepts an empty board layout without throwing an exception.
+     */
+    @Test
+    void testUpdateBoardWithNoTiles() {
+        Board emptyBoard = new Board(2, 2);
+        service.updateBoard(emptyBoard);
+
+        assertTrue(service.build().getBoard().getTiles().isEmpty(), "Expected board with no tiles");
     }
 }

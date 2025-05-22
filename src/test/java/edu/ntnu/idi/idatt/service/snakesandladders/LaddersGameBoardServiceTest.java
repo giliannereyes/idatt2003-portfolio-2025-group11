@@ -7,6 +7,7 @@ import edu.ntnu.idi.idatt.domain.factory.TileActionFactoryRegistry;
 import edu.ntnu.idi.idatt.domain.factory.snakesandladders.SnakesAndLaddersFactory;
 import edu.ntnu.idi.idatt.persistence.reader.BoardFileReader;
 import edu.ntnu.idi.idatt.persistence.writer.BoardFileWriter;
+import edu.ntnu.idi.idatt.utils.Validation;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -51,9 +52,14 @@ public class LaddersGameBoardServiceTest {
         };
 
         LaddersGameBoardService service = new LaddersGameBoardService(stubFactory);
-        Optional<Board> board = service.loadBoardConfiguration(new File("dummy.txt"));
+        File file = new File("dummy.txt");
+        Validation.validateNonNull(file, "Board file");
+        Optional<Board> board = service.loadBoardConfiguration(file);
 
         assertTrue(board.isPresent(), "Board should be loaded successfully");
+        Board loadedBoard = board.get();
+        Validation.validatePositiveNum(loadedBoard.getRows(), "Loaded board rows");
+        Validation.validatePositiveNum(loadedBoard.getColumns(), "Loaded board columns");
     }
 
     /**
@@ -79,7 +85,12 @@ public class LaddersGameBoardServiceTest {
         };
 
         LaddersGameBoardService service = new LaddersGameBoardService(stubFactory);
-        assertDoesNotThrow(() -> service.saveBoardConfiguration(new File("dummy.txt"), new Board(5, 5)));
+        Board board = new Board(5, 5);
+        Validation.validatePositiveNum(board.getRows(), "Board rows");
+        Validation.validatePositiveNum(board.getColumns(), "Board columns");
+        File file = new File("dummy.txt");
+        Validation.validateNonNull(file, "Board file");
+        assertDoesNotThrow(() -> service.saveBoardConfiguration(file, board));
     }
 
     /**
@@ -106,6 +117,9 @@ public class LaddersGameBoardServiceTest {
 
         LaddersGameBoardService service = new LaddersGameBoardService(stubFactory);
         Map<String, Board> boards = service.getPredefinedBoards();
+        Board basic = boards.get("basic");
+        Validation.validatePositiveNum(basic.getRows(), "basic board rows");
+        Validation.validatePositiveNum(basic.getColumns(), "basic board columns");
 
         assertEquals(1, boards.size(), "Should return 1 predefined board");
         assertTrue(boards.containsKey("basic"));
@@ -160,7 +174,12 @@ public class LaddersGameBoardServiceTest {
         };
 
         LaddersGameBoardService service = new LaddersGameBoardService(failingFactory);
-        assertThrows(RuntimeException.class, () -> service.saveBoardConfiguration(new File("invalid.txt"), new Board(3, 3)));
+        Board board = new Board(3, 3);
+        Validation.validatePositiveNum(board.getRows(), "Board rows");
+        Validation.validatePositiveNum(board.getColumns(), "Board columns");
+        File file = new File("invalid.txt");
+        Validation.validateNonNull(file, "Board file");
+        assertThrows(RuntimeException.class, () -> service.saveBoardConfiguration(file, board));
     }
 
     /**
@@ -238,7 +257,7 @@ public class LaddersGameBoardServiceTest {
         LaddersGameBoardService service = new LaddersGameBoardService(factory);
         Map<String, Board> boards = service.getPredefinedBoards();
 
-        assertNotNull(boards);
+        Validation.validateNonNull(boards, "boards should not be null");
         assertTrue(boards.isEmpty(), "Expected empty map of predefined boards");
     }
 
