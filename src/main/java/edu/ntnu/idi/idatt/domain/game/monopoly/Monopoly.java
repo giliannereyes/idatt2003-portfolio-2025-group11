@@ -14,12 +14,16 @@ import java.util.Map;
 public class Monopoly extends BoardGame {
   private final Map<Player, AssetsAccount> accounts = new HashMap<>();
   private final PropertyRegistry propertyRegistry;
+  private final double goBonus = 50;
+  private final double startingBalance = 400;
 
-  public Monopoly(Board board, List<Player> players, Dice dice, EventBus eventBus) {
+  public Monopoly(
+        Board board, List<Player> players, Dice dice, EventBus eventBus, PropertyRegistry propertyRegistry
+  ) {
     super(board, players, dice, eventBus);
-    players.forEach(player -> accounts.put(player, new AssetsAccount(player, 300)));
+    players.forEach(player -> accounts.put(player, new AssetsAccount(player, startingBalance)));
     this.board = board;
-    this.propertyRegistry = PropertyRegistry.getInstance();
+    this.propertyRegistry = propertyRegistry;
   }
 
   @Override
@@ -61,6 +65,10 @@ public class Monopoly extends BoardGame {
     }
   }
 
+  public PropertyRegistry getPropertyRegistry() {
+    return propertyRegistry;
+  }
+
   private int rollDice(Player player) {
     int roll = dice.roll();
     int d1 = dice.getDie(0);
@@ -92,6 +100,8 @@ public class Monopoly extends BoardGame {
     propertyRegistry.getPropertyAt(tile).ifPresent(property -> {
       if (property.isOwned()) {
         handleRentPayment(player, property);
+      } else if (accounts.get(player).getBalance() < property.getCost()) {
+        eventBus.publish(new InsufficientFundsEvent(player, property));
       } else {
         eventBus.publish(new BuyPropertyRequestEvent(player, property, accounts.get(player)));
       }
@@ -114,7 +124,7 @@ public class Monopoly extends BoardGame {
   private void handlePassingGo(Player player, Tile fromTile, int steps) {
     if (passedGo(fromTile.getTileId(), steps)) {
       giveGoBonus(player);
-      eventBus.publish(new TileActionEvent(player, board.getStartTile()));
+      eventBus.publish(new PlayerPassedGoEvent(player, accounts.get(player).getBalance(), goBonus));
     }
   }
 
@@ -124,7 +134,7 @@ public class Monopoly extends BoardGame {
 
   private void giveGoBonus(Player player) {
     AssetsAccount account = accounts.get(player);
-    account.credit(100);
+    account.credit(goBonus);
   }
 
   private void handleBankruptPlayer(Player player) {

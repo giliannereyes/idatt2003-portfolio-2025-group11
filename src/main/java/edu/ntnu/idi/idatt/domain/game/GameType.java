@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt.domain.enums;
+package edu.ntnu.idi.idatt.domain.game;
 
 public enum GameType {
     SNAKES_AND_LADDERS,

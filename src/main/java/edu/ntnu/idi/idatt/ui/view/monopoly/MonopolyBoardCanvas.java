@@ -1,118 +1,144 @@
 package edu.ntnu.idi.idatt.ui.view.monopoly;
 
-import edu.ntnu.idi.idatt.domain.action.monopoly.JailTileAction;
-import edu.ntnu.idi.idatt.domain.action.monopoly.PropertyAction;
+import edu.ntnu.idi.idatt.domain.action.monopoly.GoToJailAction;
 import edu.ntnu.idi.idatt.domain.entity.Board;
 import edu.ntnu.idi.idatt.domain.entity.Tile;
 import edu.ntnu.idi.idatt.domain.entity.monopoly.Property;
+import edu.ntnu.idi.idatt.domain.entity.monopoly.PropertyRegistry;
+import edu.ntnu.idi.idatt.utils.Validation;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
- * A canvas for drawing a Monopoly-style board.
- * Reuses tile positioning logic but applies property colors and names.
- *
- * @version 0.1
- * @since 0.1
+ * Paints a Monopoly board at a fixed pixel size.
+ * Supply the board‐surface width/height in the constructor; each time you
+ * call {@link #drawBoard(Board, PropertyRegistry)} the tile dimensions are
+ * derived from those numbers.
  */
 public class MonopolyBoardCanvas extends Canvas {
+  private static final double HEADER_RATIO = 0.40;           // 40 %
+  private static final Color  LOGO_COLOR   = Color.BLACK;
 
-  public MonopolyBoardCanvas(double width, double height) {
-    super(width, height);
+  private final double boardPxW;
+  private final double boardPxH;
+
+  public MonopolyBoardCanvas(double boardWidthPx, double boardHeightPx) {
+    super(boardWidthPx, boardHeightPx);
+    this.boardPxW = boardWidthPx;
+    this.boardPxH = boardHeightPx;
   }
 
-  public void drawBoard(Board board) {
-    GraphicsContext gc = getGraphicsContext2D();
-    gc.clearRect(0, 0, getWidth(), getHeight());
+  public void drawBoard(Board board, PropertyRegistry registry) {
     int cols = board.getColumns();
     int rows = board.getRows();
-    double tileWidth = getWidth() / cols;
-    double tileHeight = getHeight() / rows;
+
+    double tileW = boardPxW / cols;
+    double tileH = boardPxH / rows;
+
+    setWidth(boardPxW);
+    setHeight(boardPxH);
+
+    GraphicsContext gc = getGraphicsContext2D();
+    gc.clearRect(0, 0, boardPxW, boardPxH);
     gc.setFont(new Font(10));
     gc.setTextAlign(TextAlignment.CENTER);
-    for (Map.Entry<Integer, Tile> entry : board.getTiles().entrySet()) {
-      Tile tile = entry.getValue();
-      double x = tile.getX() * tileWidth;
-      double y = (rows - 1 - tile.getY()) * tileHeight;
-      if (tile.getLandAction().isPresent() && tile.getLandAction().get() instanceof PropertyAction propertyAction) {
-        drawPropertyTile(gc, x, y, tileWidth, tileHeight, propertyAction.getProperty());
-      } else if (tile.getLandAction().isPresent() && tile.getLandAction().get() instanceof JailTileAction) {
-        drawSpecialTile(gc, x, y, tileWidth, tileHeight, "JAIL");
-        drawJailOnTile(gc, x, y, tileWidth, tileHeight);
-      }
-        else if (tile.getLandAction().isPresent() && tile.getLandAction().get() instanceof JailTileAction) {
-          drawSpecialTile(gc, x, y, tileWidth, tileHeight, "GO TO JAIL");
-      } else if (tile.equals(board.getStartTile())) {
-        drawSpecialTile(gc, x, y, tileWidth, tileHeight, "GO");
+
+    for (Map.Entry<Integer, Tile> e : board.getTiles().entrySet()) {
+      Tile tile = e.getValue();
+      double x = tile.getX() * tileW;
+      double y = (rows - 1 - tile.getY()) * tileH;
+
+      Optional<Property> prop = registry.getPropertyAt(tile);
+      if (prop.isPresent()) {
+        drawPropertyTile(gc, x, y, tileW, tileH, prop.get());
       } else {
-        drawSpecialTile(gc, x, y, tileWidth, tileHeight, "FREE \nPARKING");
+        Optional<GoToJailAction> jailAct =
+              tile.getLandAction().filter(a -> a instanceof GoToJailAction)
+                    .map(a -> (GoToJailAction) a);
+        if (jailAct.isPresent()) {
+          String label = jailAct.get()
+                .getDestinationTile()
+                .filter(dest -> dest == tile)
+                .isPresent()
+                ? "JAIL"
+                : "GO TO\nJAIL";
+          drawSpecialTile(gc, x, y, tileW, tileH, label);
+        } else if (tile.equals(board.getStartTile())) {
+          drawSpecialTile(gc, x, y, tileW, tileH, "GO");
+        } else {
+          drawSpecialTile(gc, x, y, tileW, tileH, "FREE\nPARKING");
+        }
       }
     }
+
+    drawMonopolyLogo(gc, tileW, tileH, cols, rows);
   }
 
-  private void drawPropertyTile(GraphicsContext gc, double x, double y, double w, double h, Property property) {
-    // Top color bar
-    Color color = getColorForProperty(property.getName());
-    gc.setFill(color);
-    gc.fillRect(x, y, w, h * 0.2);
-
-    // Tile background
-    gc.setFill(Color.WHITE);
-    gc.fillRect(x, y + h * 0.2, w, h * 0.8);
-
-    // Border
-    gc.setStroke(Color.BLACK);
-    gc.strokeRect(x, y, w, h);
-
-    // Text: Name and Cost
-    gc.setFill(Color.BLACK);
-    gc.fillText(property.getName(), x + w / 2, y + h * 0.5);
-    gc.fillText("$" + property.getCost(), x + w / 2, y + h * 0.7);
-  }
-
-  private void drawSpecialTile(GraphicsContext gc, double x, double y, double w, double h, String label) {
-    gc.setFill(Color.WHITE);
-    gc.fillRect(x, y, w, h);
-
-    gc.setStroke(Color.BLACK);
-    gc.strokeRect(x, y, w, h);
+  private void drawPropertyTile(GraphicsContext gc,double x,double y,double w,double h,Property p){
+    double headerH=h*HEADER_RATIO;
+    gc.setFill(Color.LIGHTGRAY);gc.fillRect(x,y,w,headerH);
+    gc.setFill(Color.WHITE);   gc.fillRect(x,y+headerH,w,h-headerH);
+    gc.setStroke(Color.BLACK); gc.strokeRect(x,y,w,h);
 
     gc.setFill(Color.BLACK);
-    gc.fillText(label, x + w / 2, y + h / 2);
+    Font font=gc.getFont();
+    List<String> lines=wrapText(p.getName(),font,w*0.90);
+    if(lines.size()>2)lines=lines.subList(0,2);
+
+    double lineH=font.getSize()+2;
+    double total=lines.size()*lineH;
+    double yStart=y+(headerH-total)/2+lineH*0.8;
+    for (int i=0;i<lines.size();i++)
+      gc.fillText(lines.get(i),x+w/2,yStart+i*lineH);
+
+    gc.fillText("Cost: $"+p.getCost(),x+w/2,y+headerH+(h-headerH)*0.60);
   }
 
-  private Color getColorForProperty(String name) {
-    return switch (name) {
-      case "Evans Ave.", "Downing St." -> Color.PURPLE;
-      case "Hill Way", "Jackson Ave." -> Color.LIGHTBLUE;
-      case "Pajaro St.", "Blanco Rd." -> Color.BROWN;
-      case "Kentucky Ave.", "Broadway" -> Color.ORANGE;
-      case "Main St.", "Giggling Way" -> Color.RED;
-      case "Atlantic Ave.", "Flatlands Ave." -> Color.GOLD;
-      case "Reynolds Ave.", "Columbia Rd." -> Color.GREEN;
-      case "Lombard St.", "17 Mile Drive" -> Color.DARKBLUE;
-      default -> Color.LIGHTGRAY;
-    };
+  private void drawSpecialTile(GraphicsContext gc,double x,double y,double w,double h,String label){
+    gc.setFill(Color.WHITE);  gc.fillRect(x,y,w,h);
+    gc.setStroke(Color.BLACK);gc.strokeRect(x,y,w,h);
+    gc.setFill(Color.BLACK);  gc.fillText(label,x+w/2,y+h/2);
   }
 
-  /**
-   * Draws a jail image on a tile at the specified position and size.
-   *
-   * @param gc the GraphicsContext used to draw on the canvas
-   * @param x the x-coordinate of the top-left corner of the tile
-   * @param y the y-coordinate of the top-left corner of the tile
-   * @param tileWidth the width of the tile
-   * @param tileHeight the height of the tile
-   */
-  private void drawJailOnTile(GraphicsContext gc, double x, double y, double tileWidth, double tileHeight) {
-    Image jailImage = new Image("/images/jail.png");
-    gc.drawImage(jailImage, x, y, tileWidth, tileHeight);
+  private void drawMonopolyLogo(GraphicsContext gc,double tw,double th,int cols,int rows){
+    double innerW=(cols-2)*tw,innerH=(rows-2)*th;
+    double cx=tw+innerW/2,cy=th+innerH/2;
+    double size=Math.min(innerW,innerH)*0.18;
+    gc.save();
+    gc.translate(cx,cy);gc.rotate(-45);gc.setEffect(null);
+    gc.setFont(new Font("Arial",size));
+    gc.setFill(LOGO_COLOR);gc.setTextAlign(TextAlignment.CENTER);
+    gc.fillText("MONOPOLY",0,0);
+    gc.restore();
+  }
+
+  private List<String> wrapText(String txt,Font f,double maxPx){
+    List<String> lines=new ArrayList<>();
+    StringBuilder cur=new StringBuilder();
+    for(String w:txt.split(" ")){
+      String test=(cur.isEmpty()?"":cur+" ")+w;
+      if(computeTextWidth(f,test)>maxPx&&!cur.isEmpty()){
+        lines.add(cur.toString());cur.setLength(0);cur.append(w);
+      }else{
+        if(!cur.isEmpty())cur.append(' ');
+        cur.append(w);
+      }
+    }
+    lines.add(cur.toString());
+    return lines;
+  }
+  private static double computeTextWidth(Font f,String txt){
+    Text t=new Text(txt);t.setFont(f);
+    return t.getLayoutBounds().getWidth();
   }
 }
-

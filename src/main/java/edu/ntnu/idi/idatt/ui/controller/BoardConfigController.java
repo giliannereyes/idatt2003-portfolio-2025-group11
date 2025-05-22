@@ -49,8 +49,10 @@ public class BoardConfigController {
     this.viewManager = viewManager;
     this.gameConfigService = gameConfigService;
     this.fileHandler = boardPersistenceService;
-    view.setController(this);
     loadPredefinedBoards();
+    if (fileHandler == null) {
+      view.disableFileHandling();
+    }
   }
 
   /**

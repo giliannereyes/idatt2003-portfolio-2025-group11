@@ -30,8 +30,6 @@ background {
 
 .button:pressed {
     -fx-background-color: derive(#415A77, -25%);  /* even darker on click */
-    -fx-scale-x: 0.98;
-    -fx-scale-y: 0.98;
     -fx-effect: innershadow(two-pass-box, rgba(0,0,0,0.4), 6, 0.0, 0, 2);
 }
 
@@ -49,7 +47,6 @@ background {
 }
 
 .board-canvas {
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 20, 0.5, 0, 0);
     -fx-border-color: #333;
     -fx-border-width: 3px;
     -fx-border-radius: 5px;
@@ -146,7 +143,6 @@ background {
             #2E4154 100%
     );
     -fx-effect: innershadow(two-pass-box, rgba(0,0,0,0.3), 6, 0, 0, 2);
-    -fx-translate-y: 1px;
 }
 
 .primary-button:focused {
@@ -160,6 +156,16 @@ background {
     -fx-font-size: 22px;
 }
 
+.manual-text {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1B263B;
+    -fx-background-color: rgba(200, 210, 220, 0.1);
+}
+
+.manual-text:hover {
+    -fx-cursor: hand;
+}
 /* Player grid styling */
 .player-grid {
     -fx-background-color: rgba(200, 210, 220, 0.1);

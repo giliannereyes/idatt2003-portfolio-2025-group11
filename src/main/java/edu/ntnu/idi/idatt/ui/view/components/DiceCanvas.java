@@ -1,6 +1,6 @@
 package edu.ntnu.idi.idatt.ui.view.components;
 
-import edu.ntnu.idi.idatt.domain.enums.DiceImage;
+import edu.ntnu.idi.idatt.ui.enums.DiceImage;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Pos;

@@ -1,14 +1,14 @@
 package edu.ntnu.idi.idatt.config.initializer;
 
-import edu.ntnu.idi.idatt.domain.enums.GameType;
+import edu.ntnu.idi.idatt.domain.game.GameType;
 import edu.ntnu.idi.idatt.domain.event.EventBus;
 import edu.ntnu.idi.idatt.domain.event.common.DefaultEventBus;
 import edu.ntnu.idi.idatt.ui.controller.GameSelectionController;
 import edu.ntnu.idi.idatt.ui.view.GameSelectionView;
 import edu.ntnu.idi.idatt.ui.view.PlayerSetupView;
 import edu.ntnu.idi.idatt.ui.view.BoardConfigView;
-import edu.ntnu.idi.idatt.ui.view.monopoly.MonopolyGameView;
-import edu.ntnu.idi.idatt.ui.view.snakesandladders.GameView;
+import edu.ntnu.idi.idatt.ui.view.monopoly.MonopolyView;
+import edu.ntnu.idi.idatt.ui.view.snakesandladders.SnakesAndLaddersView;
 import edu.ntnu.idi.idatt.utils.ViewManager;
 import javafx.stage.Stage;
 
@@ -39,12 +39,12 @@ public class AppInitializer {
       case SNAKES_AND_LADDERS -> {
         new SnakesAndLaddersInitializer().initialize(this);
         viewManager.registerTransition(PlayerSetupView.class, BoardConfigView.class);
-        viewManager.registerTransition(BoardConfigView.class, GameView.class);
+        viewManager.registerTransition(BoardConfigView.class, SnakesAndLaddersView.class);
       }
       case MONOPOLY -> {
         new MonopolyInitializer().initialize(this);
         viewManager.registerTransition(PlayerSetupView.class, BoardConfigView.class);
-        viewManager.registerTransition(BoardConfigView.class, MonopolyGameView.class);
+        viewManager.registerTransition(BoardConfigView.class, MonopolyView.class);
       }
       default -> throw new IllegalArgumentException(
             "Unsupported game type: " + gameType);

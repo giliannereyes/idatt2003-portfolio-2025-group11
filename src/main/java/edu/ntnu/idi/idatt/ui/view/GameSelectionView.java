@@ -1,7 +1,7 @@
 package edu.ntnu.idi.idatt.ui.view;
 
-import static edu.ntnu.idi.idatt.domain.enums.GameType.MONOPOLY;
-import static edu.ntnu.idi.idatt.domain.enums.GameType.SNAKES_AND_LADDERS;
+import static edu.ntnu.idi.idatt.domain.game.GameType.MONOPOLY;
+import static edu.ntnu.idi.idatt.domain.game.GameType.SNAKES_AND_LADDERS;
 
 import edu.ntnu.idi.idatt.ui.controller.GameSelectionController;
 import javafx.geometry.Insets;

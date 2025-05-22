@@ -1,7 +1,7 @@
 package edu.ntnu.idi.idatt.ui.view;
 
 import edu.ntnu.idi.idatt.ui.controller.PlayerSetupController;
-import edu.ntnu.idi.idatt.domain.enums.PlayerToken;
+import edu.ntnu.idi.idatt.ui.enums.PlayerToken;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;

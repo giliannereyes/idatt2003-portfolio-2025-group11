@@ -1,7 +1,7 @@
 package edu.ntnu.idi.idatt.service.snakesandladders;
 
 import edu.ntnu.idi.idatt.domain.entity.Board;
-import edu.ntnu.idi.idatt.domain.factory.snakesandladders.SnakesAndLaddersFactory;
+import edu.ntnu.idi.idatt.domain.factory.snakesandladders.SnakesAndLaddersBoardFactory;
 import edu.ntnu.idi.idatt.service.BoardPersistenceService;
 import edu.ntnu.idi.idatt.service.BoardPresetService;
 import java.io.File;
@@ -17,14 +17,14 @@ import java.util.Optional;
  * @author Gilianne Reyes
  */
 public class LaddersGameBoardService implements BoardPersistenceService, BoardPresetService {
-  private final SnakesAndLaddersFactory factory;
+  private final SnakesAndLaddersBoardFactory factory;
 
   /**
    * Constructs a new {@code LaddersGameBoardService} with the given factory.
    *
    * @param factory the factory used to create and manage Snakes and Ladders boards
    */
-  public LaddersGameBoardService(SnakesAndLaddersFactory factory) {
+  public LaddersGameBoardService(SnakesAndLaddersBoardFactory factory) {
     this.factory = factory;
   }
 

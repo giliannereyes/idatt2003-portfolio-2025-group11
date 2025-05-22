@@ -12,12 +12,13 @@ import edu.ntnu.idi.idatt.domain.factory.snakesandladders.LadderActionFactory;
 import edu.ntnu.idi.idatt.domain.factory.snakesandladders.SnakeActionFactory;
 import edu.ntnu.idi.idatt.domain.factory.snakesandladders.SkipTurnActionFactory;
 import edu.ntnu.idi.idatt.domain.factory.snakesandladders.ResetActionFactory;
-import edu.ntnu.idi.idatt.domain.factory.snakesandladders.SnakesAndLaddersFactory;
+import edu.ntnu.idi.idatt.domain.factory.snakesandladders.SnakesAndLaddersBoardFactory;
 import edu.ntnu.idi.idatt.persistence.reader.PlayerFileReader;
 import edu.ntnu.idi.idatt.persistence.writer.PlayerFileWriter;
 import edu.ntnu.idi.idatt.persistence.reader.BoardFileReaderGson;
 import edu.ntnu.idi.idatt.persistence.writer.BoardFileWriterGson;
 import edu.ntnu.idi.idatt.service.GameConfigService;
+import edu.ntnu.idi.idatt.service.ManualService;
 import edu.ntnu.idi.idatt.service.PlayerService;
 import edu.ntnu.idi.idatt.service.snakesandladders.LaddersGameBoardService;
 import edu.ntnu.idi.idatt.service.snakesandladders.LaddersGameService;
@@ -26,7 +27,7 @@ import edu.ntnu.idi.idatt.ui.controller.PlayerSetupController;
 import edu.ntnu.idi.idatt.ui.controller.snakesandladders.SnakesAndLaddersController;
 import edu.ntnu.idi.idatt.ui.view.BoardConfigView;
 import edu.ntnu.idi.idatt.ui.view.PlayerSetupView;
-import edu.ntnu.idi.idatt.ui.view.snakesandladders.GameView;
+import edu.ntnu.idi.idatt.ui.view.snakesandladders.SnakesAndLaddersView;
 import edu.ntnu.idi.idatt.utils.ViewManager;
 
 public class SnakesAndLaddersInitializer implements GameInitializer {
@@ -79,7 +80,7 @@ public class SnakesAndLaddersInitializer implements GameInitializer {
   private void configureBoardConfig(
         ViewManager vm, TileActionFactoryRegistry registry, GameConfigService cs
   ) {
-    SnakesAndLaddersFactory boardFactory = new SnakesAndLaddersFactory(
+    SnakesAndLaddersBoardFactory boardFactory = new SnakesAndLaddersBoardFactory(
                 new BoardFileReaderGson(registry), new BoardFileWriterGson(), registry
     );
     LaddersGameBoardService boardService = new LaddersGameBoardService(boardFactory);
@@ -93,9 +94,9 @@ public class SnakesAndLaddersInitializer implements GameInitializer {
         GameConfigService cs, EventBus eb
   ) {
     LaddersGameService laddersGameService = new LaddersGameService(config, eb);
-    GameView gameView       = new GameView();
+    SnakesAndLaddersView gameView       = new SnakesAndLaddersView();
     SnakesAndLaddersController controller =
-          new SnakesAndLaddersController(cs, laddersGameService, gameView);
+          new SnakesAndLaddersController(cs, laddersGameService, gameView, new ManualService());
     gameView.setController(controller);
     vm.add(gameView);
     eb.register(DiceRolledEvent.class, controller::onDiceRolled);

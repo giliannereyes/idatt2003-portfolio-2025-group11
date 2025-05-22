@@ -22,7 +22,7 @@ import edu.ntnu.idi.idatt.ui.controller.PlayerSetupController;
 import edu.ntnu.idi.idatt.ui.controller.monopoly.MonopolyController;
 import edu.ntnu.idi.idatt.ui.view.BoardConfigView;
 import edu.ntnu.idi.idatt.ui.view.PlayerSetupView;
-import edu.ntnu.idi.idatt.ui.view.monopoly.MonopolyGameView;
+import edu.ntnu.idi.idatt.ui.view.monopoly.MonopolyView;
 import edu.ntnu.idi.idatt.utils.ViewManager;
 
 public class MonopolyInitializer implements GameInitializer {
@@ -83,9 +83,6 @@ public class MonopolyInitializer implements GameInitializer {
         GameConfigService cs
   ) {
     MonopolyBoardFactory factory = new MonopolyBoardFactory();
-    Board board = factory.loadLargeBoard();
-    cs.updateBoard(board);
-
     BoardConfigView view = new BoardConfigView();
     BoardConfigController ctrl =
           new BoardConfigController(
@@ -106,8 +103,8 @@ public class MonopolyInitializer implements GameInitializer {
         ManualService ms,
         GameConfig cfg
   ) {
-    MonopolyGameService service    = new MonopolyGameService(cfg, eb);
-    MonopolyGameView view       = new MonopolyGameView();
+    MonopolyGameService service    = new MonopolyGameService(cfg, eb, new MonopolyBoardFactory());
+    MonopolyView view       = new MonopolyView();
     MonopolyController controller =
           new MonopolyController(cs, service, ms, view);
     view.setController(controller);
@@ -127,5 +124,6 @@ public class MonopolyInitializer implements GameInitializer {
     eb.register(InsufficientFundsEvent.class, controller::onInsufficientFunds);
     eb.register(PlayerPaidRentEvent.class, controller::onRentPaid);
     eb.register(PlayerBankruptEvent.class, controller::onPlayerBankrupt);
+    eb.register(PlayerPassedGoEvent.class, controller::onPlayerPassedGo);
   }
 }

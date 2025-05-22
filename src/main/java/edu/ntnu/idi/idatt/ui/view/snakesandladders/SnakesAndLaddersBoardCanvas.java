@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt.ui.view.components;
+package edu.ntnu.idi.idatt.ui.view.snakesandladders;
 
 import edu.ntnu.idi.idatt.domain.action.*;
 import edu.ntnu.idi.idatt.domain.action.snakesandladders.LadderAction;
@@ -7,7 +7,7 @@ import edu.ntnu.idi.idatt.domain.action.snakesandladders.SkipTurnAction;
 import edu.ntnu.idi.idatt.domain.action.snakesandladders.SnakeAction;
 import edu.ntnu.idi.idatt.domain.entity.Board;
 import edu.ntnu.idi.idatt.domain.entity.Tile;
-import edu.ntnu.idi.idatt.domain.enums.TileColorType;
+import edu.ntnu.idi.idatt.ui.enums.TileColorType;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -26,7 +26,7 @@ import java.util.Optional;
  * @author Gilianne Reyes
  * @author Trang Duong
  */
-public class BoardCanvas extends Canvas {
+public class SnakesAndLaddersBoardCanvas extends Canvas {
     private final Map<String, TileColorType> ACTION_COLOR_MAPPING = Map.of(
             LadderAction.actionType, TileColorType.LADDER_START,
             SnakeAction.actionType, TileColorType.SNAKE_START,
@@ -37,10 +37,9 @@ public class BoardCanvas extends Canvas {
             LadderAction.actionType, TileColorType.LADDER_END,
             SnakeAction.actionType, TileColorType.SNAKE_END
     );
-    private static final double CONNECTOR_MARGIN = 2; // pixels to inset from tile edge
-    private final Pane tokenPane = new Pane();
+    private static final double CONNECTOR_MARGIN = 2;
 
-    public BoardCanvas(double width, double height) {
+    public SnakesAndLaddersBoardCanvas(double width, double height) {
         super(width, height);
     }
 

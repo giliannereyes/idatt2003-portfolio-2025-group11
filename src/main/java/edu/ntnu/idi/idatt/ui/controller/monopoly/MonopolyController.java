@@ -1,6 +1,7 @@
 package edu.ntnu.idi.idatt.ui.controller.monopoly;
 
 import edu.ntnu.idi.idatt.config.GameConfig;
+import edu.ntnu.idi.idatt.domain.action.TileAction;
 import edu.ntnu.idi.idatt.domain.entity.Player;
 import edu.ntnu.idi.idatt.domain.entity.Tile;
 import edu.ntnu.idi.idatt.domain.entity.monopoly.AssetsAccount;
@@ -11,7 +12,9 @@ import edu.ntnu.idi.idatt.service.GameConfigService;
 import edu.ntnu.idi.idatt.service.ManualService;
 import edu.ntnu.idi.idatt.service.monopoly.MonopolyGameService;
 import edu.ntnu.idi.idatt.ui.controller.BoardGameController;
-import edu.ntnu.idi.idatt.ui.view.monopoly.MonopolyGameView;
+import edu.ntnu.idi.idatt.ui.view.monopoly.MonopolyView;
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
 
 /**
  * Controller for Monopoly Lite, bridging view, service, and events.
@@ -29,10 +32,11 @@ public class MonopolyController implements
       BuyPropertyRequestListener,
       InsufficientFundsListener,
       PlayerPaidRentListener,
-      PlayerBankruptListener {
+      PlayerBankruptListener,
+      PlayerPassedGoListener {
   private final GameConfigService configSvc;
   private final MonopolyGameService gameSvc;
-  private final MonopolyGameView view;
+  private final MonopolyView view;
   private final ManualService manualService;
 
   /**
@@ -46,7 +50,7 @@ public class MonopolyController implements
   public MonopolyController(GameConfigService configSvc,
                             MonopolyGameService gameSvc,
                             ManualService manualService,
-                            MonopolyGameView view) {
+                            MonopolyView view) {
     this.configSvc = configSvc;
     this.gameSvc   = gameSvc;
     this.manualService = manualService;
@@ -65,13 +69,13 @@ public class MonopolyController implements
       }
       view.setUserManualText(manualService.loadManualText("/userManuals/monopoly_user_manual.txt"));
       GameConfig config = configSvc.build();
-      view.registerBoard(config.getBoard());
+      gameSvc.startGame();
+      view.registerBoard(config.getBoard(), gameSvc.getPropertyRegistry());
       config.getPlayerConfigs().forEach(pc -> {
             view.registerPlayerToken(pc.getPlayer().getName(),
                   pc.getTokenImagePath());
       }
       );
-      gameSvc.startGame();
     } catch (Exception ex) {
       view.onErrorInitializingGame(ex.getMessage());
     }
@@ -103,32 +107,31 @@ public class MonopolyController implements
   @Override
   public void onPlayerMoved(PlayerMovedEvent e) {
     Player player = e.player();
-    Tile from = e.fromTile();
     Tile to = e.destinationTile();
-    view.setStatusLabel(
-          String.format("%s moved from %d to %d",
-                player.getName(), from.getTileId(), to.getTileId())
-    );
     view.movePlayerToken(player.getName(), to.getX(), to.getY());
   }
 
   /**
    * Handles tile-specific actions when a player lands on a tile.
-   * (Currently commented out for future implementation.)
+   *
    *
    * @param e the tile action event
    */
   @Override
   public void onTileAction(TileActionEvent e) {
-    /*Player player = e.player();
-    Tile tile = e.tile();
-    tile.getLandAction().ifPresent({
-          action -> {
-            view.setStatusLabel(
-                  String.format("%s landed on %s", player.getName(), action.getActionType())
-            );
-          }
-    });*/
+    Player player = e.player();
+    Tile   tile   = e.tile();
+    tile.getLandAction()
+          .flatMap(TileAction::getDestinationTile)
+          .ifPresent(dest -> {
+            PauseTransition wait = new PauseTransition(Duration.seconds(2.0));
+            wait.setOnFinished(evt ->
+                  view.movePlayerToken(
+                        player.getName(),
+                        dest.getX(), dest.getY()
+                  ));
+            wait.play();
+          });
   }
 
   /**
@@ -158,7 +161,7 @@ public class MonopolyController implements
     if (buy) {
       gameSvc.buyProperty(player, property);
       view.setStatusLabel(
-            String.format("%s bought %s for $%f",
+            String.format("%s bought %s for $%.2f",
                   player.getName(), property.getName(), property.getCost())
       );
       view.updatePlayerBalance(player.getName(), String.valueOf(account.getBalance()));
@@ -203,8 +206,6 @@ public class MonopolyController implements
     );
     view.updatePlayerBalance(tenant.getName(), String.valueOf(tenantBalance));
     view.updatePlayerBalance(landlord.getName(), String.valueOf(landlordBalance));
-    System.out.println("Tenant balance: $" + tenantBalance);
-    System.out.println("Landlord balance: $" + landlordBalance);
   }
 
   /**
@@ -220,6 +221,21 @@ public class MonopolyController implements
     );
     view.updatePlayerBalance(player.getName(), "BANKRUPT");
     view.removeAllPropertiesFromPlayer(player.getName());
+  }
+
+  /**
+   * Updates the view when a player passes the "Go" tile.
+   *
+   * @param e the player passed go event
+   */
+  @Override
+  public void onPlayerPassedGo(PlayerPassedGoEvent e) {
+    Player player = e.player();
+    double newBalance = e.balance();
+    view.setStatusLabel(
+          String.format("%s passed Go and received $%.2f", player.getName(), e.bonus())
+    );
+    view.updatePlayerBalance(player.getName(), String.valueOf(newBalance));
   }
 }
 
