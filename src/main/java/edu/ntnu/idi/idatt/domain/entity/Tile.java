@@ -2,11 +2,11 @@ package edu.ntnu.idi.idatt.domain.entity;
 
 import edu.ntnu.idi.idatt.domain.action.TileAction;
 import edu.ntnu.idi.idatt.utils.Validation;
-
 import java.util.Optional;
 
 /**
- * Class representing a tile on the board.
+ * Represents a tile on a game board. Each tile has a unique id, coordinates
+ * (x, y), and optionally an action that can be performed when a player lands on it.
  *
  * @version 0.3
  * @since 0.1
@@ -16,8 +16,8 @@ public class Tile {
   private Tile nextTile;
   private final int tileId;
   private TileAction landAction;
-  private final double x;
-  private final double y;
+  private final double xCoordinate;
+  private final double yCoordinate;
 
   /**
    * Constructs a Tile instance.
@@ -26,19 +26,20 @@ public class Tile {
    * @param x is the x-coordinate of the tile.
    * @param y is the y-coordinate of the tile.
    *
-   * @throws IllegalArgumentException if the tile id is negative.
+   * @throws IllegalArgumentException if the tile id or any coordinate is negative.
    */
   public Tile(int tileId, double x, double y) {
     Validation.validateNonNegativeNum(tileId, "Tile id");
     Validation.validateNonNegativeNum(x, "X-coordinate");
     Validation.validateNonNegativeNum(y, "Y-coordinate");
     this.tileId = tileId;
-    this.x = x;
-    this.y = y;
+    this.xCoordinate = x;
+    this.yCoordinate = y;
   }
 
   /**
-   * Places a player on this tile and performs the action of this tile.
+   * Performs the action associated with this tile when a player lands on it,
+   * if any.
    *
    * @param player is the player that lands on this tile.
    *
@@ -55,22 +56,27 @@ public class Tile {
    * Sets the action to be performed when a player lands on this tile.
    *
    * @param landAction is the action to be performed.
+   *
+   * @throws IllegalArgumentException if the action is null.
    */
   public void setLandAction(TileAction landAction) {
+    Validation.validateNonNull(landAction, "Tile land action");
     this.landAction = landAction;
   }
 
   /**
    * Retrieves the action assigned to this tile.
    *
-   * @return an {@link Optional} containing the action assigned to this tile.
+   * @return an {@link Optional} containing the action assigned to this tile,
+   *         or an empty {@link Optional} if no action is assigned.
    */
   public Optional<TileAction> getLandAction() {
     return Optional.ofNullable(landAction);
   }
 
   /**
-   * Sets the next tile of this tile.
+   * Sets the next tile of this tile. If the next tile is {@code null},
+   * this tile is considered the last tile in the sequence.
    *
    * @param nextTile is the next tile.
    */
@@ -79,7 +85,7 @@ public class Tile {
   }
 
   /**
-   * Gets the id of this tile.
+   * Retrieves the id of this tile.
    *
    * @return the id of this tile.
    */
@@ -88,9 +94,9 @@ public class Tile {
   }
 
   /**
-   * Checks if this tile is the last tile.
+   * Checks if this tile is the last tile in the sequence.
    *
-   * @return the id of this tile.
+   * @return {@code true} if this tile is the last tile, {@code false} otherwise.
    */
   public boolean isLastTile() {
     return nextTile == null;
@@ -111,7 +117,7 @@ public class Tile {
    * @return the x-coordinate of the tile.
    */
   public double getX() {
-    return x;
+    return xCoordinate;
   }
 
   /**
@@ -120,6 +126,6 @@ public class Tile {
    * @return the y-coordinate of the tile.
    */
   public double getY() {
-    return y;
+    return yCoordinate;
   }
 }

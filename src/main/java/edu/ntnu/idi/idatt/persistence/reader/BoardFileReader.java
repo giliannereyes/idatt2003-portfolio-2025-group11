@@ -1,26 +1,22 @@
 package edu.ntnu.idi.idatt.persistence.reader;
 
 import edu.ntnu.idi.idatt.domain.entity.Board;
-
 import java.io.IOException;
 import java.nio.file.Path;
 
 /**
- * An interface for reading a board from a file.
+ * Interface for reading a {@link Board} from a file.
  *
- * @version 0.1
- * @since 0.2
  * @author Gilianne Reyes
+ * @version 0.1
  */
 public interface BoardFileReader {
-    /**
-     * Reads a board from a file.
-     *
-     * @param path is the path to the file.
-     *
-     * @return the board read from the file.
-     *
-     * @throws IOException if an I/O error occurs.
-     */
-    Board readBoard(Path path) throws IOException;
+  /**
+   * Reads and deserializes a board from the specified file path.
+   *
+   * @param path is the file path to read from.
+   *
+   * @return the {@link Board} deserialized from the file.
+   */
+  Board readBoard(Path path) throws IOException;
 }
