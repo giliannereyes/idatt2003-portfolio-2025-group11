@@ -5,10 +5,14 @@ import edu.ntnu.idi.idatt.domain.entity.Tile;
 import edu.ntnu.idi.idatt.domain.event.GameEvent;
 
 /**
- * Represents an event where a player lands on a tile and an action is triggered.
+ * Event fired when a player lands on a tile and a tile‐specific action should occur.
  *
- * @author Gilianne Reyes
+ * <p>Encapsulates the {@link Player} who landed and the {@link Tile} on which they landed.</p>
+ *
  * @version 0.1
  * @since 0.1
+ * @author Gilianne Reyes
+ * @param player is the player who landed.
+ * @param tile is the tile landed upon.
  */
 public record TileActionEvent(Player player, Tile tile) implements GameEvent {}

@@ -1,34 +1,35 @@
 package edu.ntnu.idi.idatt.domain.factory.snakesandladders;
 
-import edu.ntnu.idi.idatt.domain.action.snakesandladders.SkipTurnAction;
 import edu.ntnu.idi.idatt.domain.action.TileAction;
+import edu.ntnu.idi.idatt.domain.action.snakesandladders.SkipTurnAction;
 import edu.ntnu.idi.idatt.domain.factory.NoDestinationTileActionFactory;
 
 /**
- * A class that creates a skip turn action based on the destination tile.
+ * Factory for creating {@link SkipTurnAction}s that cause a player
+ * to lose their next turn.
  *
  * @version 0.2
  * @since 0.1
  * @author Trang Duong
  */
 public class SkipTurnActionFactory implements NoDestinationTileActionFactory {
-    /**
-     * Creates a skip-turn action based on the destination tile.
-     *
-     * @return an instance of the skip-turn action.
-     */
-    @Override
-    public TileAction createTileAction() {
-        return new SkipTurnAction();
-    }
+  /**
+   * Creates a new skip-turn action which makes the player skip their next move.
+   *
+   * @return a {@link SkipTurnAction} instance.
+   */
+  @Override
+  public TileAction createTileAction() {
+    return new SkipTurnAction();
+  }
 
-    /**
-     * Retrieves the type of the action.
-     *
-     * @return the type of the action.
-     */
-    @Override
-    public String getActionType() {
-        return SkipTurnAction.actionType;
-    }
+  /**
+   * Retrieves a unique identifier for this type of action.
+   *
+   * @return a string representing the action type.
+   */
+  @Override
+  public String getActionType() {
+    return SkipTurnAction.actionType;
+  }
 }

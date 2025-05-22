@@ -2,12 +2,11 @@ package edu.ntnu.idi.idatt.domain.strategy;
 
 import edu.ntnu.idi.idatt.domain.entity.Tile;
 import edu.ntnu.idi.idatt.utils.Validation;
-
 import java.util.Optional;
 
 /**
- * A class that determines the target tile based on default movement.
- * Default movement is moving a certain number of steps forward.
+ * Default movement strategy: advance forward a fixed number of steps,
+ * stopping early if the end of the tile chain is reached.
  *
  * @version 0.2
  * @since 0.1
@@ -15,15 +14,15 @@ import java.util.Optional;
  */
 public class DefaultMovementStrategy implements MovementStrategy {
   /**
-   * Determines the destination tile based on the default movement strategy.
+   * Determines the tile reached by moving {@code steps} tiles forward
+   * from {@code startTile}. If a tile has no successor, movement stops there.
    *
    * @param startTile is the tile the player is currently on.
-   * @param steps is the amount of steps the player will take.
+   * @param steps     is the number of steps to move forward.
    *
-   * @return the destination tile.
+   * @return the destination {@link Tile}.
    *
-   * @throws IllegalArgumentException if the start tile is null or if the steps are negative.
-   * @throws IllegalStateException if the destination tile is not present.
+   * @throws IllegalArgumentException if {@code startTile} is null or {@code steps} is negative.
    */
   @Override
   public Tile determineDestination(Tile startTile, int steps) {
