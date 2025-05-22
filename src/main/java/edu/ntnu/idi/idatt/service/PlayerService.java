@@ -2,7 +2,7 @@ package edu.ntnu.idi.idatt.service;
 
 import edu.ntnu.idi.idatt.config.PlayerConfig;
 import edu.ntnu.idi.idatt.domain.entity.Player;
-import edu.ntnu.idi.idatt.domain.enums.PlayerToken;
+import edu.ntnu.idi.idatt.ui.enums.PlayerToken;
 import edu.ntnu.idi.idatt.domain.factory.PlayerFactory;
 import edu.ntnu.idi.idatt.persistence.reader.PlayerFileReader;
 import edu.ntnu.idi.idatt.persistence.writer.PlayerFileWriter;
@@ -57,7 +57,7 @@ public class PlayerService {
    */
   public List<String[]> loadPlayersFromCsv(File file) {
     try {
-      List<String[]> playerData = fileReader.readFromCSV(file);
+      List<String[]> playerData = fileReader.readFromCsv(file);
       if (playerData.size() > maxPlayers) {
         throw new IllegalArgumentException("Too many players");
       } else if (playerData.size() < minPlayers) {
@@ -78,7 +78,7 @@ public class PlayerService {
    */
   public void savePlayersToCsv(File file, List<String[]> playerData) {
     try {
-      fileWriter.writeToCSV(playerData, file, null);
+      fileWriter.writeToCsv(playerData, file, null);
     } catch (Exception e) {
       throw new RuntimeException("Error writing to file: " + e.getMessage());
     }

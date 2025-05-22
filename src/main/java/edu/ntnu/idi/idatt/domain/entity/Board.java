@@ -5,6 +5,7 @@ import edu.ntnu.idi.idatt.utils.Validation;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * The {@code Board} class represents a game board consisting of tiles organized
@@ -173,6 +174,7 @@ public class Board {
     } else {
       return Optional.of(getTile(nextTileId));
     }
+  }
 
   /**
    * Sets the description of the board.

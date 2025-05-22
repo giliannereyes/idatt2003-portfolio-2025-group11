@@ -9,9 +9,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
-
 import java.io.File;
-import java.util.Objects;
 
 /**
  * Represents the view for setting up the game board. It is responsible for
@@ -31,8 +29,10 @@ public class BoardConfigView implements View {
   private final Button startGameButton;
   private final Text titleText;
   private final Text placeholderText;
-  Button loadBoardButton;
-  Button saveBoardButton;
+  private Button loadBoardButton;
+  private Button saveBoardButton;
+  private VBox fileSection = new VBox(10);
+  private boolean fileHandlingDisabled = false;
 
   /**
    * Constructs a BoardSetupView instance.
@@ -81,7 +81,7 @@ public class BoardConfigView implements View {
     root.setAlignment(Pos.CENTER);
     setupComponentStyling();
     VBox headerSection = createHeaderSection();
-    VBox fileSection = createFileSection();
+    fileSection = createFileSection();
     VBox selectionSection = createSelectionSection();
     VBox actionSection = createActionSection();
     root.getChildren().addAll(
@@ -93,6 +93,23 @@ public class BoardConfigView implements View {
     startGameButton.setOnAction(e -> controller.registerBoardSelection());
     loadBoardButton.setOnAction(e -> onLoadFromFile());
     saveBoardButton.setOnAction(e -> onSaveToFile());
+    if (fileHandlingDisabled) {
+      hideFileSection();
+    }
+  }
+
+  public void disableFileHandling() {
+    fileHandlingDisabled = true;
+  }
+
+  private void hideFileSection() {
+    if (fileSection == null) return;
+    fileSection.setVisible(false);
+    fileSection.setManaged(false);
+    loadBoardButton.setVisible(false);
+    loadBoardButton.setManaged(false);
+    saveBoardButton.setVisible(false);
+    saveBoardButton.setManaged(false);
   }
 
   /**
@@ -126,7 +143,7 @@ public class BoardConfigView implements View {
   private VBox createFileSection() {
     VBox fileSection = new VBox(10);
     fileSection.setAlignment(Pos.CENTER);
-    Text fileOptionsText = new Text("Option 1: Load Custom Board");
+    Text fileOptionsText = new Text("Option: Load Custom Board");
     fileOptionsText.getStyleClass().add("alternative-text");
     fileSection.getChildren().addAll(fileOptionsText, loadBoardButton);
     VBox.setMargin(fileSection, new Insets(15, 0, 15, 0));
@@ -139,7 +156,7 @@ public class BoardConfigView implements View {
   private VBox createSelectionSection() {
     VBox selectionSection = new VBox(10);
     selectionSection.setAlignment(Pos.CENTER);
-    Text selectionOptionsText = new Text("Option 2: Choose Predefined Board");
+    Text selectionOptionsText = new Text("Option: Choose Predefined Board");
     selectionOptionsText.getStyleClass().add("alternative-text");
     selectedBoardLabel.getStyleClass().add("status-label");
     selectionSection.getChildren().addAll(

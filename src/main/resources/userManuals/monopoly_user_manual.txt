@@ -1,15 +1,28 @@
-Monopoly Game Manual
+Monopoly: Game Manual
 
 Objective:
 Become the wealthiest player by buying properties, collecting rent, and avoiding bankruptcy.
 
-Game Setup:
-- 2–4 players.
-- Each player starts with $500.
-- Players roll two dice and move clockwise around the board.
+Game Rules:
+1. 2-5 players can participate.
+2. Each player starts with $300.
+3. Players take turns rolling two dice and moving their token clockwise around the board.
+4. If you land on an unowned property, you can buy it for the price listed on the space.
+5. If you land on a property owned by another player, you must pay them rent.
+6. When you land on or pass "Go", you collect $50.
+7. If you land on "Go to Jail", you will go directly to jail and miss your next turn.
+8. If you land on the "Jail" space, you will miss your next turn.
+9. If you land on "Free Parking", nothing happens.
 
-...
+Winning condition:
+1. The game ends when all but one player go bankrupt.
 
-Controls:
-- Click “Throw Dice” to take your turn.
-- Click “Monopoly” (this title) to open this manual again.
+Limitations:
+1. There are no chance or community chest cards in this version.
+2. There are no upgrades or houses.
+3. Properties cannot be traded or sold.
+
+Instructions:
+Players can throw the dice by clicking on the button "Throw Dice".
+The game will automatically update the position of the players on the board.
+If a property can be purchased, a window will pop up asking if you want to buy it.

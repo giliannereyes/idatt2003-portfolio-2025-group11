@@ -6,9 +6,10 @@ import edu.ntnu.idi.idatt.domain.entity.Player;
 import edu.ntnu.idi.idatt.domain.entity.Tile;
 import edu.ntnu.idi.idatt.domain.event.common.*;
 import edu.ntnu.idi.idatt.service.GameConfigService;
+import edu.ntnu.idi.idatt.service.ManualService;
 import edu.ntnu.idi.idatt.service.snakesandladders.LaddersGameService;
 import edu.ntnu.idi.idatt.ui.controller.BoardGameController;
-import edu.ntnu.idi.idatt.ui.view.snakesandladders.GameView;
+import edu.ntnu.idi.idatt.ui.view.snakesandladders.SnakesAndLaddersView;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 import java.util.List;
@@ -29,9 +30,10 @@ public class SnakesAndLaddersController implements
       PlayerWonListener,
       TileActionListener
 {
-  GameView view;
+  SnakesAndLaddersView view;
   GameConfigService gameConfigService;
   LaddersGameService laddersGameService;
+  ManualService manualService;
 
   /**
    * Constructs a new SnakesAndLaddersController with the given services and view.
@@ -41,10 +43,14 @@ public class SnakesAndLaddersController implements
    * @param view the view interface for updating the UI
    */
   public SnakesAndLaddersController(
-        GameConfigService gameConfigService, LaddersGameService laddersGameService, GameView view
+        GameConfigService gameConfigService,
+        LaddersGameService laddersGameService,
+        SnakesAndLaddersView view,
+        ManualService manualService
   ) {
     this.gameConfigService = gameConfigService;
     this.laddersGameService = laddersGameService;
+    this.manualService = manualService;
     this.view = view;
   }
 
@@ -89,7 +95,9 @@ public class SnakesAndLaddersController implements
     TileAction action = e.tile().getLandAction().orElse(null);
     PauseTransition afterAction = new PauseTransition(Duration.seconds(2.0));
     afterAction.setOnFinished(evt -> {
-      view.setStatusLabel("Player " + player.getName() + " landed on a" + action.getActionType());
+      if (action != null) {
+        view.setStatusLabel("Player " + player.getName() + " landed on a" + action.getActionType());
+      }
       action.getDestinationTile().ifPresent(dest -> view.movePlayerToken(
             player.getName(),
             dest.getX(), dest.getY()
@@ -125,6 +133,8 @@ public class SnakesAndLaddersController implements
     try {
       if (gameConfigService.isConfigComplete()) {
         view.registerBoard(gameConfigService.build().getBoard());
+        String manualText = manualService.loadManualText("/userManuals/ladders_game_user_manual.txt");
+        view.setUserManualText(manualText);
         List<PlayerConfig> playerConfigs = gameConfigService.build().getPlayerConfigs();
         playerConfigs.forEach(playerConfig -> {
                   view.registerPlayerTokens(

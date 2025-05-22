@@ -5,7 +5,9 @@ import edu.ntnu.idi.idatt.config.PlayerConfig;
 import edu.ntnu.idi.idatt.domain.entity.Dice;
 import edu.ntnu.idi.idatt.domain.entity.Player;
 import edu.ntnu.idi.idatt.domain.entity.monopoly.Property;
+import edu.ntnu.idi.idatt.domain.entity.monopoly.PropertyRegistry;
 import edu.ntnu.idi.idatt.domain.event.EventBus;
+import edu.ntnu.idi.idatt.domain.factory.monopoly.MonopolyBoardFactory;
 import edu.ntnu.idi.idatt.domain.game.monopoly.Monopoly;
 import java.util.List;
 
@@ -20,6 +22,7 @@ public class MonopolyGameService {
   private final GameConfig config;
   private Monopoly game;
   private final EventBus eventBus;
+  private final MonopolyBoardFactory boardFactory;
 
   /**
    * Constructs a new {@code MonopolyGameService}
@@ -28,9 +31,10 @@ public class MonopolyGameService {
    * @param config the configuration settings for the game, including board setup and rules
    * @param eventBus the event bus used to publish and subscribe to game events
    */
-  public MonopolyGameService(GameConfig config, EventBus eventBus) {
+  public MonopolyGameService(GameConfig config, EventBus eventBus, MonopolyBoardFactory boardFactory) {
     this.config   = config;
     this.eventBus = eventBus;
+    this.boardFactory = boardFactory;
   }
 
   /**
@@ -53,7 +57,8 @@ public class MonopolyGameService {
           config.getBoard(),
           players,
           dice,
-          eventBus
+          eventBus,
+          boardFactory.createPropertyRegistryForBoard(config.getBoard())
     );
     // place all players on GO
     game.setUpGame();
@@ -81,6 +86,10 @@ public class MonopolyGameService {
    */
   public void buyProperty(Player player, Property property) {
     game.buyProperty(player, property);
+  }
+
+  public PropertyRegistry getPropertyRegistry() {
+    return game.getPropertyRegistry();
   }
 }
 

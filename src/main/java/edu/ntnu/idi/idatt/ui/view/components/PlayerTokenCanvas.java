@@ -6,133 +6,123 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
+
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
- * A visual component for managing and animating player tokens on a game board.
- * This class handles the placement, movement, and overlap of tokens on a grid-based layout.
+ * Layer that shows and animates player tokens on top of a board.
  *
- * @version 0.3
- * @since 0.1
  * @author Gilianne Reyes
- * @author Trang Duong
+ * @version 0.5
+ * @since 0.1
  */
 public class PlayerTokenCanvas {
-    private final Pane tokenPane = new Pane();
-    private final Map<String, ImageView> playerTokens = new HashMap<>();
-    private final Map<String, double[]> playerPosition = new HashMap<>();
 
+    // ── Scene‐graph node & per‐player state ─────────────────────────
+    private final Pane                      tokenPane      = new Pane();
+    private final Map<String, ImageView>    playerTokens   = new HashMap<>();
+    private final Map<String, double[]>     playerPosition = new HashMap<>();;
 
-    /**
-     * Returns the pane that contains all player tokens.
-     *
-     * @return the token pane
-     */
     public Pane getTokenPane() {
         return tokenPane;
     }
 
-    /**
-     * Adds a player token to the canvas using the specified image path.
-     *
-     * @param playerName the name of the player
-     * @param imagePath the path to the token image resource
-     * @throws RuntimeException if the image resource cannot be found
-     */
     public void addPlayerToken(String playerName, String imagePath) {
         InputStream is = getClass().getResourceAsStream(imagePath);
         if (is == null) {
-            throw new RuntimeException("Path to image for player token not found: " + imagePath);
-        } else {
-            Image tokenImage = new Image(is, 30, 30, true, true);
-            ImageView token = new ImageView(tokenImage);
-            token.setFitWidth(55);
-            token.setFitHeight(50);
-            playerTokens.put(playerName, token);
-            tokenPane.getChildren().add(token);
+            throw new RuntimeException("Token image not found: " + imagePath);
         }
+        ImageView iv = new ImageView(new Image(is, 30, 30, true, true));
+        iv.setFitWidth(55);
+        iv.setFitHeight(50);
+        playerTokens.put(playerName, iv);
+        tokenPane.getChildren().add(iv);
+    }
+
+    public void animateTokenMovement(
+          String playerName,
+          double gridX, double gridY,
+          int totalRows, int totalCols) {
+
+        ImageView token = lookupToken(playerName);
+        // 1 – compute raw anchor point
+        double[] target = computeTargetPos(gridX, gridY, totalRows, totalCols, token);
+
+        // 2 – bump for overlaps
+        target = applyOverlapOffset(target, gridX, gridY);
+
+        // 3 – tween from current to target
+        runTween(token, target);
+
+        // 4 – record new logical position
+        playerPosition.put(playerName, new double[]{gridX, gridY});
+    }
+
+    // ═══════════════════ Private helpers ════════════════════════════
+
+    private ImageView lookupToken(String playerName) {
+        ImageView iv = playerTokens.get(playerName);
+        if (iv == null) {
+            throw new RuntimeException("Token not found for player: " + playerName);
+        }
+        return iv;
     }
 
     /**
-     * Animates the movement of a player's token to a new grid position.
-     * Takes into account overlapping tokens and adjusts the final position accordingly.
-     *
-     * @param playerName the name of the player
-     * @param gridX the target column on the grid
-     * @param gridY  the target row on the grid
-     * @param totalRows the total number of rows in the grid
-     * @param totalCols the total number of columns in the grid
+     * Compute the pixel position (top‐left) where the token should land,
+     * according to CENTER or BORDER placement.
      */
-    public void animateTokenMovement(String playerName,
-                                     double gridX, double gridY,
-                                     int totalRows, int totalCols) {
-        ImageView token = playerTokens.get(playerName);
-        if (token == null) return;
-
+    private double[] computeTargetPos(
+          double gridX, double gridY, int totalRows, int totalCols, ImageView token) {
         double paneW = tokenPane.getWidth();
         double paneH = tokenPane.getHeight();
-        double tileW = paneW  / totalCols;
-        double tileH = paneH  / totalRows;
-
-        double targetX = gridX * tileW + tileW / 2 - token.getFitWidth() / 2;
-        double targetY = (totalRows - gridY - 1) * tileH + tileH / 2 - token.getFitHeight() / 2;
-
-        double[] currentPos = playerPosition.getOrDefault(playerName, new double[]{0, 0});
-        double currentX = currentPos[0];
-        double currentY = currentPos[1];
-
-        double startX = token.getLayoutX();
-        double startY = token.getLayoutY();
-
-        int overlapCount = countTokensOnTile(gridX, gridY);
-        double offset = overlapCount * 6.0;
-
-        double finalTargetX = targetX + offset;
-        double finalTargetY = targetY + offset;
-
-        double diffX = finalTargetX - startX;
-        double diffY = finalTargetY - startY;
-
-        int steps = 10;
-        double stepX = diffX / steps;
-        double stepY = diffY / steps;
-
-        Timeline timeline = new Timeline();
-        for (int i = 0; i < steps; i++) {
-            final int step = i;
-            KeyFrame keyFrame = new KeyFrame(Duration.millis(70 * i), event -> {
-                double newX = startX + step * 1.12 * stepX;
-                double newY = startY + step * 1.12 * stepY;
-                token.setLayoutX(newX);
-                token.setLayoutY(newY);
-            });
-            timeline.getKeyFrames().add(keyFrame);
-        }
-
-        timeline.setCycleCount(1);
-        timeline.play();
-        timeline.setOnFinished(event -> {
-            playerPosition.put(playerName, new double[]{gridX, gridY});
-        });
+        double tileW = paneW / totalCols;
+        double tileH = paneH / totalRows;
+        double x = gridX * tileW + (tileW - token.getFitWidth())  / 2;
+        double y = (totalRows - gridY - 1) * tileH + (tileH - token.getFitHeight()) / 2;
+        return new double[]{x, y};
     }
 
     /**
-     * Counts how many tokens are currently located on the specified tile.
-     *
-     * @param gridX the column of the tile
-     * @param gridY the row of the tile
-     * @return the number of tokens on the tile
+     * If multiple tokens occupy the same grid cell, bump each subsequent
+     * one diagonally so they don’t completely overlap.
      */
-    private int countTokensOnTile(double gridX, double gridY) {
-        int count = 0;
-        for (double[] pos : playerPosition.values()) {
-            if (pos[0] == gridX && pos[1] == gridY) {
-                count++;
-            }
+    private double[] applyOverlapOffset(double[] anchor, double gridX, double gridY) {
+        int count = countTokensOnTile(gridX, gridY);
+        double bump = count * 6.0;
+        return new double[]{anchor[0] + bump, anchor[1] + bump};
+    }
+
+    /** Smoothly interpolates the token’s layout from its current to target coords. */
+    private void runTween(ImageView token, double[] target) {
+        double startX = token.getLayoutX();
+        double startY = token.getLayoutY();
+        double endX   = target[0];
+        double endY   = target[1];
+
+        int frames = 10;
+        double dx = (endX - startX) / frames;
+        double dy = (endY - startY) / frames;
+
+        Timeline tl = new Timeline();
+        for (int i = 0; i <= frames; i++) {
+            final int step = i;
+            tl.getKeyFrames().add(new KeyFrame(Duration.millis(70 * step), e -> {
+                token.setLayoutX(startX + dx * step);
+                token.setLayoutY(startY + dy * step);
+            }));
         }
-        return count;
+        tl.play();
+    }
+
+    /** How many tokens are already at the given grid coordinates? */
+    private int countTokensOnTile(double gridX, double gridY) {
+        int c = 0;
+        for (double[] pos : playerPosition.values()) {
+            if (pos[0] == gridX && pos[1] == gridY) c++;
+        }
+        return c;
     }
 }

@@ -45,10 +45,6 @@ public class SnakesAndLadders extends BoardGame {
         publishPlayerMoved(player, fromTile, firstDestinationTile);
         firstDestinationTile.landPlayer(player);
         publishTileAction(player, firstDestinationTile);
-        /*
-        Tile postActionDestination = player.getCurrentTile();
-        publishPlayerMoved(player, firstDestinationTile, postActionDestination);
-         */
     }
 
     /**

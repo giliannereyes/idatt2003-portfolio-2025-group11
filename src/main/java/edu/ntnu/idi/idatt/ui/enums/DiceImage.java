@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt.domain.enums;
+package edu.ntnu.idi.idatt.ui.enums;
 
 /**
  * Represents the images of the dice used in the game.

@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt.domain.enums;
+package edu.ntnu.idi.idatt.ui.enums;
 
 import edu.ntnu.idi.idatt.utils.Validation;
 
