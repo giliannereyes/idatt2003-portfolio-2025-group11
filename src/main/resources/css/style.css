@@ -3,52 +3,35 @@ background {
     -fx-padding: 15px;
 }
 
-.board-canvas {
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 20, 0.5, 0, 0);
-    -fx-border-color: #333;
-    -fx-border-width: 3px;
-    -fx-border-radius: 5px;
-    -fx-background-radius: 5px;
-}
-
-.title-text {
-    -fx-font-size: 35px;
-    -fx-font-weight: bold;
-    -fx-alignment: center;
-}
-
-.status-text {
-    -fx-font-size: 20px;
-    -fx-font-weight: bold;
-    -fx-alignment: center;
-}
-
-.centered-container {
-    -fx-alignment: center;
-    -fx-padding: 20px;
-}
-
+/* default button */
 .button {
-    -fx-background-color:
-            linear-gradient(to bottom, #f2f2f2 0%, #e6e6e6 100%);
+    -fx-background-color: #415A77;
     -fx-background-radius: 5px;
     -fx-background-insets: 0;
     -fx-font-size: 14px;
-    -fx-text-fill: #333;
+    -fx-text-fill: white;
     -fx-padding: 8px 16px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0.5, 0, 1);
     -fx-cursor: hand;
     -fx-transition: all 150ms ease-in-out;
 }
 
+.button .text {
+    -fx-fill: white;
+    -fx-font-family: "Poppins", "Segoe UI", sans-serif;
+    -fx-alignment: center;
+}
+
 .button:hover {
-    -fx-background-color:
-            linear-gradient(to bottom, #ffffff 0%, #f2f2f2 100%);
+    -fx-background-color: derive(#415A77, -15%);  /* 15% darker */
+    -fx-scale-x: 1.03;                             /* grow 3% wider */
+    -fx-scale-y: 1.03;                             /* grow 3% taller */
 }
 
 .button:pressed {
-    -fx-background-color:
-            linear-gradient(to bottom, #d4d4d4 0%, #c2c2c2 100%);
+    -fx-background-color: derive(#415A77, -25%);  /* even darker on click */
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
     -fx-effect: innershadow(two-pass-box, rgba(0,0,0,0.4), 6, 0.0, 0, 2);
 }
 
@@ -59,36 +42,197 @@ background {
 }
 
 .button:focused {
-    -fx-border-color: #4a90e2;
+    -fx-border-color: #778DA9;
     -fx-border-width: 2px;
+    -fx-border-radius: 5px;
     -fx-background-insets: 0, 1;
 }
 
-/* Base Text / Label styling */
-.text, .label {
-    /* font family, size, weight, style */
-    -fx-font-family: "Segoe UI", sans-serif;
+.board-canvas {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 20, 0.5, 0, 0);
+    -fx-border-color: #333;
+    -fx-border-width: 3px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.title-text {
+    -fx-font-size: 42px;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+    -fx-fill: #0D1B2A;
+    -fx-effect: dropshadow(gaussian, rgba(13,27,42,0.3), 2, 0.5, 0, 1);
+    -fx-padding: 0 0 10 0;
+}
+
+.attribution-text {
+    -fx-font-size: 18px;
+    -fx-font-style: italic;
+    -fx-alignment: center;
+    -fx-fill: #415A77;
+    -fx-padding: 0 0 20 0;
+}
+
+
+.alternative-text {
+    -fx-font-size: 18px;
+    -fx-font-style: italic;
+    -fx-alignment: center;
+    -fx-fill: #0D1B2A;
+    -fx-padding: 0 0 20 0;
+}
+
+.section-label {
     -fx-font-size: 16px;
-    -fx-font-weight: normal;        /* normal | bold | bolder | lighter | 100–900 */
-    -fx-font-style: normal;         /* normal | italic | oblique */
+    -fx-font-weight: bold;
+    -fx-text-fill: #1B263B;
+    -fx-padding: 10 0 5 0;
+}
 
-    /* text color */
-    -fx-fill: #333333;              /* for Text nodes */
-    -fx-text-fill: #333333;         /* for Label controls */
+.input-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #0D1B2A;
+    -fx-padding: 5 10 5 0;
+}
 
-    /* letter and word spacing */
-    -fx-letter-spacing: 1px;      /* controls tracking */
-    -fx-word-spacing: 2px;
+.subtitle-text {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+    -fx-fill: #1B263B;
+    -fx-padding: 20 0 10 0;
+}
 
-    /* decorations */
-    -fx-underline: false;
-    -fx-strikethrough: false;
+.centered-container {
+    -fx-alignment: center;
+    -fx-padding: 20px;
+    -fx-background-color: #E0E1DD;
+    -fx-spacing: 15px;
+}
+
+/* Primary button styling */
+.primary-button {
+    -fx-background-color: linear-gradient(
+            to bottom,
+            #415A77 0%,
+            #556A8E 100%
+    );
+    -fx-background-radius: 5px;
+    -fx-background-insets: 0;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-padding: 10px 24px;
+    -fx-min-width: 250px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 6, 0.3, 0, 2);
+    -fx-cursor: hand;
+    -fx-transition: all 200ms ease-in-out;
+}
+
+.primary-button:hover {
+    -fx-background-color: linear-gradient(
+            to bottom,
+            #556A8E 0%,
+            #6A7CA5 100%
+    );
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 8, 0.3, 0, 4);
+    -fx-translate-y: -1px;
+}
+
+.primary-button:pressed {
+    -fx-background-color: linear-gradient(
+            to bottom,
+            #364E67 0%,
+            #2E4154 100%
+    );
+    -fx-effect: innershadow(two-pass-box, rgba(0,0,0,0.3), 6, 0, 0, 2);
+    -fx-translate-y: 1px;
+}
+
+.primary-button:focused {
+    -fx-border-color: #778DA9;
+    -fx-border-width: 2px;
+    -fx-background-insets: 0, 2;
+}
+
+.primary-button .text {
+    -fx-font-family: "Poppins", "Segoe UI", sans-serif;
+    -fx-font-size: 22px;
+}
+
+/* Player grid styling */
+.player-grid {
+    -fx-background-color: rgba(200, 210, 220, 0.1);
+    -fx-background-radius: 8px;
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(13,27,42,0.1), 3, 0.5, 0, 1);
+}
+
+/* Player name input fields */
+.player-name-field {
+    -fx-background-color: white;
+    -fx-border-color: #778DA9;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 6px 8px;
+    -fx-font-size: 14px;
+    -fx-min-width: 150px;
+}
+
+.player-name-field:hover {
+    -fx-border-color: #415A77;
+}
+
+.player-name-field:focused {
+    -fx-border-color: #1B263B;
+    -fx-effect: dropshadow(gaussian, rgba(65,90,119,0.4), 4, 0.3, 0, 0);
+}
+
+/* Token dropdown styling */
+.token-dropdown, .token-dropdown .label{
+    -fx-background-color: white;
+    -fx-border-color: #778DA9;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 2 25 2 8;
+    -fx-font-size: 14px;
+    -fx-min-width: 150px;
+}
+
+.token-dropdown:hover {
+    -fx-border-color: #415A77;
+}
+
+.token-dropdown:focused {
+    -fx-border-color: #1B263B;
+    -fx-effect: dropshadow(gaussian, rgba(65,90,119,0.5), 4, 0.3, 0, 0);
+}
+
+/* Player count dropdown */
+.player-count-dropdown {
+    -fx-background-color: white;
+    -fx-border-color: #778DA9;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 6 30 6 12;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-min-width: 100px;
+}
+
+.player-count-dropdown:hover {
+    -fx-border-color: #415A77;
+}
+
+.player-count-dropdown:focused {
+    -fx-border-color: #1B263B;
+    -fx-effect: dropshadow(gaussian, rgba(65,90,119,0.5), 4, 0.3, 0, 0);
 }
 
 .heading {
     -fx-font-size: 24px;
     -fx-font-weight: bold;
-    -fx-text-fill: #2c3e50;
+    -fx-text-fill: #0D1B2A;
 }
 
 /* ================================
@@ -96,17 +240,17 @@ background {
    ================================ */
 .combo-box {
     -fx-background-color: white;
-    -fx-border-color: #aaa;
+    -fx-border-color: #778DA9;
     -fx-border-radius: 4px;
     -fx-background-radius: 4px;
-    -fx-padding: 2 30 2 8;          /* left/right padding so arrow doesn’t overlap text */
+    -fx-padding: 2 30 2 8;          /* left/right padding so arrow doesn't overlap text */
 }
 .combo-box:hover {
-    -fx-border-color: #888;
+    -fx-border-color: #415A77;
 }
 .combo-box:focused {
-    -fx-border-color: #4a90e2;
-    -fx-effect: dropshadow(gaussian, rgba(74,144,226,0.5), 4, 0.3, 0, 0);
+    -fx-border-color: #1B263B;
+    -fx-effect: dropshadow(gaussian, rgba(65,90,119,0.5), 4, 0.3, 0, 0);
 }
 /* arrow button & arrow glyph */
 .combo-box .arrow-button {
@@ -114,7 +258,7 @@ background {
 }
 .combo-box .arrow {
     -fx-shape: "M0,0 L1,0.5 L2,0 Z";  /* simple triangle */
-    -fx-background-color: #666;
+    -fx-background-color: #415A77;
 }
 
 /* ================================
@@ -122,17 +266,17 @@ background {
    ================================ */
 .text-field, .text-area {
     -fx-background-color: white;
-    -fx-border-color: #aaa;
+    -fx-border-color: #778DA9;
     -fx-border-radius: 4px;
     -fx-background-radius: 4px;
     -fx-padding: 4px 6px;           /* vertical/horizontal padding */
 }
 .text-field:hover, .text-area:hover {
-    -fx-border-color: #888;
+    -fx-border-color: #415A77;
 }
 .text-field:focused, .text-area:focused {
-    -fx-border-color: #4a90e2;
-    -fx-effect: dropshadow(gaussian, rgba(74,144,226,0.4), 4, 0.3, 0, 0);
+    -fx-border-color: #1B263B;
+    -fx-effect: dropshadow(gaussian, rgba(65,90,119,0.4), 4, 0.3, 0, 0);
 }
 
 /* placeholder (prompt) text color */
@@ -148,28 +292,28 @@ background {
     -fx-padding: 4 0 4 0;
 }
 .radio-button .radio {
-    -fx-mark-color: #4a90e2;        /* dot/mark color when selected */
+    -fx-mark-color: #415A77;        /* dot/mark color when selected */
     -fx-background-color: white;    /* circle background */
-    -fx-border-color: #aaa;
+    -fx-border-color: #778DA9;
     -fx-border-radius: 8px;
     -fx-background-radius: 8px;
 }
 .radio-button:hover .radio {
-    -fx-border-color: #888;
+    -fx-border-color: #415A77;
 }
 .radio-button:selected .radio {
     -fx-mark-color: white;
-    -fx-background-color: #4a90e2;
-    -fx-border-color: #4a90e2;
+    -fx-background-color: #415A77;
+    -fx-border-color: #415A77;
 }
 
 /* optional focus ring */
 .radio-button:focused .radio {
-    -fx-effect: dropshadow(gaussian, rgba(74,144,226,0.5), 4, 0.3, 0, 0);
+    -fx-effect: dropshadow(gaussian, rgba(65,90,119,0.5), 4, 0.3, 0, 0);
 }
 
 /* Root background, font family */
 #root-pane {
-    -fx-background-color: #f0f2f5;
+    -fx-background-color: #E0E1DD;
     -fx-font-family: "Segoe UI", sans-serif;
 }
