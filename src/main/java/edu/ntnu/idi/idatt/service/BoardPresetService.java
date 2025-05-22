@@ -14,5 +14,11 @@ import java.util.Map;
  *  @author Gilianne Reyes
  */
 public interface BoardPresetService {
+
+  /**
+   * Retrieves a collection of predefined board configurations.
+   *
+   * @return a map where the key is the name of the preset and the value is the corresponding {@link Board}
+   */
   Map<String, Board> getPredefinedBoards();
 }

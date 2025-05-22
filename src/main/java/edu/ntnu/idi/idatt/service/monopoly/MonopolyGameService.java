@@ -21,6 +21,13 @@ public class MonopolyGameService {
   private Monopoly game;
   private final EventBus eventBus;
 
+  /**
+   * Constructs a new {@code MonopolyGameService}
+   * with the specified game configuration and event bus.
+   *
+   * @param config the configuration settings for the game, including board setup and rules
+   * @param eventBus the event bus used to publish and subscribe to game events
+   */
   public MonopolyGameService(GameConfig config, EventBus eventBus) {
     this.config   = config;
     this.eventBus = eventBus;
@@ -28,6 +35,7 @@ public class MonopolyGameService {
 
   /**
    * Initializes and starts the MonopolyGame based on the provided configuration.
+   *
    * @throws IllegalStateException if the configuration is incomplete.
    */
   public void startGame() {
@@ -62,6 +70,15 @@ public class MonopolyGameService {
     game.playNextTurn();
   }
 
+  /**
+   * Allows the specified player to purchase the given property.
+   * Delegates the purchase logic to the underlying game engine.
+   *
+   * @param player the player attempting to buy the property
+   * @param property the property to be purchased
+   * @throws IllegalArgumentException if the player or property is null
+   * @throws IllegalStateException if the property cannot be bought due to game rules
+   */
   public void buyProperty(Player player, Property property) {
     game.buyProperty(player, property);
   }
