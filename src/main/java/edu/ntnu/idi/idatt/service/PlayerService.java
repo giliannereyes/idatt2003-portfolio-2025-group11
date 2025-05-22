@@ -1,11 +1,11 @@
 package edu.ntnu.idi.idatt.service;
 
 import edu.ntnu.idi.idatt.config.PlayerConfig;
-import edu.ntnu.idi.idatt.persistence.reader.PlayerFileReader;
-import edu.ntnu.idi.idatt.persistence.writer.PlayerFileWriter;
 import edu.ntnu.idi.idatt.domain.entity.Player;
 import edu.ntnu.idi.idatt.domain.enums.PlayerToken;
 import edu.ntnu.idi.idatt.domain.factory.PlayerFactory;
+import edu.ntnu.idi.idatt.persistence.reader.PlayerFileReader;
+import edu.ntnu.idi.idatt.persistence.writer.PlayerFileWriter;
 import edu.ntnu.idi.idatt.utils.Validation;
 import java.io.File;
 import java.util.*;
@@ -36,7 +36,10 @@ public class PlayerService {
    *
    * @throws IllegalArgumentException if any of the parameters is null.
    */
-  public PlayerService(PlayerFileReader fileReader, PlayerFileWriter fileWriter, PlayerFactory playerFactory) {
+  public PlayerService(
+          PlayerFileReader fileReader,
+          PlayerFileWriter fileWriter,
+          PlayerFactory playerFactory) {
     Validation.validateNonNull(fileReader, "File reader");
     Validation.validateNonNull(fileWriter, "File writer");
     Validation.validateNonNull(playerFactory, "Player factory");
@@ -143,7 +146,9 @@ public class PlayerService {
   /**
    * Validates a single player/token entry for correctness and uniqueness.
    */
-  private boolean isValidEntry(String name, String tokenName, Set<String> seenNames, Set<String> seenTokens) {
+  private boolean isValidEntry(
+          String name, String tokenName,
+          Set<String> seenNames, Set<String> seenTokens) {
     if (!isValidPlayerName(name)) {
       return false;
     }
@@ -179,9 +184,12 @@ public class PlayerService {
   }
 
   /**
-   * Validates that a token name is not null, not empty, and corresponds to a valid {@link PlayerToken}.
+   * Validates that a token name is not null,
+   * not empty, and corresponds to a valid {@link PlayerToken}.
    */
   private boolean isValidPlayerToken(String tokenName) {
-    return tokenName != null && !tokenName.trim().isEmpty() && PlayerToken.fromName(tokenName) != null;
+    return tokenName != null
+            && !tokenName.trim().isEmpty()
+            && PlayerToken.fromName(tokenName) != null;
   }
 }

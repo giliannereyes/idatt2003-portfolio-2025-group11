@@ -13,6 +13,13 @@ import java.util.Optional;
  * @author Gilianne Reyes
  */
 public interface BoardPersistenceService {
+
+  /**
+   * Loads a board configuration from the specified file.
+   *
+   * @param file the file from which the board configuration should be loaded
+   * @return an {@link Optional} containing the loaded {@link Board}, or empty if loading fails
+   */
   Optional<Board> loadBoardConfiguration(File file);
 
   /**

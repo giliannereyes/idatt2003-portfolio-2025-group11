@@ -21,6 +21,9 @@ public class ManualService {
    * @return the contents of the manual as a String, or an error message if loading fails
    */
   public String loadManualText(String path) {
+    if (path == null || path.isBlank()) {
+      return "Could not load manual: Resource not found.";
+    }
     InputStream input = getClass().getResourceAsStream(path);
     if (input == null) {
       return "Could not load manual: Resource not found.";

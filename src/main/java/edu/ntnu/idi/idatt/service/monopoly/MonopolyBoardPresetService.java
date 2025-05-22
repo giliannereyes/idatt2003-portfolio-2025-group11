@@ -8,6 +8,11 @@ import java.util.Map;
 /**
  * Service implementation for retrieving predefined Monopoly game boards.
  * This class uses a {@link MonopolyBoardFactory} to load board configurations.
+ *
+ * @version 0.2
+ * @since 0.1
+ * @author Gilianne Reyes
+ * @author Trang Duong
  */
 public class MonopolyBoardPresetService implements BoardPresetService {
   private final MonopolyBoardFactory factory;
@@ -31,7 +36,11 @@ public class MonopolyBoardPresetService implements BoardPresetService {
   @Override
   public Map<String, Board> getPredefinedBoards() {
     try {
-      return factory.getAllPredefinedBoards();
+      Map<String, Board> boards = factory.getAllPredefinedBoards();
+      if (boards == null) {
+        throw new RuntimeException("Failed to load predefined boards: returned null");
+      }
+      return boards;
     } catch (Exception e) {
       throw new RuntimeException("Failed to load predefined boards", e);
     }
