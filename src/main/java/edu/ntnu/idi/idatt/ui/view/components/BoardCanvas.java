@@ -10,17 +10,21 @@ import edu.ntnu.idi.idatt.domain.entity.Tile;
 import edu.ntnu.idi.idatt.domain.enums.TileColorType;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+
 import java.util.Map;
 import java.util.Optional;
 
 /**
  * A canvas for drawing the Snakes and Ladders board.
  *
- * @version 0.1
+ * @version 0.2
  * @since 0.1
  * @author Gilianne Reyes
+ * @author Trang Duong
  */
 public class BoardCanvas extends Canvas {
     private final Map<String, TileColorType> ACTION_COLOR_MAPPING = Map.of(
@@ -34,6 +38,7 @@ public class BoardCanvas extends Canvas {
             SnakeAction.actionType, TileColorType.SNAKE_END
     );
     private static final double CONNECTOR_MARGIN = 2; // pixels to inset from tile edge
+    private final Pane tokenPane = new Pane();
 
     public BoardCanvas(double width, double height) {
         super(width, height);
@@ -60,7 +65,12 @@ public class BoardCanvas extends Canvas {
                         drawActionConnector(gc, tile, action, tileWidth, tileHeight, rows)
                 )
         );
-        System.out.println("All tiles drawn");
+
+        Tile finalTile = board.getLastTile();
+        double tileX = finalTile.getX() * tileWidth;
+        double tileY = (rows - 1 - finalTile.getY()) * tileHeight;
+
+        drawStarOnTile(gc, tileX, tileY, tileWidth, tileHeight);
     }
 
     /**
@@ -157,12 +167,68 @@ public class BoardCanvas extends Canvas {
                 endCenter[1] -= dy * CONNECTOR_MARGIN;
             }
             switch (action.getActionType()) {
-                case "LadderAction" -> gc.setStroke(Color.DARKGREEN);
-                case "SnakeAction"  -> gc.setStroke(Color.DARKRED);
-                default             -> gc.setStroke(Color.BLUE);
+                case "LadderAction":
+                    gc.setStroke(Color.DARKGREEN);
+                    drawLadder(gc, startCenter[0], startCenter[1], endCenter[0], endCenter[1]);
+                    break;
+                case "SnakeAction":
+                     gc.setStroke(Color.DARKRED);
+                    drawLadder(gc, startCenter[0], startCenter[1], endCenter[0], endCenter[1]);
+                    break;
             }
-            gc.setLineWidth(5);
-            gc.strokeLine(startCenter[0], startCenter[1], endCenter[0], endCenter[1]);
         }
+    }
+
+    /**
+     * Draws a ladder between two points on the canvas using the specified GraphicsContext.
+     * The ladder consists of two vertical lines and a number of horizontal rungs.
+     *
+     * @param gc the GraphicsContext used to draw on the canvas
+     * @param startX the x-coordinate of the ladder's starting point
+     * @param startY the y-coordinate of the ladder's starting point
+     * @param endX the x-coordinate of the ladder's ending point
+     * @param endY the y-coordinate of the ladder's ending point
+     */
+    private void drawLadder(GraphicsContext gc, double startX, double startY, double endX, double endY) {
+        double dx = endX - startX;
+        double dy = endY - startY;
+        double len = Math.sqrt(dx * dx + dy * dy);
+        if (len > 0) {
+            dx /= len;
+            dy /= len;
+
+            double offset = 10;
+            double leftX = startX - offset;
+            double rightX = startX + offset;
+            double leftY = startY;
+            double rightY = startY;
+
+            gc.setLineWidth(5);
+            gc.strokeLine(leftX, leftY, leftX + dx * len, leftY + dy * len);
+            gc.strokeLine(rightX, rightY, rightX + dx * len, rightY + dy * len);
+
+            int numRungs = 5;
+            for (int i = 1; i < numRungs; i++) {
+                double rungX = startX + (dx * len * i) / numRungs;
+                double rungY = startY + (dy * len * i) / numRungs;
+                double rungOffsetX = 10;
+                gc.strokeLine(rungX - rungOffsetX, rungY, rungX + rungOffsetX, rungY);
+            }
+        }
+    }
+
+
+    /**
+     * Draws a star image on a tile at the specified position and size.
+     *
+     * @param gc the GraphicsContext used to draw on the canvas
+     * @param x the x-coordinate of the top-left corner of the tile
+     * @param y the y-coordinate of the top-left corner of the tile
+     * @param tileWidth the width of the tile
+     * @param tileHeight the height of the tile
+     */
+    private void drawStarOnTile(GraphicsContext gc, double x, double y, double tileWidth, double tileHeight) {
+        Image starImage = new Image("/images/star.png");
+        gc.drawImage(starImage, x, y, tileWidth, tileHeight);
     }
 }

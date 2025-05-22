@@ -5,6 +5,7 @@ import edu.ntnu.idi.idatt.utils.Validation;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * The {@code Board} class represents a game board consisting of tiles organized
@@ -112,9 +113,56 @@ public class Board {
       throw new IllegalStateException(
             "Unable to place player on start tile. Start tile is not set."
       );
+      player.placeOnTile(startTile);
     }
-    player.placeOnTile(startTile);
-  }
+    
+    /**
+     * Retrieves the last tile in the grid based on the total number of rows and columns.
+     * It also checks if there is a next tile after the last one and logs a message if none exists.
+     *
+     * @return the last {@link Tile} in the grid.
+     */
+    public Tile getLastTile() {
+        Tile lastTile = getTile(rows * columns);
+        Optional<Tile> nextTile = getNextTile(lastTile);
+        if (nextTile.isEmpty()) {
+            System.out.println("No next tile exists. This is the last tile.");
+        }
+        return lastTile;
+    }
+
+    /**
+     * Returns the next tile in the grid based on the current tile's ID.
+     * If the current tile is the last one, it returns an empty {@link Optional}.
+     *
+     * @param currentTile the current {@link Tile} from which to find the next tile.
+     * @return an {@link Optional} containing the next {@link Tile}, or empty if the current tile is the last one.
+     */
+    public Optional<Tile> getNextTile(Tile currentTile) {
+        int currentTileId = currentTile.getTileId();
+        int nextTileId = currentTileId + 1;
+
+        if (nextTileId > rows * columns) {
+            return Optional.empty();
+        } else {
+            return Optional.of(getTile(nextTileId));
+        }
+    }
+
+    /**
+     * Adds an action to a specific tile.
+     *
+     * @param tileId is the id of the tile to add an action to.
+     * @param tileAction is the action to add to the tile.
+     *
+     * @throws IllegalArgumentException if the tile action or tile is null.
+     */
+    public void addTileAction(int tileId, TileAction tileAction) {
+        Validation.validateNonNull(tileAction, "Tile action");
+        Tile tile = getTile(tileId);
+        Validation.validateNonNull(tile, "Tile");
+        tile.setLandAction(tileAction);
+    }
 
   /**
    * Retrieves the start tile of the board.

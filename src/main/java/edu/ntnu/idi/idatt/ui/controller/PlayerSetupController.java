@@ -9,6 +9,15 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Controller responsible for managing player setup in the UI.
+ * Handles loading and saving player data from/to CSV files,
+ * validating input, and registering player configurations.
+ *
+ * @version 0.1
+ * @since 0.1
+ * @author Gilianne Reyes
+ */
 public class PlayerSetupController {
     private List<PlayerConfig> playerConfigs;
     private final PlayerSetupView view;
@@ -16,6 +25,14 @@ public class PlayerSetupController {
     private final ViewManager viewManager;
     private final PlayerService playerService;
 
+    /**
+     * Constructs a new PlayerSetupController.
+     *
+     * @param view the view responsible for player setup UI
+     * @param playerService the service for handling player-related logic
+     * @param gameConfigService the service for managing game configuration
+     * @param viewManager the manager for switching between views
+     */
     public PlayerSetupController(
             PlayerSetupView view,
             PlayerService playerService,
@@ -29,6 +46,11 @@ public class PlayerSetupController {
         this.viewManager = viewManager;
     }
 
+    /**
+     * Loads player data from a CSV file and populates the view.
+     *
+     * @param file the CSV file containing player data
+     */
     public void loadPlayersFromCsv(File file) {
         List<String[]> playerData;
         try {
@@ -40,6 +62,14 @@ public class PlayerSetupController {
         }
     }
 
+
+    /**
+     * Saves the given player names and token names to a CSV file.
+     *
+     * @param playerNames list of player names
+     * @param tokenNames list of token names
+     * @param file the file to save the data to
+     */
     public void savePlayersToCsv(List<String> playerNames, List<String> tokenNames, File file) {
         List<String[]> playerData = new ArrayList<>();
         for (int i = 0; i < playerNames.size(); i++) {
@@ -54,6 +84,13 @@ public class PlayerSetupController {
         }
     }
 
+    /**
+     * Validates and registers player configurations based on the provided names and tokens.
+     * Updates the game configuration and transitions to the next view if successful.
+     *
+     * @param playerNames list of player names
+     * @param tokenNames list of token names
+     */
     public void registerPlayerConfigs(List<String> playerNames, List<String> tokenNames) {
         playerConfigs.clear();
         if (!playerService.isPlayerConfigDataValid(playerNames, tokenNames)) {
