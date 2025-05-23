@@ -1,0 +1,24 @@
+Ladders Game: Game Manual
+
+Objective:
+Reach the finish line first by climbing ladders and avoiding snakes.
+
+Game Rules:
+1. 2-5 players can participate.
+2. Each player starts with a token on the start space.
+3. Players take turns rolling a die and moving their token forward the number of spaces shown on the die.
+4. If you land on a ladder, you can climb up to the space at the top of the ladder.
+5. If you land on a snake, you must slide down to the space at the bottom of the snake.
+
+Special Rules:
+If you land on a space with the following color:
+- Violet: You will skip your next turn.
+- Yellow: You will move back to the start space.
+
+Winning condition:
+1. The game ends when the first player reaches the finish line.
+
+Instructions:
+Players can throw the dice by clicking on the button "Throw Dice".
+The game will automatically update the position of the players on the board.
+
