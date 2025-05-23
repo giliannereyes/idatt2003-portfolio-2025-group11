@@ -3,6 +3,7 @@ package edu.ntnu.idi.idatt.service.monopoly;
 import edu.ntnu.idi.idatt.domain.entity.Board;
 import edu.ntnu.idi.idatt.domain.factory.monopoly.MonopolyBoardFactory;
 import edu.ntnu.idi.idatt.service.BoardPresetService;
+import edu.ntnu.idi.idatt.utils.Validation;
 import java.util.Map;
 
 /**
@@ -23,6 +24,7 @@ public class MonopolyBoardPresetService implements BoardPresetService {
    * @param factory the factory used to create or retrieve predefined Monopoly boards.
    */
   public MonopolyBoardPresetService(MonopolyBoardFactory factory) {
+    Validation.validateNonNull(factory, "Monopoly board factory");
     this.factory = factory;
   }
 
@@ -30,7 +32,8 @@ public class MonopolyBoardPresetService implements BoardPresetService {
    * Retrieves a map of predefined Monopoly boards.
    * The map keys are board names or identifiers, and the values are {@link Board} instances.
    *
-   * @return a map containing predefined board configurations
+   * @return a map containing predefined board configurations.
+   *
    * @throws RuntimeException if the predefined boards cannot be loaded
    */
   @Override

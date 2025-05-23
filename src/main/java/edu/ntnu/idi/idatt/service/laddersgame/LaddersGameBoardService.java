@@ -4,6 +4,7 @@ import edu.ntnu.idi.idatt.domain.entity.Board;
 import edu.ntnu.idi.idatt.domain.factory.laddersgame.LaddersGameBoardFactory;
 import edu.ntnu.idi.idatt.service.BoardPersistenceService;
 import edu.ntnu.idi.idatt.service.BoardPresetService;
+import edu.ntnu.idi.idatt.utils.Validation;
 import java.io.File;
 import java.util.Map;
 import java.util.Optional;
@@ -33,10 +34,12 @@ public class LaddersGameBoardService implements BoardPersistenceService, BoardPr
    *
    * @param file the file containing the board configuration
    * @return an {@link Optional} containing the loaded {@link Board}, or empty if loading fails
+   * @throws IllegalArgumentException if the file is null.
    * @throws RuntimeException if an error occurs during loading
    */
   @Override
   public Optional<Board> loadBoardConfiguration(File file) {
+    Validation.validateNonNull(file, "file");
     try {
       return factory.loadBoardFromFile(file.toPath());
     } catch (Exception e) {
@@ -49,10 +52,13 @@ public class LaddersGameBoardService implements BoardPersistenceService, BoardPr
    *
    * @param file the file to save the board to
    * @param board the board to be saved
-   * @throws RuntimeException if an error occurs during saving
+   * @throws IllegalArgumentException if the file or board is null.
+   * @throws RuntimeException if an error occurs during saving.
    */
   @Override
   public void saveBoardConfiguration(File file, Board board) {
+    Validation.validateNonNull(file, "file");
+    Validation.validateNonNull(board, "board");
     try {
       factory.saveBoardToFile(file.toPath(), board);
     } catch (Exception e) {

@@ -3,6 +3,7 @@ package edu.ntnu.idi.idatt.service;
 import edu.ntnu.idi.idatt.config.GameConfig;
 import edu.ntnu.idi.idatt.config.PlayerConfig;
 import edu.ntnu.idi.idatt.domain.entity.Board;
+import edu.ntnu.idi.idatt.utils.Validation;
 import java.util.List;
 
 /**
@@ -23,6 +24,7 @@ public class GameConfigService {
    * @param gameConfig the game configuration to manage
    */
   public GameConfigService(GameConfig gameConfig) {
+    Validation.validateNonNull(gameConfig, "gameConfig");
     this.gameConfig = gameConfig;
   }
 
@@ -31,7 +33,7 @@ public class GameConfigService {
    *
    * @return the {@link GameConfig} instance
    */
-  public GameConfig build() {
+  public GameConfig getGameConfig() {
     return gameConfig;
   }
 

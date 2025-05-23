@@ -2,14 +2,13 @@ package edu.ntnu.idi.idatt.ui.controller;
 
 import edu.ntnu.idi.idatt.domain.entity.Board;
 import edu.ntnu.idi.idatt.service.BoardPersistenceService;
-import edu.ntnu.idi.idatt.service.GameConfigService;
 import edu.ntnu.idi.idatt.service.BoardPresetService;
+import edu.ntnu.idi.idatt.service.GameConfigService;
 import edu.ntnu.idi.idatt.ui.view.BoardConfigView;
 import edu.ntnu.idi.idatt.utils.ViewManager;
 import java.io.File;
 import java.util.Map;
 import java.util.Optional;
-
 
 /**
  * Controller responsible for managing board configuration in the UI.
@@ -19,6 +18,7 @@ import java.util.Optional;
  * @version 0.1
  * @since 0.1
  * @author Gilianne Reyes
+ * @see BoardConfigView
  */
 public class BoardConfigController {
   private final BoardConfigView view;

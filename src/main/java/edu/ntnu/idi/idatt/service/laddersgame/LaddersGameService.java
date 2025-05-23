@@ -6,6 +6,7 @@ import edu.ntnu.idi.idatt.domain.entity.Dice;
 import edu.ntnu.idi.idatt.domain.entity.Player;
 import edu.ntnu.idi.idatt.domain.event.EventBus;
 import edu.ntnu.idi.idatt.domain.game.laddersgame.LaddersGame;
+import edu.ntnu.idi.idatt.utils.Validation;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,12 +32,8 @@ public class LaddersGameService {
    * @throws NullPointerException if {@code config} or {@code eventBus} is {@code null}
    */
   public LaddersGameService(GameConfig config, EventBus eventBus) {
-    if (config == null) {
-      throw new NullPointerException("GameConfig cannot be null.");
-    }
-    if (eventBus == null) {
-      throw new NullPointerException("EventBus cannot be null.");
-    }
+    Validation.validateNonNull(config, "Config");
+    Validation.validateNonNull(eventBus, "Event bus");
     this.config = config;
     this.eventBus = eventBus;
   }
@@ -60,8 +57,6 @@ public class LaddersGameService {
 
   /**
    * Plays the next turn when the dice is thrown.
-   *
-   * @throws NullPointerException if the game has not been started
    */
   public void onDiceClicked() {
     game.playNextTurn();

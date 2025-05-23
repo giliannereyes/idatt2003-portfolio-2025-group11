@@ -2,8 +2,8 @@ package edu.ntnu.idi.idatt.ui.controller;
 
 import edu.ntnu.idi.idatt.config.initializer.AppInitializer;
 import edu.ntnu.idi.idatt.domain.game.GameType;
-import edu.ntnu.idi.idatt.utils.ViewManager;
 import edu.ntnu.idi.idatt.ui.view.GameSelectionView;
+import edu.ntnu.idi.idatt.utils.ViewManager;
 
 /**
  * Controller responsible for handling game selection logic in the UI.
@@ -12,6 +12,7 @@ import edu.ntnu.idi.idatt.ui.view.GameSelectionView;
  * @version 0.1
  * @since 0.1
  * @author Gilianne Reyes
+ * @see GameSelectionView
  */
 public class GameSelectionController {
   private final GameSelectionView view;
@@ -45,8 +46,7 @@ public class GameSelectionController {
       appInitializer.initializeGame(gameType);
       viewManager.switchToNextView();
     } catch (Exception e) {
-      System.out.println(e.getMessage());
-      // view.showError("Failed to initialize game: " + e.getMessage());
+      view.showAlert("Failed to initialize game", e.getMessage());
     }
   }
 }

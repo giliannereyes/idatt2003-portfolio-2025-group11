@@ -17,7 +17,8 @@ public class ManualService {
   /**
    * Loads the contents of a manual text file from the given resource path.
    *
-   * @param path the path to the manual file within the classpath (e.g., "/manuals/game_manual.txt")
+   * @param path the path to the manual file within the classpath.
+   *
    * @return the contents of the manual as a String, or an error message if loading fails
    */
   public String loadManualText(String path) {

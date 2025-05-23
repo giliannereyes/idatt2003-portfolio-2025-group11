@@ -1,17 +1,25 @@
 package edu.ntnu.idi.idatt.ui.view.monopoly;
 
+import edu.ntnu.idi.idatt.config.GameConfig;
 import edu.ntnu.idi.idatt.domain.entity.Board;
 import edu.ntnu.idi.idatt.domain.entity.monopoly.PropertyRegistry;
 import edu.ntnu.idi.idatt.ui.controller.monopoly.MonopolyController;
 import edu.ntnu.idi.idatt.ui.view.View;
 import edu.ntnu.idi.idatt.ui.view.components.DiceCanvas;
 import edu.ntnu.idi.idatt.ui.view.components.PlayerTokenCanvas;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -20,40 +28,53 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
-
 /**
- * JavaFX view that renders the Monopoly board, player-token layer,
- * dice tray and player information boxes.
+ * MonopolyView is a JavaFX class that represents the graphical
+ * user interface for the Monopoly game. It provides methods to
+ * initialize the view, register players, update the game state,
+ * and handle user interactions.
+ *
+ * @version 0.1
+ * @author Gilianne Reyes
  */
 public class MonopolyView implements View {
-  private final BorderPane         root            = new BorderPane();
-  private final StackPane          boardWithTokens = new StackPane();
-  private final VBox               infoBoxLeft     = new VBox(10);
-  private final VBox               infoBoxRight    = new VBox(10);
-  private final Label              statusLabel     = new Label("Throw the dice to start playing Monopoly!");
-  private final Text               titleLabel      = new Text("Monopoly");
-  private final DiceCanvas         diceCanvas      = new DiceCanvas(100, 100);
-  private final Button             throwDiceButton = new Button("Throw Dice");
-  private final PlayerTokenCanvas  playerTokenCanvas;
+  private final BorderPane root;
+  private final StackPane boardWithTokens;
+  private final VBox infoBoxLeft;
+  private final VBox infoBoxRight;
+  private final Label statusLabel;
+  private final Text titleLabel;
+  private final DiceCanvas diceCanvas;
+  private final Button throwDiceButton;
+  private final PlayerTokenCanvas playerTokenCanvas;
   private final Label manualLabel;
   private final MonopolyBoardCanvas boardCanvas;
-  private final Map<String, PlayerInfoBox> infoBoxes = new LinkedHashMap<>();
-  private       MonopolyController         controller;
-  private       Board                      board;
-  private       String                     manualText = "Unavailable.";
+  private final Map<String, PlayerInfoBox> infoBoxes;
+  private MonopolyController controller;
+  private Board board;
+  private String manualText;
 
-  /** Creates the view with a fixed 500 × 500 px board area. */
+  /**
+   * Constructs a MonopolyView instance. Initializes the
+   * layout components and sets up the initial state.
+   */
   public MonopolyView() {
-    final double boardPx = 550;
-    boardCanvas       = new MonopolyBoardCanvas(boardPx, boardPx);
+    root = new BorderPane();
+    boardWithTokens = new StackPane();
+    infoBoxLeft = new VBox(10);
+    infoBoxRight = new VBox(10);
+    statusLabel = new Label("Throw the dice to start playing Monopoly!");
+    titleLabel = new Text("Monopoly");
+    diceCanvas = new DiceCanvas(100, 100);
+    throwDiceButton = new Button("Throw Dice");
     playerTokenCanvas = new PlayerTokenCanvas();
     manualLabel = new Label("Click for User Manual");
-    boardWithTokens.setPrefSize(boardPx, boardPx);
-    boardWithTokens.getChildren().addAll(boardCanvas,
-          playerTokenCanvas.getTokenPane());
+    boardCanvas = new MonopolyBoardCanvas(550, 550);
+    infoBoxes = new LinkedHashMap<>();
+    manualText = "Unavailable.";
+
+    boardWithTokens.setPrefSize(550, 550);
+    boardWithTokens.getChildren().addAll(boardCanvas, playerTokenCanvas.getTokenPane());
 
     throwDiceButton.setOnAction(e -> notifyDiceClicked());
 
@@ -62,10 +83,22 @@ public class MonopolyView implements View {
     root.setId("root-pane");
   }
 
-  /* ---------- View ---------------------------------------------------------------- */
+  /**
+   * Retrieves the root node of this view.
+   *
+   * @return the root node of this view.
+   */
+  @Override
+  public Parent getRoot() {
+    return root;
+  }
 
-  @Override public Parent getRoot() { return root; }
-
+  /**
+   * Initializes the view by setting up the layout, including
+   * the board, player tokens, and other UI components.
+   * <b>This method should be called after the {@link GameConfig}
+   * is complete.</b>
+   */
   @Override
   public void initializeView() {
     VBox diceBox = new VBox(10, diceCanvas, throwDiceButton);
@@ -77,6 +110,7 @@ public class MonopolyView implements View {
     manualLabel.getStyleClass().add("manual-text");
     infoBoxLeft.setMinWidth(250);
     infoBoxRight.setMinWidth(250);
+
     root.setTop(topBox);
     root.setCenter(boardWithTokens);
     root.setLeft(infoBoxLeft);
@@ -87,8 +121,10 @@ public class MonopolyView implements View {
   }
 
   /**
-   * Draws the board and resizes the token pane to exactly match the
-   * board-canvas pixel area.
+   * Registers a board with the view and updates the UI accordingly.
+   *
+   * @param board the game board to be registered.
+   * @param registry the property registry for board properties.
    */
   public void registerBoard(Board board, PropertyRegistry registry) {
     this.board = board;
@@ -96,62 +132,131 @@ public class MonopolyView implements View {
 
     double w = boardCanvas.getWidth();
     double h = boardCanvas.getHeight();
-    playerTokenCanvas.getTokenPane().setMinSize (w, h);
+    playerTokenCanvas.getTokenPane().setMinSize(w, h);
     playerTokenCanvas.getTokenPane().setPrefSize(w, h);
-    playerTokenCanvas.getTokenPane().setMaxSize (w, h);
+    playerTokenCanvas.getTokenPane().setMaxSize(w, h);
   }
 
-  /** Adds a player token to the token layer and creates an info box. */
+  /**
+   * Registers a player token with the view and updates the UI.
+   *
+   * @param playerName the name of the player.
+   * @param tokenPath the path to the player's token image.
+   */
   public void registerPlayerToken(String playerName, String tokenPath) {
     createPlayerBox(playerName);
     updatePlayerBalance(playerName, "300.0");
     playerTokenCanvas.addPlayerToken(playerName, tokenPath);
   }
 
-  /** Animates a token to the specified grid coordinate after a short delay. */
+  /**
+   * Moves the player token to a new position on the board.
+   *
+   * @param playerName the name of the player.
+   * @param gridX the x-coordinate of the new position.
+   * @param gridY the y-coordinate of the new position.
+   */
   public void movePlayerToken(String playerName, double gridX, double gridY) {
-    PauseTransition pt = new PauseTransition(Duration.seconds(1.2));
+    PauseTransition pt = new PauseTransition(Duration.seconds(1));
     pt.setOnFinished(e -> {
-      playerTokenCanvas.animateTokenMovement(
-            playerName, gridX, gridY,
-            board.getRows(), board.getColumns());
+      playerTokenCanvas
+            .animateTokenMovement(playerName, gridX, gridY, board.getRows(), board.getColumns());
       Platform.runLater(() -> throwDiceButton.setDisable(false));
     });
     pt.play();
   }
 
-  public void updateDice(int d1, int d2)        { diceCanvas.updateDice(d1, d2); }
-  public void setStatusLabel(String msg)        { statusLabel.setText(msg);      }
-  public void setController(MonopolyController c){ this.controller = c;          }
+  /**
+   * Updates the dice values displayed on the UI.
+   *
+   * @param d1 the value of the first die.
+   * @param d2 the value of the second die.
+   */
+  public void updateDice(int d1, int d2) {
+    diceCanvas.updateDice(d1, d2);
+  }
 
-  /* ---------- Player-info utilities --------------------------------------------- */
+  /**
+   * Sets the status label text on the UI.
+   *
+   * @param msg the message to be displayed.
+   */
+  public void setStatusLabel(String msg) {
+    statusLabel.setText(msg);
+  }
 
+  /**
+   * Sets the controller for this view.
+   *
+   * @param c the controller to be set.
+   */
+  public void setController(MonopolyController c) {
+    this.controller = c;
+  }
+
+  /**
+   * Creates a player info box for the specified player.
+   *
+   * @param player the name of the player.
+   */
   private void createPlayerBox(String player) {
     infoBoxes.put(player, new PlayerInfoBox(player));
     refreshInfoBoxesLayout();
   }
+
+  /**
+   * Refreshes the layout of the info boxes to ensure they are
+   * displayed correctly in the UI.
+   */
   private void refreshInfoBoxesLayout() {
-    infoBoxLeft .getChildren().clear();
+    infoBoxLeft.getChildren().clear();
     infoBoxRight.getChildren().clear();
     int leftCount = (infoBoxes.size() + 1) / 2;
     int i = 0;
-    for (PlayerInfoBox box : infoBoxes.values())
+    for (PlayerInfoBox box : infoBoxes.values()) {
       (i++ < leftCount ? infoBoxLeft : infoBoxRight).getChildren().add(box);
+    }
   }
 
-  public void updatePlayerBalance(String p, String bal){
+  /**
+   * Updates the player balance in the info box.
+   *
+   * @param p the name of the player.
+   * @param bal the new balance to be set.
+   */
+  public void updatePlayerBalance(String p, String bal) {
     Optional.ofNullable(infoBoxes.get(p)).ifPresent(b -> b.updateBalance(bal));
   }
-  public void addPropertyToPlayer(String p,String prop,String rent){
-    Optional.ofNullable(infoBoxes.get(p)).ifPresent(b -> b.addProperty(prop,rent));
+
+  /**
+   * Adds a property to the player's info box.
+   *
+   * @param p the name of the player.
+   * @param prop the name of the property.
+   * @param rent the rent value of the property.
+   */
+  public void addPropertyToPlayer(String p, String prop, String rent) {
+    Optional.ofNullable(infoBoxes.get(p)).ifPresent(b -> b.addProperty(prop, rent));
   }
-  public void removeAllPropertiesFromPlayer(String p){
+
+  /**
+   * Removes all properties from the player's info box.
+   *
+   * @param p the name of the player.
+   */
+  public void removeAllPropertiesFromPlayer(String p) {
     Optional.ofNullable(infoBoxes.get(p)).ifPresent(PlayerInfoBox::removeAllProperties);
   }
 
+  /**
+   * Prompts the user with a yes/no dialog.
+   *
+   * @param title the title of the dialog.
+   * @param msg the message to be displayed.
+   * @return true if the user selects "Yes", false otherwise.
+   */
   public boolean promptYesNo(String title, String msg) {
-    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, msg,
-          ButtonType.YES, ButtonType.NO);
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, msg, ButtonType.YES, ButtonType.NO);
     alert.setTitle(title);
     alert.setHeaderText("Property Purchase");
     Stage owner = (Stage) root.getScene().getWindow();
@@ -160,27 +265,43 @@ public class MonopolyView implements View {
     return alert.showAndWait().orElse(ButtonType.NO) == ButtonType.YES;
   }
 
+  /**
+   * Displays an error message when a player has won the game.
+   *
+   * @param player the name of the winning player.
+   */
   public void onPlayerWon(String player) {
     statusLabel.setText(player + " has won Monopoly!");
     throwDiceButton.setDisable(true);
-    Alert a = new Alert(Alert.AlertType.INFORMATION,
-          player + " has won Monopoly!\n\n" +
-                "Congratulations!");
+    Alert alert = new Alert(
+          Alert.AlertType.INFORMATION, player + " has won Monopoly!\n\nCongratulations!");
+    alert.showAndWait();
   }
 
+  /**
+   * Displays an error message when the game could not be initialized.
+   *
+   * @param msg the error message to be displayed.
+   */
   public void onErrorInitializingGame(String msg) {
-    Alert a = new Alert(Alert.AlertType.ERROR,
-          "The game could not be initialized:\n" + msg +
-                "\nPlease restart and try again.");
+    Alert a = new Alert(
+          Alert.AlertType.ERROR, "The game could not be initialized:\n" + msg
+          + "\nPlease restart and try again.");
     a.setHeaderText("Error Initializing Game");
     a.showAndWait();
   }
 
+  /**
+   * Notifies the controller that the dice button has been clicked.
+   */
   private void notifyDiceClicked() {
     throwDiceButton.setDisable(true);
     controller.onDiceClicked();
   }
 
+  /**
+   * Displays the user manual in a modal dialog window.
+   */
   private void showUserManual() {
     Stage dlg = new Stage();
     dlg.setTitle("Monopoly: User Manual");
@@ -191,5 +312,12 @@ public class MonopolyView implements View {
     dlg.show();
   }
 
-  public void setUserManualText(String txt) { this.manualText = txt; }
+  /**
+   * Sets the user manual text to be displayed in the dialog.
+   *
+   * @param txt the user manual text.
+   */
+  public void setUserManualText(String txt) {
+    this.manualText = txt;
+  }
 }
