@@ -1,15 +1,19 @@
 package edu.ntnu.idi.idatt.ui.view;
 
 import edu.ntnu.idi.idatt.ui.controller.BoardConfigController;
+import java.io.File;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
-import java.io.File;
 
 /**
  * Represents the view for setting up the game board. It is responsible for
@@ -29,8 +33,8 @@ public class BoardConfigView implements View {
   private final Button startGameButton;
   private final Text titleText;
   private final Text placeholderText;
-  private Button loadBoardButton;
-  private Button saveBoardButton;
+  private final Button loadBoardButton;
+  private final Button saveBoardButton;
   private VBox fileSection = new VBox(10);
   private boolean fileHandlingDisabled = false;
 
@@ -98,12 +102,20 @@ public class BoardConfigView implements View {
     }
   }
 
+  /**
+   * Disables the file handling section of the view.
+   */
   public void disableFileHandling() {
     fileHandlingDisabled = true;
   }
 
+  /**
+   * Hides the file handling section of the view.
+   */
   private void hideFileSection() {
-    if (fileSection == null) return;
+    if (fileSection == null) {
+      return;
+    }
     fileSection.setVisible(false);
     fileSection.setManaged(false);
     loadBoardButton.setVisible(false);
@@ -113,7 +125,7 @@ public class BoardConfigView implements View {
   }
 
   /**
-   * Sets up styling for all components
+   * Sets up styling for all components.
    */
   private void setupComponentStyling() {
     titleText.getStyleClass().add("title-text");
@@ -128,7 +140,7 @@ public class BoardConfigView implements View {
   }
 
   /**
-   * Creates the header section with title and description
+   * Creates the header section with title and description.
    */
   private VBox createHeaderSection() {
     VBox headerSection = new VBox();
@@ -138,7 +150,7 @@ public class BoardConfigView implements View {
   }
 
   /**
-   * Creates the file operations section
+   * Creates the file operations section.
    */
   private VBox createFileSection() {
     VBox fileSection = new VBox(10);
@@ -151,7 +163,7 @@ public class BoardConfigView implements View {
   }
 
   /**
-   * Creates the board selection section
+   * Creates the board selection section.
    */
   private VBox createSelectionSection() {
     VBox selectionSection = new VBox(10);
@@ -169,7 +181,7 @@ public class BoardConfigView implements View {
   }
 
   /**
-   * Creates the action buttons section
+   * Creates the action buttons section.
    */
   private VBox createActionSection() {
     VBox actionSection = new VBox(15);
@@ -208,6 +220,11 @@ public class BoardConfigView implements View {
     boardSelectionBox.getChildren().add(boardOption);
   }
 
+  /**
+   * Updates the selected board label with the given board name.
+   *
+   * @param boardName is the name of the selected board.
+   */
   public void updateSelectedBoard(String boardName) {
     boardToggleGroup.selectToggle(null);
     selectedBoardLabel.setText("Selected: " + boardName);

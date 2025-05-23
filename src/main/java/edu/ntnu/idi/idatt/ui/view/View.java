@@ -10,15 +10,14 @@ import javafx.scene.Parent;
  * @author Gilianne Reyes
  */
 public interface View {
-    /**
-     * The getRoot method is responsible for retrieving the root node
-     * of the display.
-     */
-    Parent getRoot();
+  /**
+   * The getRoot method is responsible for retrieving the root node
+   * of the display.
+   */
+  Parent getRoot();
 
-    /**
-     * The initializeView method is responsible for initializing the display.
-     */
-    void initializeView();
-
+  /**
+   * The initializeView method is responsible for initializing the display.
+   */
+  void initializeView();
 }
