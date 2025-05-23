@@ -1,35 +1,42 @@
 package edu.ntnu.idi.idatt.ui.controller.laddersgame;
 
 import edu.ntnu.idi.idatt.config.PlayerConfig;
-import edu.ntnu.idi.idatt.domain.action.TileAction;
 import edu.ntnu.idi.idatt.domain.entity.Player;
 import edu.ntnu.idi.idatt.domain.entity.Tile;
-import edu.ntnu.idi.idatt.domain.event.common.*;
+import edu.ntnu.idi.idatt.domain.event.common.DiceRolledEvent;
+import edu.ntnu.idi.idatt.domain.event.common.DiceRolledListener;
+import edu.ntnu.idi.idatt.domain.event.common.PlayerMovedEvent;
+import edu.ntnu.idi.idatt.domain.event.common.PlayerMovedListener;
+import edu.ntnu.idi.idatt.domain.event.common.PlayerWonEvent;
+import edu.ntnu.idi.idatt.domain.event.common.PlayerWonListener;
+import edu.ntnu.idi.idatt.domain.event.common.TileActionEvent;
+import edu.ntnu.idi.idatt.domain.event.common.TileActionListener;
 import edu.ntnu.idi.idatt.service.GameConfigService;
 import edu.ntnu.idi.idatt.service.ManualService;
 import edu.ntnu.idi.idatt.service.laddersgame.LaddersGameService;
 import edu.ntnu.idi.idatt.ui.controller.BoardGameController;
 import edu.ntnu.idi.idatt.ui.view.laddersgame.LaddersGameView;
+import java.util.List;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
-import java.util.List;
+
 
 /**
- * Controller class for managing the Snakes and Ladders game logic and interactions.
+ * Controller class for managing the Ladders game logic and interactions.
  * Implements various event listeners to respond to game events and update the view accordingly.
  *
  * @version 0.2
  * @since 0.1
  * @author Gilianne Reyes
  * @author Trang Duong
+ * @see LaddersGameView
  */
 public class LaddersGameController implements
       BoardGameController,
       DiceRolledListener,
       PlayerMovedListener,
       PlayerWonListener,
-      TileActionListener
-{
+      TileActionListener {
   LaddersGameView view;
   GameConfigService gameConfigService;
   LaddersGameService laddersGameService;
@@ -38,9 +45,9 @@ public class LaddersGameController implements
   /**
    * Constructs a new SnakesAndLaddersController with the given services and view.
    *
-   * @param gameConfigService the service managing game configuration
-   * @param laddersGameService the service handling game logic for Snakes and Ladders
-   * @param view the view interface for updating the UI
+   * @param gameConfigService the service managing game configuration.
+   * @param laddersGameService the service handling game logic for Ladders game.
+   * @param view the view interface for updating the UI.
    */
   public LaddersGameController(
         GameConfigService gameConfigService,
@@ -58,7 +65,7 @@ public class LaddersGameController implements
    * Handles the event when the dice is rolled.
    * Updates the view with the result of the dice roll.
    *
-   * @param e the dice rolled event containing the roll values
+   * @param e the dice rolled event containing the roll values.
    */
   @Override
   public void onDiceRolled(DiceRolledEvent e) {
@@ -91,17 +98,12 @@ public class LaddersGameController implements
    */
   @Override
   public void onTileAction(TileActionEvent e) {
-    Player player = e.player();
-    TileAction action = e.tile().getLandAction().orElse(null);
     PauseTransition afterAction = new PauseTransition(Duration.seconds(2.0));
     afterAction.setOnFinished(evt -> {
-      if (action != null) {
-        view.setStatusLabel("Player " + player.getName() + " landed on a" + action.getActionType());
-      }
-      action.getDestinationTile().ifPresent(dest -> view.movePlayerToken(
-            player.getName(),
-            dest.getX(), dest.getY()
-      ));
+      Player player = e.player();
+      view.movePlayerToken(
+            player.getName(), player.getCurrentTile().getX(), player.getCurrentTile().getY()
+      );
     });
     afterAction.play();
   }
@@ -132,14 +134,13 @@ public class LaddersGameController implements
   public void initialize() {
     try {
       if (gameConfigService.isConfigComplete()) {
-        view.registerBoard(gameConfigService.build().getBoard());
-        String manualText = manualService.loadManualText("/userManuals/ladders_game_user_manual.txt");
+        view.registerBoard(gameConfigService.getGameConfig().getBoard());
+        String manualText = manualService
+              .loadManualText("/userManuals/ladders_game_user_manual.txt");
         view.setUserManualText(manualText);
-        List<PlayerConfig> playerConfigs = gameConfigService.build().getPlayerConfigs();
-        playerConfigs.forEach(playerConfig -> {
-                  view.registerPlayerTokens(
-                          playerConfig.getPlayer().getName(), playerConfig.getTokenImagePath());
-                }
+        List<PlayerConfig> playerConfigs = gameConfigService.getGameConfig().getPlayerConfigs();
+        playerConfigs.forEach(playerConfig -> view.registerPlayerTokens(
+                playerConfig.getPlayer().getName(), playerConfig.getTokenImagePath())
         );
         laddersGameService.startGame();
       }

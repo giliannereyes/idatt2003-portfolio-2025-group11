@@ -11,15 +11,15 @@ package edu.ntnu.idi.idatt.ui.controller;
  */
 public interface BoardGameController {
 
-    /**
-     * Initializes the board game. This method should set up the game state,
-     * prepare the board, and perform any necessary setup before gameplay begins.
-     */
-    void initialize();
+  /**
+   * Initializes the board game. This method should set up the game state,
+   * prepare the board, and perform any necessary setup before gameplay begins.
+   */
+  void initialize();
 
-    /**
-     * Handles the event when the dice is clicked.
-     * This method should trigger the dice roll and any subsequent game logic.
-     */
-    void onDiceClicked();
+  /**
+   * Handles the event when the dice is clicked.
+   * This method should trigger the dice roll and any subsequent game logic.
+   */
+  void onDiceClicked();
 }

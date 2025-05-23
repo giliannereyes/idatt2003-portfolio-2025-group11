@@ -6,8 +6,24 @@ import edu.ntnu.idi.idatt.domain.entity.Player;
 import edu.ntnu.idi.idatt.domain.entity.Tile;
 import edu.ntnu.idi.idatt.domain.entity.monopoly.AssetsAccount;
 import edu.ntnu.idi.idatt.domain.entity.monopoly.Property;
-import edu.ntnu.idi.idatt.domain.event.common.*;
-import edu.ntnu.idi.idatt.domain.event.monopoly.*;
+import edu.ntnu.idi.idatt.domain.event.common.DiceRolledEvent;
+import edu.ntnu.idi.idatt.domain.event.common.DiceRolledListener;
+import edu.ntnu.idi.idatt.domain.event.common.PlayerMovedEvent;
+import edu.ntnu.idi.idatt.domain.event.common.PlayerMovedListener;
+import edu.ntnu.idi.idatt.domain.event.common.PlayerWonEvent;
+import edu.ntnu.idi.idatt.domain.event.common.PlayerWonListener;
+import edu.ntnu.idi.idatt.domain.event.common.TileActionEvent;
+import edu.ntnu.idi.idatt.domain.event.common.TileActionListener;
+import edu.ntnu.idi.idatt.domain.event.monopoly.BuyPropertyRequestEvent;
+import edu.ntnu.idi.idatt.domain.event.monopoly.BuyPropertyRequestListener;
+import edu.ntnu.idi.idatt.domain.event.monopoly.InsufficientFundsEvent;
+import edu.ntnu.idi.idatt.domain.event.monopoly.InsufficientFundsListener;
+import edu.ntnu.idi.idatt.domain.event.monopoly.PlayerBankruptEvent;
+import edu.ntnu.idi.idatt.domain.event.monopoly.PlayerBankruptListener;
+import edu.ntnu.idi.idatt.domain.event.monopoly.PlayerPaidRentEvent;
+import edu.ntnu.idi.idatt.domain.event.monopoly.PlayerPaidRentListener;
+import edu.ntnu.idi.idatt.domain.event.monopoly.PlayerPassedGoEvent;
+import edu.ntnu.idi.idatt.domain.event.monopoly.PlayerPassedGoListener;
 import edu.ntnu.idi.idatt.service.GameConfigService;
 import edu.ntnu.idi.idatt.service.ManualService;
 import edu.ntnu.idi.idatt.service.monopoly.MonopolyGameService;
@@ -22,6 +38,7 @@ import javafx.util.Duration;
  * @version 0.1
  * @since 0.1
  * @author Gilianne Reyes
+ * @see MonopolyView
  */
 public class MonopolyController implements
       BoardGameController,
@@ -68,13 +85,11 @@ public class MonopolyController implements
         throw new IllegalStateException("Configuration incomplete");
       }
       view.setUserManualText(manualService.loadManualText("/userManuals/monopoly_user_manual.txt"));
-      GameConfig config = configSvc.build();
+      GameConfig config = configSvc.getGameConfig();
       gameSvc.startGame();
       view.registerBoard(config.getBoard(), gameSvc.getPropertyRegistry());
-      config.getPlayerConfigs().forEach(pc -> {
-            view.registerPlayerToken(pc.getPlayer().getName(),
-                  pc.getTokenImagePath());
-      }
+      config.getPlayerConfigs().forEach(pc -> view.registerPlayerToken(pc.getPlayer().getName(),
+            pc.getTokenImagePath())
       );
     } catch (Exception ex) {
       view.onErrorInitializingGame(ex.getMessage());
