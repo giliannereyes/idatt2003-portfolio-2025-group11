@@ -18,6 +18,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
@@ -68,12 +69,12 @@ public class MonopolyView implements View {
     diceCanvas = new DiceCanvas(100, 100);
     throwDiceButton = new Button("Throw Dice");
     playerTokenCanvas = new PlayerTokenCanvas();
-    manualLabel = new Label("Click for User Manual");
-    boardCanvas = new MonopolyBoardCanvas(550, 550);
+    manualLabel = new Label("(?) Click for User Manual");
+    boardCanvas = new MonopolyBoardCanvas(400, 400);
     infoBoxes = new LinkedHashMap<>();
     manualText = "Unavailable.";
 
-    boardWithTokens.setPrefSize(550, 550);
+    boardWithTokens.setPrefSize(400, 400);
     boardWithTokens.getChildren().addAll(boardCanvas, playerTokenCanvas.getTokenPane());
 
     throwDiceButton.setOnAction(e -> notifyDiceClicked());
@@ -262,6 +263,11 @@ public class MonopolyView implements View {
     Stage owner = (Stage) root.getScene().getWindow();
     alert.initOwner(owner);
     alert.initModality(Modality.WINDOW_MODAL);
+    alert.setOnShown(evt -> {
+      DialogPane pane = alert.getDialogPane();
+      pane.setPrefWidth(270);
+      pane.setPrefHeight(200);
+    });
     return alert.showAndWait().orElse(ButtonType.NO) == ButtonType.YES;
   }
 
@@ -275,6 +281,7 @@ public class MonopolyView implements View {
     throwDiceButton.setDisable(true);
     Alert alert = new Alert(
           Alert.AlertType.INFORMATION, player + " has won Monopoly!\n\nCongratulations!");
+    alert.setHeaderText("Game Over!");
     alert.showAndWait();
   }
 

@@ -31,7 +31,7 @@ public class AppInitializer {
    */
   public AppInitializer(Stage primaryStage) {
     this.eventBus = new DefaultEventBus();
-    this.viewManager = new ViewManager(primaryStage, "/css/style.css", 1200, 800);
+    this.viewManager = new ViewManager(primaryStage, "/css/style.css", 1000, 700);
     initGameSelection();
   }
 

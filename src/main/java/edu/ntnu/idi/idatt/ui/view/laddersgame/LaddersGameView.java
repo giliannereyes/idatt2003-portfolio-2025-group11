@@ -51,12 +51,12 @@ public class LaddersGameView implements View {
    */
   public LaddersGameView() {
     root = new BorderPane();
-    boardCanvas = new LaddersGameBoardCanvas(500, 500);
+    boardCanvas = new LaddersGameBoardCanvas(400, 400);
     playerTokenCanvas = new PlayerTokenCanvas();
     diceCanvas = new DiceCanvas(100, 100);
     boardWithTokens = new StackPane();
     titleLabel = new Text("Ladders Game");
-    manualLabel = new Label("Click for User Manual");
+    manualLabel = new Label("(?) Click for User Manual");
     statusLabel = new Label("Throw the dice to start the game!");
     manualText = "Unavailable.";
 
@@ -92,7 +92,7 @@ public class LaddersGameView implements View {
    */
   @Override
   public void initializeView() {
-    boardWithTokens.setPrefSize(500, 500);
+    boardWithTokens.setPrefSize(400, 400);
     boardWithTokens.getChildren().addAll(boardCanvas, playerTokenCanvas.getTokenPane());
 
     Pane overlay = playerTokenCanvas.getTokenPane();
