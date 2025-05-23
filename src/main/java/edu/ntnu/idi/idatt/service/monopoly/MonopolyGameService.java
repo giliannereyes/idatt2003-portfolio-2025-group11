@@ -9,10 +9,11 @@ import edu.ntnu.idi.idatt.domain.entity.monopoly.PropertyRegistry;
 import edu.ntnu.idi.idatt.domain.event.EventBus;
 import edu.ntnu.idi.idatt.domain.factory.monopoly.MonopolyBoardFactory;
 import edu.ntnu.idi.idatt.domain.game.monopoly.Monopoly;
+import edu.ntnu.idi.idatt.utils.Validation;
 import java.util.List;
 
 /**
- * Service to initialize and drive a Monopoly Lite game.
+ * Service to initialize and drive a Monopoly game.
  *
  * @version 0.1
  * @since 0.1
@@ -23,6 +24,7 @@ public class MonopolyGameService {
   private Monopoly game;
   private final EventBus eventBus;
   private final MonopolyBoardFactory boardFactory;
+  private PropertyRegistry propertyRegistry;
 
   /**
    * Constructs a new {@code MonopolyGameService}
@@ -31,7 +33,12 @@ public class MonopolyGameService {
    * @param config the configuration settings for the game, including board setup and rules
    * @param eventBus the event bus used to publish and subscribe to game events
    */
-  public MonopolyGameService(GameConfig config, EventBus eventBus, MonopolyBoardFactory boardFactory) {
+  public MonopolyGameService(
+        GameConfig config, EventBus eventBus, MonopolyBoardFactory boardFactory
+  ) {
+    Validation.validateNonNull(config, "Game config");
+    Validation.validateNonNull(eventBus, "Event bus");
+    Validation.validateNonNull(boardFactory, "Board factory");
     this.config   = config;
     this.eventBus = eventBus;
     this.boardFactory = boardFactory;
@@ -46,21 +53,18 @@ public class MonopolyGameService {
     if (!config.isComplete()) {
       throw new IllegalStateException("Cannot start Monopoly: configuration incomplete.");
     }
-    // use two dice (standard Monopoly)
     Dice dice = new Dice(2);
     List<Player> players = config.getPlayerConfigs().stream()
           .map(PlayerConfig::getPlayer)
           .toList();
-
-    // build the MonopolyGame with board, players, dice and event bus
+    this.propertyRegistry = boardFactory.createPropertyRegistryForBoard(config.getBoard());
     this.game = new Monopoly(
           config.getBoard(),
           players,
           dice,
           eventBus,
-          boardFactory.createPropertyRegistryForBoard(config.getBoard())
+          propertyRegistry
     );
-    // place all players on GO
     game.setUpGame();
   }
 
@@ -88,8 +92,13 @@ public class MonopolyGameService {
     game.buyProperty(player, property);
   }
 
+  /**
+   * Retrieves the property registry associated with the current game.
+   *
+   * @return the property registry containing all properties in the game.
+   */
   public PropertyRegistry getPropertyRegistry() {
-    return game.getPropertyRegistry();
+    return propertyRegistry;
   }
 }
 

@@ -2,13 +2,15 @@ package edu.ntnu.idi.idatt.service;
 
 import edu.ntnu.idi.idatt.config.PlayerConfig;
 import edu.ntnu.idi.idatt.domain.entity.Player;
-import edu.ntnu.idi.idatt.ui.enums.PlayerToken;
 import edu.ntnu.idi.idatt.domain.factory.PlayerFactory;
 import edu.ntnu.idi.idatt.persistence.reader.PlayerFileReader;
 import edu.ntnu.idi.idatt.persistence.writer.PlayerFileWriter;
+import edu.ntnu.idi.idatt.ui.enums.PlayerToken;
 import edu.ntnu.idi.idatt.utils.Validation;
 import java.io.File;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -24,8 +26,6 @@ import java.util.stream.IntStream;
 public class PlayerService {
   private final PlayerFileReader fileReader;
   private final PlayerFileWriter fileWriter;
-  private final int maxPlayers = 5;
-  private final int minPlayers = 2;
   private final PlayerFactory playerFactory;
 
   /**
@@ -53,11 +53,16 @@ public class PlayerService {
    *
    * @param file the CSV file containing player data
    * @return a list of string arrays, each representing a player's data
-   * @throws RuntimeException if the file cannot be read or the number of players is invalid
+   *
+   * @throws IllegalArgumentException if the file is null.
+   * @throws IllegalArgumentException if the number of players is not within the valid range.
    */
   public List<String[]> loadPlayersFromCsv(File file) {
+    Validation.validateNonNull(file, "File");
     try {
       List<String[]> playerData = fileReader.readFromCsv(file);
+      int maxPlayers = 5;
+      int minPlayers = 2;
       if (playerData.size() > maxPlayers) {
         throw new IllegalArgumentException("Too many players");
       } else if (playerData.size() < minPlayers) {
@@ -74,9 +79,13 @@ public class PlayerService {
    *
    * @param file the file to write to
    * @param playerData the list of player data to save
-   * @throws RuntimeException if writing to the file fails
+   *
+   * @throws IllegalArgumentException if the file or player data is null.
+   * @throws RuntimeException if writing to the file fails.
    */
   public void savePlayersToCsv(File file, List<String[]> playerData) {
+    Validation.validateNonNull(file, "File");
+    Validation.validateNonNull(playerData, "Player data");
     try {
       fileWriter.writeToCsv(playerData, file, null);
     } catch (Exception e) {
@@ -91,8 +100,11 @@ public class PlayerService {
    * @param tokenNames list of token names corresponding to each player
    * @return a list of {@link PlayerConfig} objects
    * @throws RuntimeException if creation fails
+   * @throws IllegalArgumentException if player names or token names are null.
    */
   public List<PlayerConfig> createPlayerConfigs(List<String> playerNames, List<String> tokenNames) {
+    Validation.validateNonNull(playerNames, "Player names");
+    Validation.validateNonNull(tokenNames, "Token names");
     try {
       return IntStream.range(0, playerNames.size())
             .mapToObj(i -> createPlayerConfig(playerNames.get(i), tokenNames.get(i)))
@@ -107,14 +119,17 @@ public class PlayerService {
    *
    * @param playerNames list of player names
    * @param tokenNames list of token names
-   * @return true if the data is valid, false otherwise
+   * @return true if the data is valid, false otherwise.
+   * @throws IllegalArgumentException if player names or token names are null.
+   * @throws RuntimeException if validation fails.
    */
   public boolean isPlayerConfigDataValid(List<String> playerNames, List<String> tokenNames) {
+    Validation.validateNonNull(playerNames, "Player names");
+    Validation.validateNonNull(tokenNames, "Token names");
     try {
       if (playerNames.size() != tokenNames.size()) {
         return false;
       }
-
       Set<String> seenNames = new HashSet<>();
       Set<String> seenTokens = new HashSet<>();
       return IntStream.range(0, playerNames.size()).allMatch(i ->
