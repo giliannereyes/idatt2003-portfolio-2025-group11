@@ -13,38 +13,38 @@ import edu.ntnu.idi.idatt.utils.Validation;
  * @author Gilianne Reyes
  */
 public class PlayerConfig {
-    private final Player player;
-    private final String tokenImagePath;
+  private final Player player;
+  private final String tokenImagePath;
 
-    /**
-     * Constructs a PlayerConfig instance.
-     *
-     * @param player is the player to configure.
-     * @param tokenImagePath is the path to the token image.
-     */
-    public PlayerConfig(Player player, String tokenImagePath) {
-        Validation.validateNonNull(player, "Player object");
-        Validation.validateNonEmptyStr(tokenImagePath, "Token image path");
-        this.player = player;
-        this.tokenImagePath = tokenImagePath;
-    }
+  /**
+   * Constructs a PlayerConfig instance.
+   *
+   * @param player is the player to configure.
+   * @param tokenImagePath is the path to the token image.
+   */
+  public PlayerConfig(Player player, String tokenImagePath) {
+    Validation.validateNonNull(player, "Player object");
+    Validation.validateNonEmptyStr(tokenImagePath, "Token image path");
+    this.player = player;
+    this.tokenImagePath = tokenImagePath;
+  }
 
-    /**
-     * Retrieves the player object of this configuration.
-     *
-     * @return the player object.
-     */
-    public Player getPlayer() {
-        return player;
-    }
+  /**
+   * Retrieves the player object of this configuration.
+   *
+   * @return the player object.
+   */
+  public Player getPlayer() {
+    return player;
+  }
 
-    /**
-     * Retrieves the path to the token image representing
-     * the player in this configuration.
-     *
-     * @return the path to the token image.
-     */
-    public String getTokenImagePath() {
-        return tokenImagePath;
-    }
+  /**
+   * Retrieves the path to the token image representing
+   * the player in this configuration.
+   *
+   * @return the path to the token image.
+   */
+  public String getTokenImagePath() {
+    return tokenImagePath;
+  }
 }

@@ -16,6 +16,7 @@ import java.util.Optional;
  * @version 0.3
  * @since 0.1
  * @author Gilianne Reyes
+ * @author Trang Duong
  */
 public class Board {
   private final Map<Integer, Tile> tiles;
@@ -45,6 +46,7 @@ public class Board {
 
   /**
    * Adds a tile to the board's collection of tiles.
+   * If the tile is the first one added, it will be set as the start tile.
    *
    * @param tile is the tile to add.
    *
@@ -55,6 +57,9 @@ public class Board {
     Validation.validateNonNull(tile, "Tile");
     if (tiles.containsKey(tile.getTileId())) {
       throw new IllegalArgumentException("Tile with the same ID already exists.");
+    }
+    if (tiles.isEmpty()) {
+      startTile = tile;
     }
     tiles.put(tile.getTileId(), tile);
   }
@@ -163,7 +168,7 @@ public class Board {
    *
    * @param currentTile the current {@link Tile} from which to find the next tile.
    * @return an {@link Optional} containing the next {@link Tile},
-   * or empty if the current tile is the last one.
+   *          or empty if the current tile is the last one.
    */
   public Optional<Tile> getNextTile(Tile currentTile) {
     int currentTileId = currentTile.getTileId();

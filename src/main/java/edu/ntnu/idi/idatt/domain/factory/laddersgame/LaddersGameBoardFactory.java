@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
- * A factory for creating Snakes and Ladders {@link Board} instances.
+ * A factory for creating Ladders Game {@link Board} instances.
  * The class contains both hardcoded and file-based board loading methods.
  *
  * @version 0.3
@@ -91,11 +91,11 @@ public class LaddersGameBoardFactory {
     board.setDescription("Easy board with few snakes and skip turn.");
     layoutStrategy.buildLayout(board);
     Object[][] easyActions = {
-        {2, LadderAction.actionType, 12},
-        {5, LadderAction.actionType, 20},
-        {9, LadderAction.actionType, 18},
-        {15, LadderAction.actionType, 30},
-        {32, SnakeAction.actionType, 19},
+        {2, LadderAction.actionType, 15},
+        {5, LadderAction.actionType, 11},
+        {9, LadderAction.actionType, 26},
+        {30, LadderAction.actionType, 34},
+        {32, SnakeAction.actionType, 18},
         {45, SnakeAction.actionType, 28},
         {40, SkipTurnAction.actionType}
     };
@@ -123,9 +123,9 @@ public class LaddersGameBoardFactory {
     Object[][] mediumActions = {
         {3, LadderAction.actionType, 14},
         {8, LadderAction.actionType, 22},
-        {19, LadderAction.actionType, 32},
-        {25, LadderAction.actionType, 40},
-        {30, SnakeAction.actionType, 12},
+        {18, LadderAction.actionType, 32},
+        {53, LadderAction.actionType, 60},
+        {55, SnakeAction.actionType, 43},
         {39, SnakeAction.actionType, 24},
         {50, SnakeAction.actionType, 29},
         {52, SkipTurnAction.actionType},
@@ -140,7 +140,7 @@ public class LaddersGameBoardFactory {
    * <ul>
    *     <li>10x10 board</li>
    *     <li>5 ladders</li>
-   *     <li>6 snakes</li>
+   *     <li>4 snakes</li>
    *     <li>1 skip turn</li>
    *     <li>1 reset to start</li>
    * </ul>
@@ -153,19 +153,17 @@ public class LaddersGameBoardFactory {
     board.setDescription("Challenging 100 tile board with more snakes and special tiles.");
     layoutStrategy.buildLayout(board);
     Object[][] hardActions = {
-        {4, LadderAction.actionType, 16},
-        {11, LadderAction.actionType, 28},
-        {20, LadderAction.actionType, 42},
+        {4, LadderAction.actionType, 26},
+        {11, LadderAction.actionType, 29},
+        {20, LadderAction.actionType, 40},
         {36, LadderAction.actionType, 55},
         {63, LadderAction.actionType, 81},
-        {25, SnakeAction.actionType, 12},
-        {30, SnakeAction.actionType, 17},
-        {47, SnakeAction.actionType, 34},
-        {52, SnakeAction.actionType, 29},
-        {78, SnakeAction.actionType, 60},
-        {93, SnakeAction.actionType, 75},
         {58, SkipTurnAction.actionType},
-        {35, ResetAction.actionType}
+        {35, ResetAction.actionType},
+        {93, SnakeAction.actionType, 75},
+        {68, SnakeAction.actionType, 50},
+        {43, SnakeAction.actionType, 23},
+        {97, SnakeAction.actionType, 84}
     };
     addTileActions(board, hardActions);
     return board;

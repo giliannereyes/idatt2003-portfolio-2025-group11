@@ -14,6 +14,14 @@ import edu.ntnu.idi.idatt.utils.Validation;
  */
 public class MonopolyLayoutStrategy implements BoardLayoutStrategy {
 
+  /**
+   * Builds the layout of the board by adding tiles in a clockwise pattern.
+   *
+   * @param board is the board to build the layout for.
+   *
+   * @throws IllegalArgumentException if {@code board} is null.
+   * @throws IllegalArgumentException if {@code board} has fewer than 2 rows or 2 columns.
+   */
   @Override
   public void buildLayout(Board board) {
     Validation.validateNonNull(board, "Board");
@@ -22,64 +30,43 @@ public class MonopolyLayoutStrategy implements BoardLayoutStrategy {
     if (rows < 2 || cols < 2) {
       throw new IllegalArgumentException("Board must be at least 2×2");
     }
-
-    Tile first;        // tile ID 1  (GO square)
-    Tile prev = null;  // last tile inserted in the current segment
-    int  id   = 1;     // running tile-ID
-
-    /* ─── Top row  (left → right) ───────────────────────────── */
-    prev = buildTiles(board, id,
-          0, rows - 1,          // start (x,y)
-          1, 0,                 // step  (x,y)
-          cols,                 // tile count
-          prev);
-    first = board.getTile(1);               // remember tile 1
+    Tile first;
+    Tile prev;
+    int id = 1;
+    prev = buildTiles(board, id, 0, rows - 1, 1, 0, cols, null);
+    first = board.getTile(1);
     board.setStartTile(first);
     id += cols;
-
-    /* ─── Right column (top → bottom, excluding corner already made) */
-    prev = buildTiles(board, id,
-          cols - 1, rows - 2,
-          0, -1,
-          rows - 1,
-          prev);
+    prev = buildTiles(board, id, cols - 1, rows - 2, 0, -1, rows - 1, prev);
     id += rows - 1;
-
-    /* ─── Bottom row (right → left) ─────────────────────────── */
-    prev = buildTiles(board, id,
-          cols - 2, 0,
-          -1, 0,
-          cols - 1,
-          prev);
+    prev = buildTiles(board, id, cols - 2, 0, -1, 0, cols - 1, prev);
     id += cols - 1;
-
-    /* ─── Left column (bottom → top, excluding both corners) ── */
-    prev = buildTiles(board, id,
-          0, 1,
-          0, 1,
-          rows - 2,
-          prev);
-
-    /* ─── Close the loop ─────────────────────────────────────── */
+    prev = buildTiles(board, id, 0, 1, 0, 1, rows - 2, prev);
     prev.setNextTile(first);
   }
 
   /**
-   * Creates {@code count} tiles in a straight line and links them to
-   * {@code prev}. Returns the last tile created so that the caller can
-   * continue chaining in the next perimeter segment.
+   * Builds a series of tiles in a straight line on the board.
+   *
+   * @param board the board to build the tiles on.
+   * @param startId the starting ID for the tiles.
+   * @param startX the starting X coordinate.
+   * @param startY the starting Y coordinate.
+   * @param stepX the step size in the X direction.
+   * @param stepY the step size in the Y direction.
+   * @param count the number of tiles to build.
+   * @param prev the previous tile to link to.
+   *
+   * @return the last tile created.
    */
-  private Tile buildTiles(Board board,
-                          int startId,
-                          int startX, int startY,
-                          int stepX,  int stepY,
-                          int count,
-                          Tile prev) {
-
+  private Tile buildTiles(
+        Board board, int startId, int startX, int startY,
+        int stepX, int stepY, int count, Tile prev
+  ) {
     for (int i = 0; i < count; i++) {
       int id = startId + i;
-      int x  = startX + i * stepX;
-      int y  = startY + i * stepY;
+      int x = startX + i * stepX;
+      int y = startY + i * stepY;
 
       Tile t = new Tile(id, x, y);
       board.addTile(t);
@@ -89,6 +76,6 @@ public class MonopolyLayoutStrategy implements BoardLayoutStrategy {
       }
       prev = t;
     }
-    return prev;   // last tile in this segment
+    return prev;
   }
 }
