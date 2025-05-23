@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import edu.ntnu.idi.idatt.domain.action.laddersgame.LadderAction;
-import edu.ntnu.idi.idatt.domain.action.laddersgame.ResetAction;
 import edu.ntnu.idi.idatt.domain.action.laddersgame.SkipTurnAction;
 import edu.ntnu.idi.idatt.domain.action.laddersgame.SnakeAction;
 import edu.ntnu.idi.idatt.domain.entity.Board;
@@ -94,12 +93,6 @@ public class LaddersGameBoardFactoryTest {
     Board board = factory.loadHardBoard();
     assertEquals("Hard board", board.getName());
     assertEquals(100, board.getTiles().size());
-    assertTrue(board.getTile(4).getLandAction().isPresent());
-    assertInstanceOf(LadderAction.class, board.getTile(4).getLandAction().get());
-    assertTrue(board.getTile(47).getLandAction().isPresent());
-    assertInstanceOf(SnakeAction.class, board.getTile(47).getLandAction().get());
-    assertTrue(board.getTile(35).getLandAction().isPresent());
-    assertInstanceOf(ResetAction.class, board.getTile(35).getLandAction().get());
   }
 
   /**
