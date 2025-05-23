@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import edu.ntnu.idi.idatt.domain.action.TileAction;
-import edu.ntnu.idi.idatt.domain.action.snakesandladders.LadderAction;
-import edu.ntnu.idi.idatt.domain.action.snakesandladders.SkipTurnAction;
+import edu.ntnu.idi.idatt.domain.action.laddersgame.LadderAction;
+import edu.ntnu.idi.idatt.domain.action.laddersgame.SkipTurnAction;
 import edu.ntnu.idi.idatt.domain.entity.Tile;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
