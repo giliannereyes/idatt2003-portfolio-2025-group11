@@ -8,7 +8,7 @@ import edu.ntnu.idi.idatt.ui.view.GameSelectionView;
 import edu.ntnu.idi.idatt.ui.view.PlayerSetupView;
 import edu.ntnu.idi.idatt.ui.view.BoardConfigView;
 import edu.ntnu.idi.idatt.ui.view.monopoly.MonopolyView;
-import edu.ntnu.idi.idatt.ui.view.snakesandladders.SnakesAndLaddersView;
+import edu.ntnu.idi.idatt.ui.view.laddersgame.LaddersGameView;
 import edu.ntnu.idi.idatt.utils.ViewManager;
 import javafx.stage.Stage;
 
@@ -37,9 +37,9 @@ public class AppInitializer {
     viewManager.registerTransition(GameSelectionView.class, PlayerSetupView.class);
     switch (gameType) {
       case SNAKES_AND_LADDERS -> {
-        new SnakesAndLaddersInitializer().initialize(this);
+        new LaddersGameInitializer().initialize(this);
         viewManager.registerTransition(PlayerSetupView.class, BoardConfigView.class);
-        viewManager.registerTransition(BoardConfigView.class, SnakesAndLaddersView.class);
+        viewManager.registerTransition(BoardConfigView.class, LaddersGameView.class);
       }
       case MONOPOLY -> {
         new MonopolyInitializer().initialize(this);
