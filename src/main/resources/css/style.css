@@ -23,13 +23,13 @@ background {
 }
 
 .button:hover {
-    -fx-background-color: derive(#415A77, -15%);  /* 15% darker */
-    -fx-scale-x: 1.03;                             /* grow 3% wider */
-    -fx-scale-y: 1.03;                             /* grow 3% taller */
+    -fx-background-color: derive(#415A77, -15%);
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
 }
 
 .button:pressed {
-    -fx-background-color: derive(#415A77, -25%);  /* even darker on click */
+    -fx-background-color: derive(#415A77, -25%);
     -fx-effect: innershadow(two-pass-box, rgba(0,0,0,0.4), 6, 0.0, 0, 2);
 }
 
@@ -241,15 +241,12 @@ background {
     -fx-text-fill: #0D1B2A;
 }
 
-/* ================================
-   ComboBox (Dropdown) Styling
-   ================================ */
 .combo-box {
     -fx-background-color: white;
     -fx-border-color: #778DA9;
     -fx-border-radius: 4px;
     -fx-background-radius: 4px;
-    -fx-padding: 2 30 2 8;          /* left/right padding so arrow doesn't overlap text */
+    -fx-padding: 2 30 2 8;
 }
 .combo-box:hover {
     -fx-border-color: #415A77;
@@ -258,7 +255,7 @@ background {
     -fx-border-color: #1B263B;
     -fx-effect: dropshadow(gaussian, rgba(65,90,119,0.5), 4, 0.3, 0, 0);
 }
-/* arrow button & arrow glyph */
+
 .combo-box .arrow-button {
     -fx-background-color: transparent;
 }
@@ -267,15 +264,12 @@ background {
     -fx-background-color: #415A77;
 }
 
-/* ================================
-   TextField & TextArea Styling
-   ================================ */
 .text-field, .text-area {
     -fx-background-color: white;
     -fx-border-color: #778DA9;
     -fx-border-radius: 4px;
     -fx-background-radius: 4px;
-    -fx-padding: 4px 6px;           /* vertical/horizontal padding */
+    -fx-padding: 4px 6px;
 }
 .text-field:hover, .text-area:hover {
     -fx-border-color: #415A77;
@@ -285,21 +279,17 @@ background {
     -fx-effect: dropshadow(gaussian, rgba(65,90,119,0.4), 4, 0.3, 0, 0);
 }
 
-/* placeholder (prompt) text color */
 .text-field .text, .text-area .text {
     -fx-prompt-text-fill: derive(-fx-control-inner-background, -30%);
 }
 
-/* ================================
-   RadioButton Styling
-   ================================ */
 .radio-button {
     -fx-font-size: 14px;
     -fx-padding: 4 0 4 0;
 }
 .radio-button .radio {
-    -fx-mark-color: #415A77;        /* dot/mark color when selected */
-    -fx-background-color: white;    /* circle background */
+    -fx-mark-color: #415A77;
+    -fx-background-color: white;
     -fx-border-color: #778DA9;
     -fx-border-radius: 8px;
     -fx-background-radius: 8px;
@@ -313,12 +303,10 @@ background {
     -fx-border-color: #415A77;
 }
 
-/* optional focus ring */
 .radio-button:focused .radio {
     -fx-effect: dropshadow(gaussian, rgba(65,90,119,0.5), 4, 0.3, 0, 0);
 }
 
-/* Root background, font family */
 #root-pane {
     -fx-background-color: #E0E1DD;
     -fx-font-family: "Segoe UI", sans-serif;
