@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt.service.snakesandladders;
+package edu.ntnu.idi.idatt.service.laddersgame;
 
 import edu.ntnu.idi.idatt.config.GameConfig;
 import edu.ntnu.idi.idatt.config.PlayerConfig;

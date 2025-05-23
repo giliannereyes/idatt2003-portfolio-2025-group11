@@ -1,10 +1,10 @@
-package edu.ntnu.idi.idatt.service.snakesandladders;
+package edu.ntnu.idi.idatt.service.laddersgame;
 
 import edu.ntnu.idi.idatt.domain.entity.Board;
 import edu.ntnu.idi.idatt.domain.factory.DestinationTileActionFactory;
 import edu.ntnu.idi.idatt.domain.factory.NoDestinationTileActionFactory;
 import edu.ntnu.idi.idatt.domain.factory.TileActionFactoryRegistry;
-import edu.ntnu.idi.idatt.domain.factory.snakesandladders.SnakesAndLaddersFactory;
+import edu.ntnu.idi.idatt.domain.factory.laddersgame.SnakesAndLaddersFactory;
 import edu.ntnu.idi.idatt.persistence.reader.BoardFileReader;
 import edu.ntnu.idi.idatt.persistence.writer.BoardFileWriter;
 import edu.ntnu.idi.idatt.utils.Validation;
