@@ -76,7 +76,7 @@ If the user has initially chosen **Monopoly**, similar to **Ladders Game**, the 
    ```
    alternatively
    ```bash
-      mvn clean compile exec:java -Dexec.mainClass="no.ntnu.idatt.app.BoardGameApp"
+      mvn clean compile exec:java -Dexec.mainClass="edu.ntnu.idi.idatt.app.BoardGameApp"
      ```
    or
       ```bash
